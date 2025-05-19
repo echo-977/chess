@@ -1,0 +1,44 @@
+# Java compiled class files
+*.class
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# IntelliJ IDEA files
+.idea/
+*.iml
+*.iws
+
+# IntelliJ workspace / caches / logs
+out/
+
+# Build directories (if you have build folders)
+build/
+target/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Eclipse project files (if you ever switch IDEs)
+.project
+.classpath
+
+# Maven specific
+dependency-reduced-pom.xml
+release.properties
+
+# Gradle specific
+.gradle/
+
+# Test result folders
+test-results/
