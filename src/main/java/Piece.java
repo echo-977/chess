@@ -71,7 +71,7 @@ public abstract class Piece {
      * @return the location of the piece in standard algebraic notation
      */
     public String getSquare() {
-        return file + rank + "";
+        return String.valueOf(file) + String.valueOf(rank);
     }
 
     /**
@@ -91,7 +91,7 @@ public abstract class Piece {
      * @return the file character ("a" for index 0)
      * @throws IndexOutOfBoundsException when the index is invalid (not between 0 and 7)
      */
-    public char mapFile(int index) {
+    public char mapIndexToFile(int index) {
         if (index >= 0 && index < 8) {
             char file = (char) (index + 'a');
             return file;
@@ -115,7 +115,7 @@ public abstract class Piece {
      * @param index the rank to be mapped
      * @return the rank int (1 for rank index 0)
      */
-    public int mapRank(int index) {
+    public int mapIndexToRank(int index) {
         return index + 1;
     }
 
