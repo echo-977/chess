@@ -17,6 +17,11 @@ class PieceTest {
                 // minimal implementation here to allow testing of concrete functions
                 System.out.println("Moved to " + square);
             }
+
+            public String[] generateMoves() {
+                // minimal implementation here to allow testing of concrete functions
+                return new String[8];
+            }
         };
     }
 
