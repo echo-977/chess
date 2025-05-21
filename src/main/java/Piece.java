@@ -124,4 +124,12 @@ public abstract class Piece {
      * Concrete piece subclasses will implement this.
      */
     public abstract void move(String square);
+
+    /**
+     * Abstract method to generate all the legal moves the piece can do.
+     * Concrete piece subclasses will implement this.
+     * @return an array of all the legal moves in algebraic notation
+     */
+
+    public abstract String[] generateMoves();
 }
