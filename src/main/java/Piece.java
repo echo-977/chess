@@ -132,4 +132,12 @@ public abstract class Piece {
      */
 
     public abstract String[] generateMoves();
+
+    /**
+     * Abstract method to check if a given move is legal.
+     * Concrete piece subclasses will implement this.
+     * @param move the move to be validated.
+     * @return true if the move is legal, otherwise false.
+     */
+    public abstract boolean isLegalMove(String move);
 }

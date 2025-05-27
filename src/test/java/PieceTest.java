@@ -22,6 +22,11 @@ class PieceTest {
                 // minimal implementation here to allow testing of concrete functions
                 return new String[8];
             }
+
+            public boolean isLegalMove(String move) {
+                // minimal implementation here to allow testing of concrete functions
+                return false;
+            }
         };
     }
 
