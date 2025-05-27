@@ -75,6 +75,22 @@ public abstract class Piece {
     }
 
     /**
+     * Simple getter for the pieces file.
+     * @return the file.
+     */
+    public char getFile() {
+        return file;
+    }
+
+    /**
+     * Simple getter for the pieces rank.
+     * @return the rank.
+     */
+    public int getRank() {
+        return rank;
+    }
+
+    /**
      * Converts the file char (e.g., "a"-"h") to a zero-based index.
      *
      * @return the zero-based file index (0 for file "a")
@@ -134,7 +150,6 @@ public abstract class Piece {
      * Concrete piece subclasses will implement this.
      * @return an array of all the legal moves in algebraic notation
      */
-
     public abstract String[] generateMoves();
 
     /**
