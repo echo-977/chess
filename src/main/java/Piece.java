@@ -75,6 +75,22 @@ public abstract class Piece {
     }
 
     /**
+     * Simple getter for the pieces file.
+     * @return the file.
+     */
+    public char getFile() {
+        return file;
+    }
+
+    /**
+     * Simple getter for the pieces rank.
+     * @return the rank.
+     */
+    public int getRank() {
+        return rank;
+    }
+
+    /**
      * Converts the file char (e.g., "a"-"h") to a zero-based index.
      *
      * @return the zero-based file index (0 for file "a")
@@ -120,10 +136,14 @@ public abstract class Piece {
     }
 
     /**
-     * Abstract method to move the piece.
-     * Concrete piece subclasses will implement this.
+     * Method to move the piece to a given square.
+     * Validation of if the move is legal will be done elsewhere.
      */
-    public abstract void move(String square);
+    public void move(String square) {
+        file = square.charAt(0);
+        rank = Character.getNumericValue(square.charAt(1));
+        notation = square;
+    }
 
     /**
      * Abstract method to generate all the legal moves the piece can do.
@@ -131,4 +151,12 @@ public abstract class Piece {
      * @return an array of all the legal moves in algebraic notation
      */
     public abstract String[] generateMoves();
+
+    /**
+     * Abstract method to check if a given move is legal.
+     * Concrete piece subclasses will implement this.
+     * @param move the move to be validated.
+     * @return true if the move is legal, otherwise false.
+     */
+    public abstract boolean isLegalMove(String move);
 }
