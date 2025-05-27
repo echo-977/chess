@@ -1,5 +1,5 @@
 public class Rook extends Piece{
-    boolean moved;
+    private boolean moved;
 
     /**
      * Constructs a rook with the specified name, color, rank, and file.
@@ -22,21 +22,23 @@ public class Rook extends Piece{
      */
     @Override
     public String[] generateMoves() {
-        String position = getSquare();
-        String file = position.substring(0, 1);
-        String rank = position.substring(1, 2);
+        String file = String.valueOf(getFile());
+        String rank = String.valueOf(getRank());
         String[] moves = new String[14]; //max number of rook moves in any position
+        int movesIndex = 0;
         String move;
         for (char pFile = 'a'; pFile <= 'h'; pFile++) {
             move = String.valueOf(pFile) + rank;
             if (isLegalMove(move)) {
-                moves[moves.length - 1] = move;
+                moves[movesIndex] = move;
+                movesIndex++;
             }
         }
         for (int pRank = 1; pRank <= 8; pRank++) {
             move = file + String.valueOf(pRank);
             if (isLegalMove(move)) {
-                moves[moves.length - 1] = move;
+                moves[movesIndex] = move;
+                movesIndex++;
             }
         }
         return moves;
@@ -68,5 +70,21 @@ public class Rook extends Piece{
             return file == getFile();
         }
 
+    }
+
+    /**
+     * Overrides the move method in the piece class to update the moved flag.
+     * @param move the square to move the piece to.
+     */
+    @Override
+    public void move(String move) {
+        if (!moved) {
+            moved = true;
+        }
+        super.move(move);
+    }
+
+    public boolean getMoved() {
+        return moved;
     }
 }
