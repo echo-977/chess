@@ -84,6 +84,10 @@ public class Rook extends Piece{
         super.move(move);
     }
 
+    /**
+     * Simple getter for the boolean moved
+     * @return the moved boolean
+     */
     public boolean getMoved() {
         return moved;
     }
