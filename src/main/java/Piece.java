@@ -120,10 +120,14 @@ public abstract class Piece {
     }
 
     /**
-     * Abstract method to move the piece.
-     * Concrete piece subclasses will implement this.
+     * Method to move the piece to a given square.
+     * Validation of if the move is legal will be done elsewhere.
      */
-    public abstract void move(String square);
+    public void move(String square) {
+        file = square.charAt(0);
+        rank = Character.getNumericValue(square.charAt(1));
+        notation = square;
+    }
 
     /**
      * Abstract method to generate all the legal moves the piece can do.

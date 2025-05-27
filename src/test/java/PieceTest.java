@@ -13,16 +13,12 @@ class PieceTest {
     public static void init() {
         piece = new Piece("Pawn", "White", 'a', 2) {
             @Override
-            public void move(String square) {
-                // minimal implementation here to allow testing of concrete functions
-                System.out.println("Moved to " + square);
-            }
-
             public String[] generateMoves() {
                 // minimal implementation here to allow testing of concrete functions
                 return new String[8];
             }
 
+            @Override
             public boolean isLegalMove(String move) {
                 // minimal implementation here to allow testing of concrete functions
                 return false;
@@ -33,6 +29,19 @@ class PieceTest {
     @Test
     @DisplayName("Test getSquare()")
     void getSquareTest() {
+        piece = new Piece("Pawn", "White", 'a', 2) {
+            @Override
+            public String[] generateMoves() {
+                // minimal implementation here to allow testing of concrete functions
+                return new String[8];
+            }
+
+            @Override
+            public boolean isLegalMove(String move) {
+                // minimal implementation here to allow testing of concrete functions
+                return false;
+            }
+        };
         assertEquals("a2", piece.getSquare());
     }
 
@@ -58,5 +67,12 @@ class PieceTest {
     @DisplayName("Test mapIndexToRank")
     void mapIndexToRankTest() {
         assertEquals(1, piece.mapIndexToRank(0));
+    }
+
+    @Test
+    @DisplayName("Test move")
+    void moveTest() {
+        piece.move("b8");
+        assertEquals("b8", piece.getSquare());
     }
 }
