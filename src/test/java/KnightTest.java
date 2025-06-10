@@ -34,7 +34,6 @@ class KnightTest {
         String[] piece1MovesExpected = {"b3", "c2", null, null, null, null, null, null};
         String[] piece2MovesExpected = {"e7", "f6", "f4", "e3", "c3", "b4", "b6", "c7"};
         String[] piece1MovesActual = piece1.generateMoves();
-        System.out.println(Arrays.toString(piece1MovesActual));
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
         String[] piece2MovesActual = piece2.generateMoves();
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
