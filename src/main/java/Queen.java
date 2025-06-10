@@ -1,4 +1,4 @@
-public class Queen extends Piece {
+public class Queen extends Piece{
 
     /**
      * Constructs a queen with the specified name, color, rank, and file.

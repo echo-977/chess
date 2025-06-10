@@ -1,4 +1,4 @@
-public class Knight extends Piece {
+public class Knight extends Piece{
 
     /**
      * Constructs a knight with the specified name, color, rank, and file.
