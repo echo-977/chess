@@ -5,14 +5,13 @@ public class Rook extends Piece{
      * Constructs a rook with the specified name, color, rank, and file.
      * Ensures inputs for a piece are valid.
      *
-     * @param name   the type/name of the piece (e.g., "Pawn", "Knight")
      * @param colour the colour of the piece ("White" or "Black")
      * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
      * @param moved  boolean for if the rook has moved (used in castling logic)
      */
-    public Rook(String name, String colour, char file, int rank, boolean moved) {
-        super(name, colour, file, rank);
+    public Rook(String colour, char file, int rank, boolean moved) {
+        super("Rook", colour, file, rank);
         this.moved = moved;
     }
 

@@ -15,8 +15,8 @@ class RookTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Rook("Rook", "White", 'a', 1, false);
-        piece2 = new Rook("Rook", "Black", 'c', 5, false);
+        piece1 = new Rook("White", 'a', 1, false);
+        piece2 = new Rook("Black", 'c', 5, false);
     }
 
     @Test
@@ -44,10 +44,8 @@ class RookTest {
         String[] piece2MovesExpected = {"a5", "b5", "d5", "e5", "f5", "g5", "h5",
                                         "c1", "c2", "c3", "c4", "c6", "c7", "c8"};
         String[] piece1MovesActual = piece1.generateMoves();
-        assertEquals(piece1MovesExpected.length, piece1MovesActual.length);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
         String[] piece2MovesActual = piece2.generateMoves();
-        assertEquals(piece2MovesExpected.length, piece2MovesActual.length);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 }
