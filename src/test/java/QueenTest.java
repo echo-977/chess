@@ -42,7 +42,6 @@ class QueenTest {
                 "d1", "d2", "d3", "d4", "d6", "d7", "d8", "a2", "b3", "c4", "e6",
                 "f7", "g8", "a8", "b7", "c6", "e4", "f3", "g2", "h1"};
         String[] piece1MovesActual = piece1.generateMoves();
-        System.out.println(Arrays.toString(piece1MovesActual));
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
         String[] piece2MovesActual = piece2.generateMoves();
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);

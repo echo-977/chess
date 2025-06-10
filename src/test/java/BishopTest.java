@@ -34,7 +34,6 @@ class BishopTest {
         String[] piece1MovesExpected = {"b2", "c3", "d4", "e5", "f6", "g7", "h8", null, null, null, null, null, null};
         String[] piece2MovesExpected = {"a2", "b3", "c4", "e6", "f7", "g8", "a8", "b7", "c6", "e4", "f3", "g2", "h1"};
         String[] piece1MovesActual = piece1.generateMoves();
-        System.out.println(Arrays.toString(piece1MovesActual));
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
         String[] piece2MovesActual = piece2.generateMoves();
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
