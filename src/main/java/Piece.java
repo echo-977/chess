@@ -3,7 +3,7 @@
  * Contains common properties such as name, color, rank (row), and file (column).
  * Provides utility methods and requires concrete subclasses to implement movement logic.
  */
-public abstract class Piece {
+public abstract class Piece{
     private final String name;
     private final String colour;
     private char file;

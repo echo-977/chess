@@ -1,4 +1,4 @@
-public class Knight extends Piece {
+public class Knight extends Piece{
 
     /**
      * Constructs a knight with the specified name, color, rank, and file.
@@ -32,7 +32,6 @@ public class Knight extends Piece {
             checkFile = (char) (file + directions[i][0]);
             checkRank = rank + directions[i][1];
             move = String.valueOf(checkFile) + String.valueOf(checkRank);
-            System.out.println(move);
             if (isLegalMove(move)) {
                 moves[movesIndex] = move;
                 movesIndex++;
