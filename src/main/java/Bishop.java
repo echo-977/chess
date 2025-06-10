@@ -14,7 +14,7 @@ public class Bishop extends Piece{
 
     /**
      * Generates all the legal moves the bishop can do (without considering other pieces).
-     * @return an array of all the squares the rook can move to as strings.
+     * @return an array of all the squares the bishop can move to as strings.
      */
     @Override
     public String[] generateMoves() {
