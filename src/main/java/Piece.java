@@ -159,11 +159,15 @@ public abstract class Piece {
         if (file < 'a' || file > 'h') {
             return false;
         }
-        int rank = Integer.parseInt(move.substring(1, 2));
-        if (rank < 1 || rank > 8) {
+        try {
+            int rank = Integer.parseInt(move.substring(1, 2));
+            if (rank < 1 || rank > 8) {
+                return false;
+            }
+            return true;
+        } catch (NumberFormatException e) {
             return false;
         }
-        return true;
     }
 
     /**
