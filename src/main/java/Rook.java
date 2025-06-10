@@ -51,17 +51,11 @@ public class Rook extends Piece{
      */
     @Override
     public boolean isLegalMove(String move) {
-        if (move.equals(getSquare())) {
+        if (!super.isLegalMove(move)) {
             return false;
         }
         char file = move.charAt(0);
-        if (file < 'a' || file > 'h') {
-            return false;
-        }
         int rank = Integer.parseInt(move.substring(1, 2));
-        if (rank < 1 || rank > 8) {
-            return false;
-        }
         if (rank == getRank() && file == getFile()) {
             return false;
         } else if (rank == getRank()) {
