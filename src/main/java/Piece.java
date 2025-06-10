@@ -146,17 +146,30 @@ public abstract class Piece {
     }
 
     /**
+     * Method to check if a given move is legal.
+     * Piece subclasses will add to this.
+     * @param move the move to be validated.
+     * @return true if the move is legal, otherwise false.
+     */
+    public boolean isLegalMove(String move) {
+        if (move.equals(getSquare())) {
+            return false;
+        }
+        char file = move.charAt(0);
+        if (file < 'a' || file > 'h') {
+            return false;
+        }
+        int rank = Integer.parseInt(move.substring(1, 2));
+        if (rank < 1 || rank > 8) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Abstract method to generate all the legal moves the piece can do.
      * Concrete piece subclasses will implement this.
      * @return an array of all the legal moves in algebraic notation
      */
     public abstract String[] generateMoves();
-
-    /**
-     * Abstract method to check if a given move is legal.
-     * Concrete piece subclasses will implement this.
-     * @param move the move to be validated.
-     * @return true if the move is legal, otherwise false.
-     */
-    public abstract boolean isLegalMove(String move);
 }

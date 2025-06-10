@@ -2,7 +2,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class PieceTest {
@@ -17,12 +17,6 @@ class PieceTest {
                 // minimal implementation here to allow testing of concrete functions
                 return new String[8];
             }
-
-            @Override
-            public boolean isLegalMove(String move) {
-                // minimal implementation here to allow testing of concrete functions
-                return false;
-            }
         };
     }
 
@@ -34,12 +28,6 @@ class PieceTest {
             public String[] generateMoves() {
                 // minimal implementation here to allow testing of concrete functions
                 return new String[8];
-            }
-
-            @Override
-            public boolean isLegalMove(String move) {
-                // minimal implementation here to allow testing of concrete functions
-                return false;
             }
         };
         assertEquals("a2", piece.getSquare());
@@ -74,5 +62,17 @@ class PieceTest {
     void moveTest() {
         piece.move("b8");
         assertEquals("b8", piece.getSquare());
+    }
+
+    @Test
+    @DisplayName("Test  isLegalMove")
+    void isLegalMoveTest() {
+        assertFalse(piece.isLegalMove("c9"));
+        assertFalse(piece.isLegalMove("`6"));
+        assertFalse(piece.isLegalMove("i8"));
+        assertFalse(piece.isLegalMove("b0"));
+        assertFalse(piece.isLegalMove("b8"));
+        assertTrue(piece.isLegalMove("e7"));
+        assertTrue(piece.isLegalMove("f8"));
     }
 }
