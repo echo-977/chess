@@ -13,8 +13,8 @@ class KingTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new King("White", 'a', 1, false);
-        piece2 = new King("Black", 'd', 5, true);
+        piece1 = new King("White", 'a', 1, false, false);
+        piece2 = new King("Black", 'd', 5, true, true);
     }
 
     @Test
@@ -51,5 +51,19 @@ class KingTest {
         assertTrue(piece1.isCheck());
         piece2.setCheck(false);
         assertFalse(piece2.isCheck());
+    }
+
+    @Test
+    @DisplayName("Test getMoved")
+    void testGetMoved() {
+        assertFalse(piece1.getMoved());
+        assertTrue(piece2.getMoved());
+    }
+
+    @Test
+    @DisplayName("Test move")
+    void testMove() {
+        piece1.move("a2");
+        assertTrue(piece1.getMoved());
     }
 }

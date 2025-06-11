@@ -1,5 +1,6 @@
 public class King extends Piece{
     private boolean check;
+    private boolean moved;
 
     /**
      * Constructs a king with the specified name, color, rank, and file.
@@ -8,10 +9,12 @@ public class King extends Piece{
      * @param colour the colour of the piece ("White" or "Black")
      * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
+     * @param moved  whether the king has moved yet
      * @param check  whether the king is in check
      */
-    public King(String colour, char file, int rank, boolean check) {
+    public King(String colour, char file, int rank, boolean moved, boolean check) {
         super("King", colour, file, rank);
+        this.moved = moved;
         this.check = check;
     }
 
@@ -57,6 +60,26 @@ public class King extends Piece{
         char moveFile = move.charAt(0);
         int moveRank = Integer.parseInt(move.substring(1, 2));
         return Math.abs(moveRank - rank) <= 1 && Math.abs(moveFile - file) <= 1;
+    }
+
+    /**
+     * Overrides the move method in the piece class to update the moved flag.
+     * @param move the square to move the piece to.
+     */
+    @Override
+    public void move(String move) {
+        if (!moved) {
+            moved = true;
+        }
+        super.move(move);
+    }
+
+    /**
+     * Simple getter for the boolean moved
+     * @return the moved boolean
+     */
+    public boolean getMoved() {
+        return moved;
     }
 
     /**
