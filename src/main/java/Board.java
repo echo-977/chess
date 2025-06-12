@@ -107,6 +107,25 @@ public class Board {
         }
     }
 
+    /**
+     * Search for if a piece exists on a given square
+     *
+     * @param square the target square
+     * @return the piece if there is a piece on the square, otherwise null
+     */
+    public Piece pieceSearch(String square) {
+        for (Piece piece: whitePieces) {
+            if (piece.getSquare().equals(square)) {
+                return piece;
+            }
+        }
+        for (Piece piece: blackPieces) {
+            if (piece.getSquare().equals(square)) {
+                return piece;
+            }
+        }
+        return null;
+    }
 
     /**
     * Give the square that an integer from 0 to 63 relates to

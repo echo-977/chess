@@ -344,4 +344,14 @@ class BoardTest {
         assertEquals(0, board.getHalfMoveClock());
         assertEquals(9, board.getMoveCount());
     }
+
+    @Test
+    @DisplayName("Test pieceSearch")
+    void testPieceSearch() {
+        Piece piece = board.pieceSearch("c1");
+        assertEquals("c1", piece.getSquare());
+        assertEquals("Bishop", piece.getName());
+        piece = board.pieceSearch("d4");
+        assertNull(piece);
+    }
 }
