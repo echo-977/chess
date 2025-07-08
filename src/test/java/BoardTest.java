@@ -65,14 +65,14 @@ class BoardTest {
         aRook = (Rook) whitePieces[8];
         assertEquals("a1", aRook.getSquare());
         assertFalse(aRook.getMoved());
-        assertEquals("b1",whitePieces[9].getSquare());
-        assertEquals("c1",whitePieces[10].getSquare());
-        assertEquals("d1",whitePieces[11].getSquare());
+        assertEquals("b1", whitePieces[9].getSquare());
+        assertEquals("c1", whitePieces[10].getSquare());
+        assertEquals("d1", whitePieces[11].getSquare());
         king = (King) whitePieces[12];
         assertEquals("e1", king.getSquare());
         assertFalse(king.getMoved());
-        assertEquals("f1",whitePieces[13].getSquare());
-        assertEquals("g1",whitePieces[14].getSquare());
+        assertEquals("f1", whitePieces[13].getSquare());
+        assertEquals("g1", whitePieces[14].getSquare());
         hRook = (Rook) whitePieces[15];
         assertEquals("h1", hRook.getSquare());
         assertFalse(hRook.getMoved());
@@ -324,7 +324,7 @@ class BoardTest {
         assertFalse(pawn.getMoved());
         assertFalse(pawn.getEnPassantable());
         assertEquals("Pawn", pawn.getName());
-        rook = (Rook)  whitePieces[11];
+        rook = (Rook) whitePieces[11];
         assertEquals("a1", rook.getSquare());
         assertTrue(rook.getMoved());
         assertEquals("Rook", rook.getName());
@@ -332,7 +332,7 @@ class BoardTest {
         assertEquals("Bishop", whitePieces[12].getName());
         assertEquals("d1", whitePieces[13].getSquare());
         assertEquals("Queen", whitePieces[13].getName());
-        rook = (Rook)  whitePieces[14];
+        rook = (Rook) whitePieces[14];
         assertEquals("f1", rook.getSquare());
         assertTrue(rook.getMoved());
         assertEquals("Rook", rook.getName());
@@ -353,5 +353,35 @@ class BoardTest {
         assertEquals("Bishop", piece.getName());
         piece = board.pieceSearch("d4");
         assertNull(piece);
+    }
+
+    @Test
+    @DisplayName("Test getFEN (starting position)")
+    void testGetFEN() {
+        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", board.getFEN());
+    }
+
+    @Test
+    @DisplayName("Test getFEN (test position 1)")
+    void testGetFENWithPos1() {
+        String fen = "r1bq1rk1/ppp2ppp/2n2n2/3pp3/1b1P4/2P1PN2/PP1NBPPP/R1BQ1RK1 b - - 0 9";
+        board = new Board(fen);
+        assertEquals(fen, board.getFEN());
+    }
+
+    @Test
+    @DisplayName("Test getFEN (test position 2)")
+    void testGetFENWithPos2() {
+        String fen = "r3kb1r/p2p3p/bpn5/2pnPPpq/3P1B2/2N2N2/PPPQP1BP/1R3RK1 w k g6 0 13";
+        board = new Board(fen);
+        assertEquals(fen, board.getFEN());
+    }
+
+    @Test
+    @DisplayName("Test getFEN (test position 3)")
+    void testGetFenWithPos3() {
+        String fen = "rnbqkbnr/pp1ppppp/2p5/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq d3 0 3";
+        board = new Board(fen);
+        assertEquals(fen, board.getFEN());
     }
 }

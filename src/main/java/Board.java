@@ -115,16 +115,129 @@ public class Board {
      */
     public Piece pieceSearch(String square) {
         for (Piece piece: whitePieces) {
-            if (piece.getSquare().equals(square)) {
+            if (piece != null && piece.getSquare().equals(square)) {
                 return piece;
             }
         }
         for (Piece piece: blackPieces) {
-            if (piece.getSquare().equals(square)) {
+            if (piece != null && piece.getSquare().equals(square)) {
                 return piece;
             }
         }
         return null;
+    }
+
+    /**
+     * Gets the FEN string for the current position
+     *
+     * @return the current positions FEN string
+     */
+    public String getFEN() {
+        char current = '0';
+        String square;
+        Piece piece;
+        StringBuilder fen = new StringBuilder();
+        for (int i = 0; i < 64; i++) {
+            if (((i) % 8 == 0) && i != 0) {
+                if (Character.isDigit(current) && current > '0') {
+                    fen.append(current);
+                    current = '0';
+                }
+                fen.append('/');
+            }
+            square = mapIntToSquare(i);
+            piece = pieceSearch(square);
+            if (piece == null) {
+                if (Character.isDigit(current)) {
+                    current++;
+                } else {
+                    current = 1;
+                }
+            } else {
+                if (Character.isDigit(current) && current > '0') {
+                    fen.append(current);
+                    current = '0';
+                }
+                if (piece.getColour().equals("White")) {
+                    if (piece.getName().equals("Knight")) {
+                        fen.append("N");
+                    } else {
+                        fen.append(Character.toUpperCase(piece.getName().charAt(0)));
+                    }
+                } else {
+                    if (piece.getName().equals("Knight")) {
+                        fen.append("n");
+                    } else {
+                        fen.append(Character.toLowerCase(piece.getName().charAt(0)));
+                    }
+                }
+            }
+            if (i == 63 && Character.isDigit(current) && current > '0') {
+                fen.append(current);
+            }
+        }
+        if (getTurn()) {
+            fen.append(" w ");
+        } else {
+            fen.append(" b ");
+        }
+        boolean anyCastling = false;
+        if (pieceSearch("e1") != null) {
+            if (pieceSearch("e1").getName().equals("King") && (!((King) pieceSearch("e1")).getMoved())) ;
+            {  //potential for castling
+                if (pieceSearch("h1") != null) {
+                    if (pieceSearch("h1").getName().equals("Rook") && (!((Rook) pieceSearch("h1")).getMoved())) {
+                        fen.append("K");
+                        anyCastling = true;
+                    }
+                }
+                if (pieceSearch("a1") != null) {
+                    if (pieceSearch("a1").getName().equals("Rook") && (!((Rook) pieceSearch("a1")).getMoved())) {
+                        fen.append("Q");
+                        anyCastling = true;
+                    }
+                }
+            }
+        }
+        if (pieceSearch("e8") != null) {
+            if (pieceSearch("e8").getName().equals("King") && (!((King) pieceSearch("e8")).getMoved())) ;
+            {  //potential for castling
+                if (pieceSearch("h8") != null) {
+                    if (pieceSearch("h8").getName().equals("Rook") && (!((Rook) pieceSearch("h8")).getMoved())) {
+                        fen.append("k");
+                        anyCastling = true;
+                    }
+                }
+                if (pieceSearch("a8") != null) {
+                    if (pieceSearch("a8").getName().equals("Rook") && (!((Rook) pieceSearch("a8")).getMoved())) {
+                        fen.append("q");
+                        anyCastling = true;
+                    }
+                }
+            }
+        }
+        if (!anyCastling) {
+            fen.append('-');
+        }
+        String enPassantTarget = "-";
+        for (int i = 0; i < 16; i++) {
+            if (whitePieces[i].getName().equals("Pawn")) {
+                if (((Pawn) whitePieces[i]).getEnPassantable()) {
+                    enPassantTarget = String.valueOf(whitePieces[i].getFile()) + String.valueOf(whitePieces[i].getRank() - 1);
+                    break;
+                }
+            }
+            if (blackPieces[i].getName().equals("Pawn")) {
+                if (((Pawn) blackPieces[i]).getEnPassantable()) {
+                    enPassantTarget = String.valueOf(blackPieces[i].getFile()) + String.valueOf(blackPieces[i].getRank() + 1);
+                    break;
+                }
+            }
+        }
+        fen.append(" ").append(enPassantTarget).append(" ");
+        fen.append(getHalfMoveClock()).append(" ");
+        fen.append(getMoveCount());
+        return fen.toString();
     }
 
     /**
