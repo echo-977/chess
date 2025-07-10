@@ -19,15 +19,16 @@ public class Pawn extends Piece{
     }
 
     /**
-     * Generates all the legal moves the queen can do (without considering other pieces).
-     * @return an array of all the squares the queen can move to as strings.
+     * Generates all the legal moves the pawn can do.
+     * @param board the board that we are searching for moves on.
+     * @return an array of all the squares the pawn can move to as strings.
      */
     @Override
     public String[] generateMoves(Board board) {
         char file = getFile();
         int checkRank = getRank();
         String[] moves = new String[4]; //number of pawn moves in any position
-        String move;
+        String candidateMove;
         int moveDirection;
         int movesIndex = 0;
         if (getColour().equals("White")) {
@@ -37,13 +38,33 @@ public class Pawn extends Piece{
         }
         for (int i = 0; i < 2; i++) {
             checkRank = checkRank + moveDirection;
-            move = String.valueOf(file) + String.valueOf(checkRank);
-            if (isLegalMove(move)) {
-                moves[movesIndex] = move;
+            candidateMove = String.valueOf(file) + String.valueOf(checkRank);
+            if (isLegalMove(candidateMove) && board.pieceSearch(candidateMove) == null) {
+                moves[movesIndex] = candidateMove;
                 movesIndex++;
             } else {
-                break;
+                break; //if single push is blocked then double push is blocked
             }
+        }
+        Piece piece = board.pieceSearch(String.valueOf((char) (getFile() - 1))+ String.valueOf(getRank() + moveDirection));
+        if (piece != null && !piece.getColour().equals(getColour())) {
+            moves[movesIndex] = String.valueOf((char) (getFile() - 1)) + String.valueOf(getRank() + moveDirection);
+            movesIndex++;
+        }
+        piece = board.pieceSearch(String.valueOf((char) (getFile() + 1)) + String.valueOf(getRank() + moveDirection));
+        if (piece != null && !piece.getColour().equals(getColour())) {
+            moves[movesIndex] = String.valueOf((char) (getFile() + 1)) + String.valueOf(getRank() + moveDirection);
+            movesIndex++;
+        }
+        piece = board.pieceSearch(String.valueOf((char) (getFile() - 1)) + String.valueOf(getRank()));
+        if (piece != null && !piece.getColour().equals(getColour()) && piece.getName().equals("Pawn") && ((Pawn) piece).getEnPassantable()) {
+            moves[movesIndex] = String.valueOf((char) (getFile() - 1)) + String.valueOf(getRank() + moveDirection);
+            movesIndex++;
+        }
+        piece = board.pieceSearch(String.valueOf((char) (getFile() + 1)) + String.valueOf(getRank()));
+        if (piece != null && !piece.getColour().equals(getColour()) && piece.getName().equals("Pawn") && ((Pawn) piece).getEnPassantable()) {
+            moves[movesIndex] = String.valueOf((char) (getFile() + 1)) + String.valueOf(getRank() + moveDirection);
+            movesIndex++;
         }
         return moves;
     }

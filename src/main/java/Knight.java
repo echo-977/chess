@@ -14,6 +14,7 @@ public class Knight extends Piece{
 
     /**
      * Generates all the legal moves the knight can do (without considering other pieces).
+     * @param board the board that we are searching for moves on.
      * @return an array of all the squares the knight can move to as strings.
      */
     @Override
