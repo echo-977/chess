@@ -23,7 +23,7 @@ public class King extends Piece{
      * @return an array of all the squares the queen can move to as strings.
      */
     @Override
-    public String[] generateMoves() {
+    public String[] generateMoves(Board board) {
         char file = getFile();
         int rank = getRank();
         char checkFile;

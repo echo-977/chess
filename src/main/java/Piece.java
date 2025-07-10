@@ -175,5 +175,5 @@ public abstract class Piece{
      * Concrete piece subclasses will implement this.
      * @return an array of all the legal moves in algebraic notation
      */
-    public abstract String[] generateMoves();
+    public abstract String[] generateMoves(Board board);
 }

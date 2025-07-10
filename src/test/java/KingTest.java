@@ -29,11 +29,12 @@ class KingTest {
     @Test
     @DisplayName("Test generateMoves")
     void testGenerateMoves() {
+        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         String[] piece1MovesExpected = {"a2", "b2", "b1", null, null, null, null, null};
         String[] piece2MovesExpected = {"d6", "e6", "e5", "e4", "d4", "c4", "c5", "c6"};
-        String[] piece1MovesActual = piece1.generateMoves();
+        String[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        String[] piece2MovesActual = piece2.generateMoves();
+        String[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 

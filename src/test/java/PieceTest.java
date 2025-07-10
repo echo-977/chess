@@ -13,7 +13,7 @@ class PieceTest {
     public static void init() {
         piece = new Piece("Pawn", "White", 'a', 2) {
             @Override
-            public String[] generateMoves() {
+            public String[] generateMoves(Board board) {
                 // minimal implementation here to allow testing of concrete functions
                 return new String[8];
             }
@@ -25,7 +25,7 @@ class PieceTest {
     void getSquareTest() {
         piece = new Piece("Pawn", "White", 'a', 2) {
             @Override
-            public String[] generateMoves() {
+            public String[] generateMoves(Board board) {
                 // minimal implementation here to allow testing of concrete functions
                 return new String[8];
             }

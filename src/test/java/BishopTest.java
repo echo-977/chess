@@ -31,11 +31,12 @@ class BishopTest {
     @Test
     @DisplayName("Test generateMoves")
     void testGenerateMoves() {
+        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         String[] piece1MovesExpected = {"b2", "c3", "d4", "e5", "f6", "g7", "h8", null, null, null, null, null, null};
         String[] piece2MovesExpected = {"a2", "b3", "c4", "e6", "f7", "g8", "a8", "b7", "c6", "e4", "f3", "g2", "h1"};
-        String[] piece1MovesActual = piece1.generateMoves();
+        String[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        String[] piece2MovesActual = piece2.generateMoves();
+        String[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 }

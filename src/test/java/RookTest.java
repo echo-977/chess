@@ -39,13 +39,14 @@ class RookTest {
     @Test
     @DisplayName("Test generateMoves")
     void testGenerateMoves() {
+        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         String[] piece1MovesExpected = {"b1", "c1", "d1", "e1", "f1", "g1", "h1",
                                         "a2", "a3", "a4", "a5", "a6", "a7", "a8"};
         String[] piece2MovesExpected = {"a5", "b5", "d5", "e5", "f5", "g5", "h5",
                                         "c1", "c2", "c3", "c4", "c6", "c7", "c8"};
-        String[] piece1MovesActual = piece1.generateMoves();
+        String[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        String[] piece2MovesActual = piece2.generateMoves();
+        String[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 }

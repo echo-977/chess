@@ -17,7 +17,7 @@ public class Bishop extends Piece{
      * @return an array of all the squares the bishop can move to as strings.
      */
     @Override
-    public String[] generateMoves() {
+    public String[] generateMoves(Board board) {
         char file = getFile();
         int rank = getRank();
         String[] moves = new String[13]; //max number of bishop moves in any position

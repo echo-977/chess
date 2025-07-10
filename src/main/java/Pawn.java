@@ -23,28 +23,31 @@ public class Pawn extends Piece{
      * @return an array of all the squares the queen can move to as strings.
      */
     @Override
-    public String[] generateMoves() {
+    public String[] generateMoves(Board board) {
         char file = getFile();
         int checkRank = getRank();
-        String[] moves = new String[2]; //number of pawn moves in any position
+        String[] moves = new String[4]; //number of pawn moves in any position
         String move;
-        int direction;
+        int moveDirection;
+        int movesIndex = 0;
         if (getColour().equals("White")) {
-            direction = 1;
+            moveDirection = 1;
         } else {
-            direction = -1;
+            moveDirection = -1;
         }
         for (int i = 0; i < 2; i++) {
-            checkRank = checkRank + direction;
+            checkRank = checkRank + moveDirection;
             move = String.valueOf(file) + String.valueOf(checkRank);
             if (isLegalMove(move)) {
-                moves[i] = move;
+                moves[movesIndex] = move;
+                movesIndex++;
             } else {
                 break;
             }
         }
         return moves;
     }
+
     /**
      * Check if a given move is legal (without considering other pieces).
      * @param move the move to be validated.

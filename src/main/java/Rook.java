@@ -20,7 +20,7 @@ public class Rook extends Piece{
      * @return an array of all the squares the rook can move to as strings.
      */
     @Override
-    public String[] generateMoves() {
+    public String[] generateMoves(Board board) {
         String file = String.valueOf(getFile());
         String rank = String.valueOf(getRank());
         String[] moves = new String[14]; //max number of rook moves in any position

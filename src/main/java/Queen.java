@@ -17,12 +17,12 @@ public class Queen extends Piece{
      * @return an array of all the squares the queen can move to as strings.
      */
     @Override
-    public String[] generateMoves() {
+    public String[] generateMoves(Board board) {
         Rook rook = new Rook(getColour(), getFile(), getRank(), true);
         Bishop bishop = new Bishop(getColour(), getFile(), getRank());
         String[] moves = new String[27]; //max number of bishop moves in any position
-        String[] rookMoves = rook.generateMoves();
-        String[] bishopMoves = bishop.generateMoves();
+        String[] rookMoves = rook.generateMoves(board);
+        String[] bishopMoves = bishop.generateMoves(board);
         System.arraycopy(rookMoves, 0, moves, 0, rookMoves.length);
         System.arraycopy(bishopMoves, 0, moves, rookMoves.length, bishopMoves.length);
         return moves;

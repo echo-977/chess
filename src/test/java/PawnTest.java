@@ -31,11 +31,12 @@ class PawnTest {
     @Test
     @DisplayName("Test generateMoves")
     void testGenerateMoves() {
-        String[] piece1MovesExpected = {"a2", "a3"};
-        String[] piece2MovesExpected = {"d4", "d3"};
-        String[] piece1MovesActual = piece1.generateMoves();
+        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        String[] piece1MovesExpected = {"a2", "a3", null, null};
+        String[] piece2MovesExpected = {"d4", "d3", null, null};
+        String[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        String[] piece2MovesActual = piece2.generateMoves();
+        String[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 
