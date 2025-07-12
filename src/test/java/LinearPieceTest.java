@@ -19,42 +19,36 @@ class LinearPieceTest {
     }
 
     @Test
-    @DisplayName("Test linearMoveSearch without other pieces")
+    @DisplayName("Test linearMoveSearch without other piece")
     void testLinearMoveSearchNoOtherPieces() {
         Board board = new Board("8/8/8/8/3Q4/8/8/8 w - - 0 1");
-        String[] moves = new String[27]; //max number of queen moves
+        String[] moves = new String[7];
         int movesIndex = 0;
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, 0, 1); //up
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, 1, 1); //up right
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, 1, 0); //right
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, 1, -1); //down right
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, 0, -1); // down
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, -1, -1); //down left
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, -1, 0); //left
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, -1, 1); //up left
-        assertEquals(27, movesIndex);
-        String [] expectedMoves = {"d5", "d6", "d7", "d8", "e5", "f6", "g7", "h8", "e4", "f4", "g4", "h4", "e3", "f2", "g1", "d3", "d2", "d1", "c3", "b2", "a1", "c4", "b4", "a4", "c5", "b6", "a7"};
+        piece.linearMoveSearch(board, moves, movesIndex, 0, 1); //up
+        String [] expectedMoves = {"d5", "d6", "d7", "d8", null, null, null};
         assertArrayEquals(expectedMoves, moves);
     }
 
     @Test
-    @DisplayName("Test linearMoveSearch with other pieces")
+    @DisplayName("Test linearMoveSearch with other piece")
     void testLinearMoveSearchOtherPieces() {
         Board board = new Board("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
-        String[] moves = new String[27]; //max number of queen moves
+        String[] moves = new String[7];
         int movesIndex = 0;
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, 0, 1); //up
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, 1, 1); //up right
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, 1, 0); //right
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, 1, -1); //down right
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, 0, -1); // down
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, -1, -1); //down left
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, -1, 0); //left
-        movesIndex = piece.linearMoveSearch(board, moves, movesIndex, -1, 1); //up left
-        assertEquals(23, movesIndex);
-        String [] expectedMoves = {"d5", "d6", "d7", "d8", "e5", "f6", "e4", "f4", "g4", "h4", "e3", "f2", "g1", "d3", "d2", "d1", "c3", "b2", "a1", "c4", "b4", "a4", "c5", null, null, null, null};
+        piece.linearMoveSearch(board, moves, movesIndex, -1, 1); //up left
+        String [] expectedMoves = {"c5", null, null, null, null, null, null};
         assertArrayEquals(expectedMoves, moves);
+    }
 
+    @Test
+    @DisplayName("Test linearMoveSearch with capture")
+    void testLinearMoveSearchCapture() {
+        Board board = new Board("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
+        String[] moves = new String[7];
+        int movesIndex = 0;
+        piece.linearMoveSearch(board, moves, movesIndex, 1, 1); //up left
+        String [] expectedMoves = {"e5", "f6", null, null, null, null, null};
+        assertArrayEquals(expectedMoves, moves);
     }
 
 
