@@ -13,7 +13,7 @@ public class Queen extends LinearPiece{
     }
 
     /**
-     * Generates all the legal moves the queen can do (without considering other pieces).
+     * Generates all the legal moves the queen can do.
      * @param board the board that we are searching for moves on.
      * @return an array of all the squares the queen can move to as strings.
      */

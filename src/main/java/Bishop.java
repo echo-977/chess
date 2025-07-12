@@ -29,7 +29,7 @@ public class Bishop extends LinearPiece{
     }
 
     /**
-     * Check if a given move is legal (without considering other pieces).
+     * Check if a given move is legal.
      * @param move the move to be validated.
      * @return boolean value denoting if the move is theoretically legal.
      */
