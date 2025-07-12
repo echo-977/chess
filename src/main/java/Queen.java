@@ -1,4 +1,4 @@
-public class Queen extends Piece{
+public class Queen extends LinearPiece{
 
     /**
      * Constructs a queen with the specified name, color, rank, and file.
@@ -21,7 +21,7 @@ public class Queen extends Piece{
     public String[] generateMoves(Board board) {
         Rook rook = new Rook(getColour(), getFile(), getRank(), true);
         Bishop bishop = new Bishop(getColour(), getFile(), getRank());
-        String[] moves = new String[27]; //max number of bishop moves in any position
+        String[] moves = new String[27]; //max number of queen moves in any position
         String[] rookMoves = rook.generateMoves(board);
         String[] bishopMoves = bishop.generateMoves(board);
         System.arraycopy(rookMoves, 0, moves, 0, rookMoves.length);
@@ -39,9 +39,11 @@ public class Queen extends Piece{
         if (!super.isLegalMove(move)) {
             return false;
         }
+        char moveFile = move.charAt(0);
+        int moveRank = Integer.parseInt(move.substring(1, 2));
+        char file = getFile();
+        int rank = getRank();
+        return ((moveRank == rank ^ moveFile == file) || (Math.abs(rank - moveRank) == Math.abs(file - moveFile)));
         //since a queen behaves either like a rook or bishop
-        Rook rook = new Rook(getColour(), getFile(), getRank(), true);
-        Bishop bishop = new Bishop(getColour(), getFile(), getRank());
-        return rook.isLegalMove(move) ^ bishop.isLegalMove(move);
     }
 }
