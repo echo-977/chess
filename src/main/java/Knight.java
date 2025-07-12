@@ -13,7 +13,7 @@ public class Knight extends Piece{
     }
 
     /**
-     * Generates all the legal moves the knight can do (without considering other pieces).
+     * Generates all the legal moves the knight can do.
      * @param board the board that we are searching for moves on.
      * @return an array of all the squares the knight can move to as strings.
      */
@@ -28,14 +28,18 @@ public class Knight extends Piece{
         int[][] directions = {
                 {1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}
         };
-        String move;
+        String candidateMove;
+        Piece piece;
         for (int i = 0; i < 8; i++) {
             checkFile = (char) (file + directions[i][0]);
             checkRank = rank + directions[i][1];
-            move = String.valueOf(checkFile) + String.valueOf(checkRank);
-            if (isLegalMove(move)) {
-                moves[movesIndex] = move;
-                movesIndex++;
+            candidateMove = checkFile + String.valueOf(checkRank);
+            if (isLegalMove(candidateMove)) {
+                piece = board.pieceSearch(candidateMove);
+                if (piece == null || !piece.getColour().equals(getColour())) {
+                    moves[movesIndex] = candidateMove;
+                    movesIndex++;
+                }
             }
         }
         return moves;
