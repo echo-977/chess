@@ -27,13 +27,29 @@ class KingTest {
     }
 
     @Test
-    @DisplayName("Test generateMoves")
+    @DisplayName("Test generateMoves without other pieces")
     void testGenerateMoves() {
-        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        String[] piece1MovesExpected = {"a2", "b2", "b1", null, null, null, null, null};
-        String[] piece2MovesExpected = {"d6", "e6", "e5", "e4", "d4", "c4", "c5", "c6"};
+        Board board = new Board("8/8/5k2/8/2K5/8/8/8 w - - 0 1");
+        piece1 = (King) board.getWhitePieces()[0];
+        piece2 = (King) board.getBlackPieces()[0];
+        String[] piece1MovesExpected = {"c5", "d5", "d4", "d3", "c3", "b3", "b4", "b5"};
         String[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+        String[] piece2MovesExpected = {"f7", "g7", "g6", "g5", "f5", "e5", "e6", "e7"};
+        String[] piece2MovesActual = piece2.generateMoves(board);
+        assertArrayEquals(piece2MovesExpected, piece2MovesActual);
+    }
+
+    @Test
+    @DisplayName("Test generateMoves with other pieces")
+    void testGenerateMovesWithOtherPieces() {
+        Board board = new Board("8/6p1/4PkR1/3r4/2K2p2/2P5/8/8 b - - 0 1");
+        piece1 = (King) board.getWhitePieces()[2];
+        piece2 = (King) board.getBlackPieces()[1];
+        String[] piece1MovesExpected = {"c5", "d5", "d4", "d3", "b3", "b4", "b5", null};
+        String[] piece1MovesActual = piece1.generateMoves(board);
+        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+        String[] piece2MovesExpected = {"f7", "g6", "g5", "f5", "e5", "e6", "e7", null};
         String[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }

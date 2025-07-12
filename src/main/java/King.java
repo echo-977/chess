@@ -19,9 +19,9 @@ public class King extends Piece{
     }
 
     /**
-     * Generates all the legal moves the queen can do (without considering other pieces).
+     * Generates all the (pseudo)legal moves the king can do.
      * @param board the board that we are searching for moves on.
-     * @return an array of all the squares the queen can move to as strings.
+     * @return an array of all the squares the king can move to as strings.
      */
     @Override
     public String[] generateMoves(Board board) {
@@ -34,14 +34,18 @@ public class King extends Piece{
         int[][] directions = {
                 {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1},  {-1, -1}, {-1, 0}, {-1, 1}
         };
-        String move;
+        String candidateMove;
+        Piece piece;
         for (int i = 0; i < 8; i++) {
             checkFile = (char) (file + directions[i][0]);
             checkRank = rank + directions[i][1];
-            move = String.valueOf(checkFile) + String.valueOf(checkRank);
-            if (isLegalMove(move)) {
-                moves[movesIndex] = move;
-                movesIndex++;
+            candidateMove = checkFile + String.valueOf(checkRank);
+            if (isLegalMove(candidateMove)) {
+                piece = board.pieceSearch(candidateMove);
+                if (piece == null || !piece.getColour().equals(getColour())) {
+                    moves[movesIndex] = candidateMove;
+                    movesIndex++;
+                }
             }
         }
         return moves;
