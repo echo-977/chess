@@ -1,4 +1,4 @@
-public class Rook extends Piece{
+public class Rook extends LinearPiece{
     private boolean moved;
 
     /**
@@ -17,29 +17,17 @@ public class Rook extends Piece{
 
     /**
      * Generates all the legal moves the rook can do (without considering other pieces).
+     * @param board the board that we are searching for moves on.
      * @return an array of all the squares the rook can move to as strings.
      */
     @Override
     public String[] generateMoves(Board board) {
-        String file = String.valueOf(getFile());
-        String rank = String.valueOf(getRank());
         String[] moves = new String[14]; //max number of rook moves in any position
         int movesIndex = 0;
-        String move;
-        for (char pFile = 'a'; pFile <= 'h'; pFile++) {
-            move = String.valueOf(pFile) + rank;
-            if (isLegalMove(move)) {
-                moves[movesIndex] = move;
-                movesIndex++;
-            }
-        }
-        for (int pRank = 1; pRank <= 8; pRank++) {
-            move = file + String.valueOf(pRank);
-            if (isLegalMove(move)) {
-                moves[movesIndex] = move;
-                movesIndex++;
-            }
-        }
+        movesIndex = linearMoveSearch(board, moves, movesIndex, -1, 0); //left
+        movesIndex = linearMoveSearch(board, moves, movesIndex, 1, 0); //right
+        movesIndex = linearMoveSearch(board, moves, movesIndex, 0, 1); //up
+        linearMoveSearch(board, moves, movesIndex, 0, -1); // down
         return moves;
     }
 
