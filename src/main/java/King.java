@@ -1,4 +1,4 @@
-public class King extends Piece{
+public class King extends DirectionalPiece{
     private boolean check;
     private boolean moved;
 
@@ -25,29 +25,11 @@ public class King extends Piece{
      */
     @Override
     public String[] generateMoves(Board board) {
-        char file = getFile();
-        int rank = getRank();
-        char checkFile;
-        int checkRank;
         String[] moves = new String[8]; //number of king moves in any position
-        int movesIndex = 0;
         int[][] directions = {
                 {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1},  {-1, -1}, {-1, 0}, {-1, 1}
         };
-        String candidateMove;
-        Piece piece;
-        for (int i = 0; i < 8; i++) {
-            checkFile = (char) (file + directions[i][0]);
-            checkRank = rank + directions[i][1];
-            candidateMove = checkFile + String.valueOf(checkRank);
-            if (isLegalMove(candidateMove)) {
-                piece = board.pieceSearch(candidateMove);
-                if (piece == null || !piece.getColour().equals(getColour())) {
-                    moves[movesIndex] = candidateMove;
-                    movesIndex++;
-                }
-            }
-        }
+        directionalMoveSearch(board, moves, directions);
         return moves;
     }
     /**
