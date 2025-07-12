@@ -1,4 +1,4 @@
-public class Bishop extends Piece{
+public class Bishop extends LinearPiece{
 
     /**
      * Constructs a bishop with the specified name, color, rank, and file.
@@ -19,63 +19,12 @@ public class Bishop extends Piece{
      */
     @Override
     public String[] generateMoves(Board board) {
-        char file = getFile();
-        int rank = getRank();
         String[] moves = new String[13]; //max number of bishop moves in any position
         int movesIndex = 0;
-        String move;
-        //bottom left diagonal
-        int numMoves = Math.abs(Math.min(Math.abs(rank - 1), Math.abs(file - 'a')));
-        char checkFile = (char) (file - numMoves);
-        int checkRank = rank - numMoves;
-        for (int i = 0; i < numMoves; i++) {
-            move = String.valueOf(checkFile) + String.valueOf(checkRank);
-            if (isLegalMove(move)) {
-                moves[movesIndex] = move;
-                movesIndex++;
-            }
-            checkFile = (char) (checkFile + 1);
-            checkRank = checkRank + 1;
-        }
-        //top right diagonal
-        numMoves = Math.abs(Math.min(Math.abs(rank - 8), Math.abs(file - 'h')));
-        checkFile = (char) (file + 1);
-        checkRank = rank + 1;
-        for (int i = 0; i < numMoves; i++) {
-            move = String.valueOf(checkFile) + String.valueOf(checkRank);
-            if (isLegalMove(move)) {
-                moves[movesIndex] = move;
-                movesIndex++;
-            }
-            checkFile = (char) (checkFile + 1);
-            checkRank = checkRank + 1;
-        }
-        //top left diagonal
-        numMoves = Math.abs(Math.min(Math.abs(rank - 8), file - 'a'));
-        checkFile = (char) (file - numMoves);
-        checkRank = rank + numMoves;
-        for (int i = 0; i < numMoves; i++) {
-            move = String.valueOf(checkFile) + String.valueOf(checkRank);
-            if (isLegalMove(move)) {
-                moves[movesIndex] = move;
-                movesIndex++;
-            }
-            checkFile = (char) (checkFile + 1);
-            checkRank = checkRank - 1;
-        }
-        //bottom right diagonal
-        numMoves = Math.abs(Math.min(rank - 1, Math.abs(file - 'h')));
-        checkFile = (char) (file + 1);
-        checkRank = rank - 1;
-        for (int i = 0; i < numMoves; i++) {
-            move = String.valueOf(checkFile) + String.valueOf(checkRank);
-            if (isLegalMove(move)) {
-                moves[movesIndex] = move;
-                movesIndex++;
-            }
-            checkFile = (char) (checkFile + 1);
-            checkRank = checkRank - 1;
-        }
+        movesIndex = linearMoveSearch(board, moves, movesIndex, -1, 1); //up left
+        movesIndex = linearMoveSearch(board, moves, movesIndex, 1, 1); //up right
+        movesIndex = linearMoveSearch(board, moves, movesIndex, 1, -1); //down right
+        linearMoveSearch(board, moves, movesIndex, -1, -1); // down left
         return moves;
     }
 
