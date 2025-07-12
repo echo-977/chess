@@ -19,13 +19,16 @@ public class Queen extends LinearPiece{
      */
     @Override
     public String[] generateMoves(Board board) {
-        Rook rook = new Rook(getColour(), getFile(), getRank(), true);
-        Bishop bishop = new Bishop(getColour(), getFile(), getRank());
-        String[] moves = new String[27]; //max number of queen moves in any position
-        String[] rookMoves = rook.generateMoves(board);
-        String[] bishopMoves = bishop.generateMoves(board);
-        System.arraycopy(rookMoves, 0, moves, 0, rookMoves.length);
-        System.arraycopy(bishopMoves, 0, moves, rookMoves.length, bishopMoves.length);
+        String[] moves = new String[27]; //max number of queen moves
+        int movesIndex = 0;
+        movesIndex = linearMoveSearch(board, moves, movesIndex, 0, 1); //up
+        movesIndex = linearMoveSearch(board, moves, movesIndex, 1, 1); //up right
+        movesIndex = linearMoveSearch(board, moves, movesIndex, 1, 0); //right
+        movesIndex = linearMoveSearch(board, moves, movesIndex, 1, -1); //down right
+        movesIndex = linearMoveSearch(board, moves, movesIndex, 0, -1); // down
+        movesIndex = linearMoveSearch(board, moves, movesIndex, -1, -1); //down left
+        movesIndex = linearMoveSearch(board, moves, movesIndex, -1, 0); //left
+        linearMoveSearch(board, moves, movesIndex, -1, 1); //up left
         return moves;
     }
 

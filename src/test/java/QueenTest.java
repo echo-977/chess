@@ -2,10 +2,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -33,17 +30,33 @@ class QueenTest {
     }
 
     @Test
-    @DisplayName("Test generateMoves")
+    @DisplayName("Test generateMoves without pieces")
     void testGenerateMoves() {
-        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        String[] piece1MovesExpected = {"b1", "c1", "d1", "e1", "f1", "g1", "h1",
-                "a2", "a3", "a4", "a5", "a6", "a7", "a8", "b2", "c3", "d4", "e5",
-                "f6", "g7", "h8", null, null, null, null, null, null};
-        String[] piece2MovesExpected = {"a5", "b5", "c5", "e5", "f5", "g5", "h5",
-                "d1", "d2", "d3", "d4", "d6", "d7", "d8", "a2", "b3", "c4", "e6",
-                "f7", "g8", "a8", "b7", "c6", "e4", "f3", "g2", "h1"};
+        Board board = new Board("8/8/8/4q3/2Q5/8/8/8 w - - 0 1");
+        piece1 = (Queen) board.getWhitePieces()[0];
+        piece2 = (Queen) board.getBlackPieces()[0];
+        String[] piece1MovesExpected = {"c5", "c6", "c7", "c8", "d5", "e6", "f7", "g8", "d4", "e4", "f4", "g4",
+                "h4", "d3", "e2", "f1", "c3", "c2", "c1", "b3", "a2", "b4", "a4", "b5", "a6", null, null};
         String[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+        String[] piece2MovesExpected = {"e6", "e7", "e8", "f6", "g7", "h8", "f5", "g5", "h5", "f4", "g3", "h2",
+                "e4", "e3", "e2", "e1", "d4", "c3", "b2", "a1", "d5", "c5", "b5", "a5", "d6", "c7", "b8"};
+        String[] piece2MovesActual = piece2.generateMoves(board);
+        assertArrayEquals(piece2MovesExpected, piece2MovesActual);
+    }
+
+    @Test
+    @DisplayName("Test generateMoves with pieces")
+    void testGenerateMovesWithPieces() {
+        Board board = new Board("8/2P5/b7/4q3/2Q2P2/8/4p3/8 w - - 0 1");
+        piece1 = (Queen) board.getWhitePieces()[1];
+        piece2 = (Queen) board.getBlackPieces()[1];
+        String[] piece1MovesExpected = {"c5", "c6", "d5", "e6", "f7", "g8", "d4", "e4", "d3", "e2", "c3", "c2",
+                "c1", "b3", "a2", "b4", "a4", "b5", "a6", null, null, null, null, null, null, null, null};
+        String[] piece1MovesActual = piece1.generateMoves(board);
+        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+        String[] piece2MovesExpected = {"e6", "e7", "e8", "f6", "g7", "h8", "f5", "g5", "h5", "f4", "e4", "e3",
+                "d4", "c3", "b2", "a1", "d5", "c5", "b5", "a5", "d6", "c7", null, null, null, null, null};
         String[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
