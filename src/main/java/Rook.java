@@ -43,14 +43,7 @@ public class Rook extends LinearPiece{
         }
         char file = move.charAt(0);
         int rank = Integer.parseInt(move.substring(1, 2));
-        if (rank == getRank() && file == getFile()) {
-            return false;
-        } else if (rank == getRank()) {
-            return true;
-        } else {
-            return file == getFile();
-        }
-
+        return (rank == getRank() ^ file == getFile());
     }
 
     /**
