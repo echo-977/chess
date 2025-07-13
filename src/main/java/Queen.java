@@ -8,7 +8,7 @@ public class Queen extends LinearPiece{
      * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
      */
-    public Queen(String colour, char file, int rank) {
+    public Queen(PieceColour colour, char file, int rank) {
         super(PieceType.QUEEN, colour, file, rank);
     }
 

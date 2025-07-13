@@ -19,7 +19,7 @@ public class Board {
         String currentSquare;
         int skip = 0;
         int current = 0;
-        String colour;
+        PieceColour colour;
         Piece[] pieces = new Piece[ChessConstants.NUM_PIECES];
         int pieceCounter = 0;
         boolean moved;
@@ -35,9 +35,9 @@ public class Board {
                 continue;
             }
             if (Character.isUpperCase(fen[FENConstants.PIECE_FIELD].charAt(current))) {
-                colour = ChessConstants.WHITE;
+                colour = PieceColour.WHITE;
             } else {
-                colour = ChessConstants.BLACK;
+                colour = PieceColour.BLACK;
             }
             currentSquare = mapIntToSquare(i);
             char file = currentSquare.charAt(0);
@@ -53,14 +53,14 @@ public class Board {
                     pieces[pieceCounter] = new Knight(colour, file, rank);
                     break;
                 case FENConstants.PAWN_CHAR:
-                    if (rank == 7 && colour.equals(ChessConstants.BLACK)) {
+                    if (rank == 7 && colour == PieceColour.BLACK) {
                         moved = false;
                     } else {
-                        moved = !(rank == 2 && colour.equals(ChessConstants.WHITE));
+                        moved = !(rank == 2 && colour == PieceColour.WHITE);
                     }
                     if (fen[FENConstants.EN_PASSANT_FIELD].equals(FENConstants.NONE)) {
                         enPassantable = false;
-                    } else if (colour.equals(ChessConstants.WHITE)) {
+                    } else if (colour == PieceColour.WHITE) {
                         enPassantable = (file == fen[FENConstants.EN_PASSANT_FIELD].charAt(0) && rank + ChessDirections.DOWN == Integer.parseInt(fen[FENConstants.EN_PASSANT_FIELD].substring(1, 2)));
                     } else {
                         enPassantable = (file == fen[FENConstants.EN_PASSANT_FIELD].charAt(0) && rank + ChessDirections.UP == Integer.parseInt(fen[FENConstants.EN_PASSANT_FIELD].substring(1, 2)));
@@ -68,14 +68,14 @@ public class Board {
                     pieces[pieceCounter] = new Pawn(colour, file, rank, moved, enPassantable);
                     break;
                 case FENConstants.KING_CHAR:
-                    if (fen[FENConstants.CASTLING_FIELD].equals(fen[FENConstants.CASTLING_FIELD].toLowerCase()) && colour.equals(ChessConstants.WHITE)) {
+                    if (fen[FENConstants.CASTLING_FIELD].equals(fen[FENConstants.CASTLING_FIELD].toLowerCase()) && colour == PieceColour.WHITE) {
                         moved = true;
                     } else
-                        moved = fen[FENConstants.CASTLING_FIELD].equals(fen[FENConstants.CASTLING_FIELD].toUpperCase()) && colour.equals(ChessConstants.BLACK);
+                        moved = fen[FENConstants.CASTLING_FIELD].equals(fen[FENConstants.CASTLING_FIELD].toUpperCase()) && colour == PieceColour.BLACK;
                     pieces[pieceCounter] = new King(colour, file, rank, moved, false);
                     break;
                 case FENConstants.ROOK_CHAR:
-                    if (colour.equals(ChessConstants.WHITE)) {
+                    if (colour == PieceColour.WHITE) {
                         if (currentSquare.equals("a1") && fen[FENConstants.CASTLING_FIELD].contains(FENConstants.WHITE_QUEENSIDE_CASTLE)) {
                             moved = false;
                         } else
@@ -98,7 +98,7 @@ public class Board {
         int blackCounter = 0;
         for (Piece piece: pieces) {
             if (piece != null) {
-                if (piece.getColour().equals(ChessConstants.WHITE)) {
+                if (piece.getColour() == PieceColour.WHITE) {
                     whitePieces[whiteCounter] = piece;
                     whiteCounter++;
                 } else {
@@ -160,7 +160,7 @@ public class Board {
                     fen.append(current);
                     current = '0';
                 }
-                if (piece.getColour().equals(ChessConstants.WHITE)) {
+                if (piece.getColour() == PieceColour.WHITE) {
                     switch (piece.getType()) {
                         case PieceType.PAWN -> fen.append(FENConstants.WHITE_PAWN);
                         case PieceType.KING -> fen.append(FENConstants.WHITE_KING);

@@ -12,8 +12,8 @@ class QueenTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Queen(ChessConstants.WHITE, 'a', 1);
-        piece2 = new Queen(ChessConstants.BLACK, 'd', 5);
+        piece1 = new Queen(PieceColour.WHITE, 'a', 1);
+        piece2 = new Queen(PieceColour.BLACK, 'd', 5);
     }
 
     @Test

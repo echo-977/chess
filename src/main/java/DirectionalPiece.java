@@ -9,7 +9,7 @@ public abstract class DirectionalPiece extends Piece {
      * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
      */
-    public DirectionalPiece(PieceType type, String colour, char file, int rank) {
+    public DirectionalPiece(PieceType type, PieceColour colour, char file, int rank) {
         super(type, colour, file, rank);
     }
 
@@ -34,7 +34,7 @@ public abstract class DirectionalPiece extends Piece {
             candidateMove = checkFile + String.valueOf(checkRank);
             if (isLegalMove(candidateMove)) {
                 piece = board.pieceSearch(candidateMove);
-                if (piece == null || !piece.getColour().equals(getColour())) {
+                if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
                     moves[movesIndex] = candidateMove;
                     movesIndex++;
                 }

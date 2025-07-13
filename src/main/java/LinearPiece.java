@@ -9,7 +9,7 @@ public abstract class LinearPiece extends Piece {
      * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
      */
-    public LinearPiece(PieceType type, String colour, char file, int rank) {
+    public LinearPiece(PieceType type, PieceColour colour, char file, int rank) {
         super(type, colour, file, rank);
     }
 
@@ -37,7 +37,7 @@ public abstract class LinearPiece extends Piece {
                 if (piece == null) { //no piece so the move is legal
                     moves[movesIndex] = candidateMove;
                     movesIndex++;
-                } else if (!piece.getColour().equals(getColour())) { //opposite coloured piece so capture
+                } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
                     moves[movesIndex] = candidateMove;
                     movesIndex++;
                     break;

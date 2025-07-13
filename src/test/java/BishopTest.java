@@ -13,8 +13,8 @@ class BishopTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Bishop(ChessConstants.WHITE, 'a', 1);
-        piece2 = new Bishop(ChessConstants.BLACK, 'd', 5);
+        piece1 = new Bishop(PieceColour.WHITE, 'a', 1);
+        piece2 = new Bishop(PieceColour.BLACK, 'd', 5);
     }
 
     @Test
@@ -29,8 +29,8 @@ class BishopTest {
     @Test
     @DisplayName("Test generateMoves without pieces")
     void testGenerateMoves() {
-        piece1 = new Bishop(ChessConstants.WHITE, 'd', 4);
-        piece2 = new Bishop(ChessConstants.BLACK, 'e', 4);
+        piece1 = new Bishop(PieceColour.WHITE, 'd', 4);
+        piece2 = new Bishop(PieceColour.BLACK, 'e', 4);
         Board board = new Board("8/8/8/8/3Bb3/8/8/8 w - - 0 1");
         String[] piece1MovesExpected = {"c5", "b6", "a7", "e5", "f6", "g7", "h8", "e3", "f2", "g1", "c3", "b2", "a1"};
         String[] piece2MovesExpected = {"d5", "c6", "b7", "a8", "f5", "g6", "h7", "f3", "g2", "h1", "d3", "c2", "b1"};

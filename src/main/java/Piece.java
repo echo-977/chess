@@ -5,7 +5,7 @@
  */
 public abstract class Piece{
     private final PieceType type;
-    private final String colour;
+    private final PieceColour colour;
     private char file;
     private int rank;
 
@@ -18,14 +18,14 @@ public abstract class Piece{
      * @param file  the file (column) position on the board in algebraic notation (e.g., "e")
      * @param rank  the rank (row) position on the board in algebraic notation (e.g., "2")
      */
-    public Piece(PieceType type, String colour, char file, int rank) {
-        if (type == null) {
+    public Piece(PieceType type, PieceColour colour, char file, int rank) {
+        if (type != PieceType.PAWN && type != PieceType.KING && type != PieceType.QUEEN && type != PieceType.ROOK && type != PieceType.BISHOP && type != PieceType.KNIGHT) {
             throw new IllegalArgumentException("Piece type cannot be null");
         } else {
             this.type = type;
         }
-        if (!colour.equals(ChessConstants.WHITE) && !colour.equals(ChessConstants.BLACK)) {
-            throw new IllegalArgumentException("Colour must be 'White' or 'Black'.");
+        if (colour != PieceColour.WHITE && colour != PieceColour.BLACK) {
+            throw new IllegalArgumentException("Colour must be 'White' or 'Black' enum.");
         } else {
             this.colour = colour;
         }
@@ -55,7 +55,7 @@ public abstract class Piece{
      *
      * @return the piece colour
      */
-    public String getColour() {
+    public PieceColour getColour() {
         return colour;
     }
 

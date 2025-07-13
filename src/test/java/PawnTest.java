@@ -12,8 +12,8 @@ class PawnTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Pawn(ChessConstants.WHITE, 'a', 1, false, false);
-        piece2 = new Pawn(ChessConstants.BLACK, 'd', 5, false, false);
+        piece1 = new Pawn(PieceColour.WHITE, 'a', 1, false, false);
+        piece2 = new Pawn(PieceColour.BLACK, 'd', 5, false, false);
     }
 
     @Test

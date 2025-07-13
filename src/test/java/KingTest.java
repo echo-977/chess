@@ -13,8 +13,8 @@ class KingTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new King(ChessConstants.WHITE, 'a', 1, false, false);
-        piece2 = new King(ChessConstants.WHITE, 'd', 5, true, true);
+        piece1 = new King(PieceColour.WHITE, 'a', 1, false, false);
+        piece2 = new King(PieceColour.WHITE, 'd', 5, true, true);
     }
 
     @Test

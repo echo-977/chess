@@ -11,7 +11,7 @@ class PieceTest {
 
     @BeforeAll
     public static void init() {
-        piece = new Piece(PieceType.PAWN, ChessConstants.WHITE, 'a', 2) {
+        piece = new Piece(PieceType.PAWN, PieceColour.WHITE, 'a', 2) {
             @Override
             public String[] generateMoves(Board board) {
                 // minimal implementation here to allow testing of concrete functions
@@ -23,7 +23,7 @@ class PieceTest {
     @Test
     @DisplayName("Test getSquare()")
     void getSquareTest() {
-        piece = new Piece(PieceType.PAWN, ChessConstants.WHITE, 'a', 2) {
+        piece = new Piece(PieceType.PAWN, PieceColour.WHITE, 'a', 2) {
             @Override
             public String[] generateMoves(Board board) {
                 // minimal implementation here to allow testing of concrete functions

@@ -9,7 +9,7 @@ class LinearPieceTest {
 
     @BeforeEach
     public void init() {
-        piece = new LinearPiece(PieceType.QUEEN, ChessConstants.WHITE, 'd', 4) {
+        piece = new LinearPiece(PieceType.QUEEN, PieceColour.WHITE, 'd', 4) {
             @Override
             public String[] generateMoves(Board board) {
                 // minimal implementation here to allow testing of concrete functions

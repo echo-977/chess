@@ -12,7 +12,7 @@ public class Pawn extends Piece{
      * @param moved          whether the pawn has moved
      * @param enPassantable  whether the pawn can be taken by en passant
      */
-    public Pawn(String colour, char file, int rank, boolean moved, boolean enPassantable) {
+    public Pawn(PieceColour colour, char file, int rank, boolean moved, boolean enPassantable) {
         super(PieceType.PAWN, colour, file, rank);
         this.moved = moved;
         this.enPassantable = enPassantable;
@@ -31,7 +31,7 @@ public class Pawn extends Piece{
         String candidateMove;
         int moveDirection;
         int movesIndex = 0;
-        if (getColour().equals(ChessConstants.WHITE)) {
+        if (getColour() == PieceColour.WHITE) {
             moveDirection = ChessDirections.UP;
         } else {
             moveDirection = ChessDirections.DOWN;
@@ -47,22 +47,22 @@ public class Pawn extends Piece{
             }
         }
         Piece piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT)+ String.valueOf(getRank() + moveDirection));
-        if (piece != null && !piece.getColour().equals(getColour())) {
+        if (piece != null && piece.getColour() != getColour()) {
             moves[movesIndex] = (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection);
             movesIndex++;
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
-        if (piece != null && !piece.getColour().equals(getColour())) {
+        if (piece != null && piece.getColour() != getColour()) {
             moves[movesIndex] = (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection);
             movesIndex++;
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank()));
-        if (piece != null && !piece.getColour().equals(getColour()) && piece.getType().equals(PieceType.PAWN) && ((Pawn) piece).getEnPassantable()) {
+        if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
             moves[movesIndex] = (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection);
             movesIndex++;
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank()));
-        if (piece != null && !piece.getColour().equals(getColour()) && piece.getType().equals(PieceType.PAWN) && ((Pawn) piece).getEnPassantable()) {
+        if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
             moves[movesIndex] = (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection);
         }
         return moves;

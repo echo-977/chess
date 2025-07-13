@@ -12,7 +12,7 @@ public class King extends DirectionalPiece{
      * @param moved  whether the king has moved yet
      * @param check  whether the king is in check
      */
-    public King(String colour, char file, int rank, boolean moved, boolean check) {
+    public King(PieceColour colour, char file, int rank, boolean moved, boolean check) {
         super(PieceType.KING, colour, file, rank);
         this.moved = moved;
         this.check = check;

@@ -10,7 +10,7 @@ public class Rook extends LinearPiece{
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
      * @param moved  boolean for if the rook has moved (used in castling logic)
      */
-    public Rook(String colour, char file, int rank, boolean moved) {
+    public Rook(PieceColour colour, char file, int rank, boolean moved) {
         super(PieceType.ROOK, colour, file, rank);
         this.moved = moved;
     }

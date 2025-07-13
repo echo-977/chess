@@ -8,7 +8,7 @@ public class Bishop extends LinearPiece{
      * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
      */
-    public Bishop(String colour, char file, int rank) {
+    public Bishop(PieceColour colour, char file, int rank) {
         super(PieceType.BISHOP, colour, file, rank);
     }
 

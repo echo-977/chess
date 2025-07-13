@@ -10,7 +10,7 @@ class DirectionalPieceTest {
 
     @BeforeEach
     public void init() {
-        piece = new DirectionalPiece(PieceType.KING, ChessConstants.WHITE, 'b', 1) {
+        piece = new DirectionalPiece(PieceType.KING, PieceColour.WHITE, 'b', 1) {
             @Override
             public String[] generateMoves(Board board) {
                 return new String[0];
