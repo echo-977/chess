@@ -27,7 +27,10 @@ public class King extends DirectionalPiece{
     public String[] generateMoves(Board board) {
         String[] moves = new String[8]; //number of king moves in any position
         int[][] directions = {
-                {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1},  {-1, -1}, {-1, 0}, {-1, 1}
+                {ChessDirections.NONE, ChessDirections.UP}, {ChessDirections.RIGHT, ChessDirections.UP},
+                {ChessDirections.RIGHT, ChessDirections.NONE}, {ChessDirections.RIGHT, ChessDirections.DOWN},
+                {ChessDirections.NONE, ChessDirections.DOWN},  {ChessDirections.LEFT, ChessDirections.DOWN},
+                {ChessDirections.LEFT, ChessDirections.NONE}, {ChessDirections.LEFT, ChessDirections.UP}
         };
         directionalMoveSearch(board, moves, directions);
         return moves;

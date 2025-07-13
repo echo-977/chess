@@ -11,92 +11,94 @@ public class Board {
      * @param FEN  FEN string for the position
      */
     public Board(String FEN) {
-        String[] fen = FEN.split(" ");
-        moveCount = Integer.parseInt(fen[5]);
-        halfMoveClock = Integer.parseInt(fen[4]);
-        turn = fen[1].equals("w");
-        fen[0] = fen[0].replaceAll("/", "");
+        String[] fen = FEN.split(FENConstants.SPACE);
+        moveCount = Integer.parseInt(fen[FENConstants.FULLMOVE_CLOCK_FIELD]);
+        halfMoveClock = Integer.parseInt(fen[FENConstants.HALFMOVE_CLOCK_FIELD]);
+        turn = fen[FENConstants.TURN_FIELD].equals(FENConstants.WHITE);
+        fen[FENConstants.PIECE_FIELD] = fen[FENConstants.PIECE_FIELD].replaceAll(FENConstants.NEW_RANK, "");
         String currentSquare;
         int skip = 0;
         int current = 0;
         String colour;
-        Piece[] pieces = new Piece[32];
+        Piece[] pieces = new Piece[ChessConstants.NUM_PIECES];
         int pieceCounter = 0;
         boolean moved;
         boolean enPassantable;
-        for (int i = 0; i < 64; i++) {
+        for (int i = 0; i < ChessConstants.NUM_SQUARES; i++) {
+            skip--;
             if (skip > 0) { //used for numbers in FEN string representing sequential empty squares
-                skip--;
-            } else {
-                if (Character.isDigit(fen[0].charAt(current))) {
-                    skip = Character.getNumericValue(fen[0].charAt(current));
-                    //current += skip;
-                    skip--;
-                } else {
-                    if (Character.isUpperCase(fen[0].charAt(current))) {
-                        colour = "White";
-                    } else {
-                        colour = "Black";
-                    }
-                    currentSquare = mapIntToSquare(i);
-                    char file = currentSquare.charAt(0);
-                    int rank = Integer.parseInt(currentSquare.substring(1, 2));
-                    switch (Character.toLowerCase(fen[0].charAt(current))) {
-                        case 'q':
-                            pieces[pieceCounter] = new Queen(colour, file, rank);
-                            break;
-                        case 'b':
-                            pieces[pieceCounter] = new Bishop(colour, file, rank);
-                            break;
-                        case 'n':
-                            pieces[pieceCounter] = new Knight(colour, file, rank);
-                            break;
-                        case 'p':
-                            if (rank == 7 && colour.equals("Black")) {
-                                moved = false;
-                            } else {
-                                moved = !(rank == 2 && colour.equals("White"));
-                            }
-                            if (fen[3].equals("-")) {
-                                enPassantable = false;
-                            } else if (colour.equals("White")) {
-                                enPassantable = (file == fen[3].charAt(0) && rank - 1 == Integer.parseInt(fen[3].substring(1, 2)));
-                            } else {
-                                enPassantable = (file == fen[3].charAt(0) && rank + 1 == Integer.parseInt(fen[3].substring(1, 2)));
-                            }
-                            pieces[pieceCounter] = new Pawn(colour, file, rank, moved, enPassantable);
-                            break;
-                        case 'k':
-                            if (fen[2].equals(fen[2].toLowerCase()) && colour.equals("White")) {
-                                moved = true;
-                            } else moved = fen[2].equals(fen[2].toUpperCase()) && colour.equals("Black");
-                            pieces[pieceCounter] = new King(colour, file, rank, moved, false);
-                            break;
-                        case 'r':
-                            if (colour.equals("White")) {
-                                if (currentSquare.equals("a1") && fen[2].contains("Q")) {
-                                    moved = false;
-                                } else moved = !(currentSquare.equals("h1") && fen[2].contains("K"));
-                            } else {
-                                if (currentSquare.equals("a8") && fen[2].contains("q")) {
-                                    moved = false;
-                                } else moved = !(currentSquare.equals("h8") && fen[2].contains("k"));
-                            }
-                            pieces[pieceCounter] = new Rook(colour, file, rank, moved);
-                            break;
-                    }
-                    pieceCounter++;
-                }
-                current++;
+                continue;
             }
+            if (Character.isDigit(fen[FENConstants.PIECE_FIELD].charAt(current))) {
+                skip = Character.getNumericValue(fen[FENConstants.PIECE_FIELD].charAt(current));
+                current++;
+                continue;
+            }
+            if (Character.isUpperCase(fen[FENConstants.PIECE_FIELD].charAt(current))) {
+                colour = ChessConstants.WHITE;
+            } else {
+                colour = ChessConstants.BLACK;
+            }
+            currentSquare = mapIntToSquare(i);
+            char file = currentSquare.charAt(0);
+            int rank = Integer.parseInt(currentSquare.substring(1, 2));
+            switch (Character.toLowerCase(fen[FENConstants.PIECE_FIELD].charAt(current))) {
+                case FENConstants.QUEEN_CHAR:
+                    pieces[pieceCounter] = new Queen(colour, file, rank);
+                    break;
+                case FENConstants.BISHOP_CHAR:
+                    pieces[pieceCounter] = new Bishop(colour, file, rank);
+                    break;
+                case FENConstants.KNIGHT_CHAR:
+                    pieces[pieceCounter] = new Knight(colour, file, rank);
+                    break;
+                case FENConstants.PAWN_CHAR:
+                    if (rank == 7 && colour.equals(ChessConstants.BLACK)) {
+                        moved = false;
+                    } else {
+                        moved = !(rank == 2 && colour.equals(ChessConstants.WHITE));
+                    }
+                    if (fen[FENConstants.EN_PASSANT_FIELD].equals(FENConstants.NONE)) {
+                        enPassantable = false;
+                    } else if (colour.equals(ChessConstants.WHITE)) {
+                        enPassantable = (file == fen[FENConstants.EN_PASSANT_FIELD].charAt(0) && rank + ChessDirections.DOWN == Integer.parseInt(fen[FENConstants.EN_PASSANT_FIELD].substring(1, 2)));
+                    } else {
+                        enPassantable = (file == fen[FENConstants.EN_PASSANT_FIELD].charAt(0) && rank + ChessDirections.UP == Integer.parseInt(fen[FENConstants.EN_PASSANT_FIELD].substring(1, 2)));
+                    }
+                    pieces[pieceCounter] = new Pawn(colour, file, rank, moved, enPassantable);
+                    break;
+                case FENConstants.KING_CHAR:
+                    if (fen[FENConstants.CASTLING_FIELD].equals(fen[FENConstants.CASTLING_FIELD].toLowerCase()) && colour.equals(ChessConstants.WHITE)) {
+                        moved = true;
+                    } else
+                        moved = fen[FENConstants.CASTLING_FIELD].equals(fen[FENConstants.CASTLING_FIELD].toUpperCase()) && colour.equals(ChessConstants.BLACK);
+                    pieces[pieceCounter] = new King(colour, file, rank, moved, false);
+                    break;
+                case FENConstants.ROOK_CHAR:
+                    if (colour.equals(ChessConstants.WHITE)) {
+                        if (currentSquare.equals("a1") && fen[FENConstants.CASTLING_FIELD].contains(FENConstants.WHITE_QUEENSIDE_CASTLE)) {
+                            moved = false;
+                        } else
+                            moved = !(currentSquare.equals("h1") && fen[FENConstants.CASTLING_FIELD].contains(FENConstants.WHITE_KINGSIDE_CASTLE));
+                    } else {
+                        if (currentSquare.equals("a8") && fen[FENConstants.CASTLING_FIELD].contains(FENConstants.BLACK_QUEENSIDE_CASTLE)) {
+                            moved = false;
+                        } else
+                            moved = !(currentSquare.equals("h8") && fen[FENConstants.CASTLING_FIELD].contains(FENConstants.BLACK_KINGSIDE_CASTLE));
+                    }
+                    pieces[pieceCounter] = new Rook(colour, file, rank, moved);
+                    break;
+            }
+            pieceCounter++;
+            current++;
         }
-        whitePieces = new Piece[16];
-        blackPieces = new Piece[16];
+        whitePieces = new Piece[ChessConstants.NUM_PIECES / 2];
+        blackPieces = new Piece[ChessConstants.NUM_PIECES / 2];
         int whiteCounter = 0;
         int blackCounter = 0;
         for (Piece piece: pieces) {
             if (piece != null) {
-                if (piece.getColour().equals("White")) {
+                if (piece.getColour().equals(ChessConstants.WHITE)) {
                     whitePieces[whiteCounter] = piece;
                     whiteCounter++;
                 } else {
@@ -143,7 +145,7 @@ public class Board {
                     fen.append(current);
                     current = '0';
                 }
-                fen.append('/');
+                fen.append(FENConstants.NEW_RANK);
             }
             square = mapIntToSquare(i);
             piece = pieceSearch(square);
@@ -158,17 +160,23 @@ public class Board {
                     fen.append(current);
                     current = '0';
                 }
-                if (piece.getColour().equals("White")) {
-                    if (piece.getName().equals("Knight")) {
-                        fen.append("N");
-                    } else {
-                        fen.append(Character.toUpperCase(piece.getName().charAt(0)));
+                if (piece.getColour().equals(ChessConstants.WHITE)) {
+                    switch (piece.getName()) {
+                        case "Pawn" -> fen.append(FENConstants.WHITE_PAWN);
+                        case "King" -> fen.append(FENConstants.WHITE_KING);
+                        case "Queen" -> fen.append(FENConstants.WHITE_QUEEN);
+                        case "Rook" -> fen.append(FENConstants.WHITE_ROOK);
+                        case "Bishop" -> fen.append(FENConstants.WHITE_BISHOP);
+                        case "Knight" -> fen.append(FENConstants.WHITE_KNIGHT);
                     }
                 } else {
-                    if (piece.getName().equals("Knight")) {
-                        fen.append("n");
-                    } else {
-                        fen.append(Character.toLowerCase(piece.getName().charAt(0)));
+                    switch (piece.getName()) {
+                        case "Pawn" -> fen.append(FENConstants.BLACK_PAWN);
+                        case "King" -> fen.append(FENConstants.BLACK_KING);
+                        case "Queen" -> fen.append(FENConstants.BLACK_QUEEN);
+                        case "Rook" -> fen.append(FENConstants.BLACK_ROOK);
+                        case "Bishop" -> fen.append(FENConstants.BLACK_BISHOP);
+                        case "Knight" -> fen.append(FENConstants.BLACK_KNIGHT);
                     }
                 }
             }
@@ -176,32 +184,32 @@ public class Board {
                 fen.append(current);
             }
         }
+        fen.append(FENConstants.SPACE);
         if (getTurn()) {
-            fen.append(" w ");
+            fen.append(FENConstants.WHITE);
         } else {
-            fen.append(" b ");
+            fen.append(FENConstants.BLACK);
         }
+        fen.append(FENConstants.SPACE);
         boolean anyCastling = false;
         if (pieceSearch("e1") != null) {
-            if (pieceSearch("e1").getName().equals("King") && (!((King) pieceSearch("e1")).getMoved())) ;
-            {  //potential for castling
+            if (pieceSearch("e1").getName().equals("King") && (!((King) pieceSearch("e1")).getMoved())) {  //potential for castling
                 if (pieceSearch("h1") != null) {
                     if (pieceSearch("h1").getName().equals("Rook") && (!((Rook) pieceSearch("h1")).getMoved())) {
-                        fen.append("K");
+                        fen.append(FENConstants.WHITE_KINGSIDE_CASTLE);
                         anyCastling = true;
                     }
                 }
                 if (pieceSearch("a1") != null) {
                     if (pieceSearch("a1").getName().equals("Rook") && (!((Rook) pieceSearch("a1")).getMoved())) {
-                        fen.append("Q");
+                        fen.append(FENConstants.WHITE_QUEENSIDE_CASTLE);
                         anyCastling = true;
                     }
                 }
             }
         }
         if (pieceSearch("e8") != null) {
-            if (pieceSearch("e8").getName().equals("King") && (!((King) pieceSearch("e8")).getMoved())) ;
-            {  //potential for castling
+            if (pieceSearch("e8").getName().equals("King") && (!((King) pieceSearch("e8")).getMoved())) {  //potential for castling
                 if (pieceSearch("h8") != null) {
                     if (pieceSearch("h8").getName().equals("Rook") && (!((Rook) pieceSearch("h8")).getMoved())) {
                         fen.append("k");
@@ -217,25 +225,25 @@ public class Board {
             }
         }
         if (!anyCastling) {
-            fen.append('-');
+            fen.append(FENConstants.NONE);
         }
-        String enPassantTarget = "-";
+        String enPassantTarget = FENConstants.NONE;
         for (int i = 0; i < 16; i++) {
             if (whitePieces[i].getName().equals("Pawn")) {
                 if (((Pawn) whitePieces[i]).getEnPassantable()) {
-                    enPassantTarget = String.valueOf(whitePieces[i].getFile()) + String.valueOf(whitePieces[i].getRank() - 1);
+                    enPassantTarget = whitePieces[i].getFile() + String.valueOf(whitePieces[i].getRank() - 1);
                     break;
                 }
             }
             if (blackPieces[i].getName().equals("Pawn")) {
                 if (((Pawn) blackPieces[i]).getEnPassantable()) {
-                    enPassantTarget = String.valueOf(blackPieces[i].getFile()) + String.valueOf(blackPieces[i].getRank() + 1);
+                    enPassantTarget = blackPieces[i].getFile() + String.valueOf(blackPieces[i].getRank() + 1);
                     break;
                 }
             }
         }
-        fen.append(" ").append(enPassantTarget).append(" ");
-        fen.append(getHalfMoveClock()).append(" ");
+        fen.append(FENConstants.SPACE).append(enPassantTarget).append(FENConstants.SPACE);
+        fen.append(getHalfMoveClock()).append(FENConstants.SPACE);
         fen.append(getMoveCount());
         return fen.toString();
     }

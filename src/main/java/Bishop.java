@@ -21,10 +21,10 @@ public class Bishop extends LinearPiece{
     public String[] generateMoves(Board board) {
         String[] moves = new String[13]; //max number of bishop moves in any position
         int movesIndex = 0;
-        movesIndex = linearMoveSearch(board, moves, movesIndex, -1, 1); //up left
-        movesIndex = linearMoveSearch(board, moves, movesIndex, 1, 1); //up right
-        movesIndex = linearMoveSearch(board, moves, movesIndex, 1, -1); //down right
-        linearMoveSearch(board, moves, movesIndex, -1, -1); // down left
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP);
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP);
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.DOWN);
+        linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.LEFT);
         return moves;
     }
 

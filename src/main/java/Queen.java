@@ -21,14 +21,14 @@ public class Queen extends LinearPiece{
     public String[] generateMoves(Board board) {
         String[] moves = new String[27]; //max number of queen moves
         int movesIndex = 0;
-        movesIndex = linearMoveSearch(board, moves, movesIndex, 0, 1); //up
-        movesIndex = linearMoveSearch(board, moves, movesIndex, 1, 1); //up right
-        movesIndex = linearMoveSearch(board, moves, movesIndex, 1, 0); //right
-        movesIndex = linearMoveSearch(board, moves, movesIndex, 1, -1); //down right
-        movesIndex = linearMoveSearch(board, moves, movesIndex, 0, -1); // down
-        movesIndex = linearMoveSearch(board, moves, movesIndex, -1, -1); //down left
-        movesIndex = linearMoveSearch(board, moves, movesIndex, -1, 0); //left
-        linearMoveSearch(board, moves, movesIndex, -1, 1); //up left
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP);
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP);
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.NONE);
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.DOWN);
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.NONE, ChessDirections.DOWN);
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.DOWN);
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.NONE);
+        linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP);
         return moves;
     }
 

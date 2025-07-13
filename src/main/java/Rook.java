@@ -24,10 +24,10 @@ public class Rook extends LinearPiece{
     public String[] generateMoves(Board board) {
         String[] moves = new String[14]; //max number of rook moves in any position
         int movesIndex = 0;
-        movesIndex = linearMoveSearch(board, moves, movesIndex, -1, 0); //left
-        movesIndex = linearMoveSearch(board, moves, movesIndex, 1, 0); //right
-        movesIndex = linearMoveSearch(board, moves, movesIndex, 0, 1); //up
-        linearMoveSearch(board, moves, movesIndex, 0, -1); // down
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.NONE);
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.NONE);
+        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP);
+        linearMoveSearch(board, moves, movesIndex, ChessDirections.NONE, ChessDirections.DOWN);
         return moves;
     }
 

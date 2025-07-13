@@ -21,7 +21,10 @@ public class Knight extends DirectionalPiece{
     public String[] generateMoves(Board board) {
         String[] moves = new String[8]; //number of knight moves in any position
         int[][] directions = {
-                {1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}
+                {ChessDirections.RIGHT, 2 * ChessDirections.UP}, {2 * ChessDirections.RIGHT, ChessDirections.UP},
+                {2 * ChessDirections.RIGHT, ChessDirections.DOWN}, {ChessDirections.RIGHT, 2 * ChessDirections.DOWN},
+                {ChessDirections.LEFT, 2 * ChessDirections.DOWN}, {2 * ChessDirections.LEFT, ChessDirections.DOWN},
+                {2 * ChessDirections.LEFT, ChessDirections.UP}, {ChessDirections.LEFT, 2 * ChessDirections.UP}
         };
         directionalMoveSearch(board, moves, directions);
         return moves;
