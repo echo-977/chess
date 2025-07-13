@@ -13,7 +13,7 @@ public class King extends DirectionalPiece{
      * @param check  whether the king is in check
      */
     public King(String colour, char file, int rank, boolean moved, boolean check) {
-        super("King", colour, file, rank);
+        super(PieceType.KING, colour, file, rank);
         this.moved = moved;
         this.check = check;
     }
@@ -25,7 +25,7 @@ public class King extends DirectionalPiece{
      */
     @Override
     public String[] generateMoves(Board board) {
-        String[] moves = new String[8]; //number of king moves in any position
+        String[] moves = new String[ChessConstants.MAX_KING_MOVES];
         int[][] directions = {
                 {ChessDirections.NONE, ChessDirections.UP}, {ChessDirections.RIGHT, ChessDirections.UP},
                 {ChessDirections.RIGHT, ChessDirections.NONE}, {ChessDirections.RIGHT, ChessDirections.DOWN},

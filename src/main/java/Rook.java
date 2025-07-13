@@ -11,7 +11,7 @@ public class Rook extends LinearPiece{
      * @param moved  boolean for if the rook has moved (used in castling logic)
      */
     public Rook(String colour, char file, int rank, boolean moved) {
-        super("Rook", colour, file, rank);
+        super(PieceType.ROOK, colour, file, rank);
         this.moved = moved;
     }
 
@@ -22,7 +22,7 @@ public class Rook extends LinearPiece{
      */
     @Override
     public String[] generateMoves(Board board) {
-        String[] moves = new String[14]; //max number of rook moves in any position
+        String[] moves = new String[ChessConstants.MAX_ROOK_MOVES];
         int movesIndex = 0;
         movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.NONE);
         movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.NONE);

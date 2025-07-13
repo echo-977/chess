@@ -4,13 +4,13 @@ public abstract class LinearPiece extends Piece {
      * Constructs a chess piece with the specified name, color, rank, and file.
      * Ensures inputs for a piece are valid.
      *
-     * @param name   the type/name of the piece (e.g., "Pawn", "Knight")
+     * @param type   the type of the piece (e.g., "Pawn", "Knight")
      * @param colour the colour of the piece ("White" or "Black")
      * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
      */
-    public LinearPiece(String name, String colour, char file, int rank) {
-        super(name, colour, file, rank);
+    public LinearPiece(PieceType type, String colour, char file, int rank) {
+        super(type, colour, file, rank);
     }
 
     /**

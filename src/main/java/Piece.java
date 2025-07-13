@@ -1,36 +1,30 @@
 /**
  * Abstract class representing a chess piece.
- * Contains common properties such as name, color, rank (row), and file (column).
+ * Contains common properties such as type, color, rank (row), and file (column).
  * Provides utility methods and requires concrete subclasses to implement movement logic.
  */
 public abstract class Piece{
-    private final String name;
+    private final PieceType type;
     private final String colour;
     private char file;
     private int rank;
-    private String notation;
 
     /**
-     * Constructs a chess piece with the specified name, color, rank, and file.
+     * Constructs a chess piece with the specified type, color, rank, and file.
      * Ensures inputs for a piece are valid.
      *
-     * @param name  the type/name of the piece (e.g., "Pawn", "Knight")
+     * @param type  the type of the piece (e.g., "Pawn", "Knight")
      * @param colour the colour of the piece ("White" or "Black")
      * @param file  the file (column) position on the board in algebraic notation (e.g., "e")
      * @param rank  the rank (row) position on the board in algebraic notation (e.g., "2")
      */
-    public Piece(String name, String colour, char file, int rank) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Piece name cannot be null or empty.");
+    public Piece(PieceType type, String colour, char file, int rank) {
+        if (type == null) {
+            throw new IllegalArgumentException("Piece type cannot be null");
         } else {
-            this.name = name;
-            if (!name.equals("Pawn") ) {
-                notation = String.valueOf(name.charAt(0));
-            } else {
-                notation = "";
-            }
+            this.type = type;
         }
-        if (!colour.equals("White") && !colour.equals("Black")) {
+        if (!colour.equals(ChessConstants.WHITE) && !colour.equals(ChessConstants.BLACK)) {
             throw new IllegalArgumentException("Colour must be 'White' or 'Black'.");
         } else {
             this.colour = colour;
@@ -52,8 +46,8 @@ public abstract class Piece{
      *
      * @return the piece name
      */
-    public String getName() {
-        return name;
+    public PieceType getType() {
+        return type;
     }
 
     /**
@@ -71,7 +65,7 @@ public abstract class Piece{
      * @return the location of the piece in standard algebraic notation
      */
     public String getSquare() {
-        return String.valueOf(file) + String.valueOf(rank);
+        return file + String.valueOf(rank);
     }
 
     /**
@@ -142,7 +136,6 @@ public abstract class Piece{
     public void move(String square) {
         file = square.charAt(0);
         rank = Character.getNumericValue(square.charAt(1));
-        notation = square;
     }
 
     /**

@@ -13,8 +13,8 @@ class KnightTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Knight("White", 'a', 1);
-        piece2 = new Knight("Black", 'd', 5);
+        piece1 = new Knight(ChessConstants.WHITE, 'a', 1);
+        piece2 = new Knight(ChessConstants.BLACK, 'd', 5);
     }
 
     @Test

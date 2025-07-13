@@ -10,7 +10,7 @@ class DirectionalPieceTest {
 
     @BeforeEach
     public void init() {
-        piece = new DirectionalPiece("King", "White", 'b', 1) {
+        piece = new DirectionalPiece(PieceType.KING, ChessConstants.WHITE, 'b', 1) {
             @Override
             public String[] generateMoves(Board board) {
                 return new String[0];
@@ -24,7 +24,10 @@ class DirectionalPieceTest {
         Board board = new Board("8/8/8/8/8/8/8/1K6 w - - 0 1");
         String[] moves = new String[8];
         int[][] directions = {
-                {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1},  {-1, -1}, {-1, 0}, {-1, 1}
+                {ChessDirections.NONE, ChessDirections.UP}, {ChessDirections.RIGHT, ChessDirections.UP},
+                {ChessDirections.RIGHT, ChessDirections.NONE}, {ChessDirections.RIGHT, ChessDirections.DOWN},
+                {ChessDirections.NONE, ChessDirections.DOWN},  {ChessDirections.LEFT, ChessDirections.DOWN},
+                {ChessDirections.LEFT, ChessDirections.NONE}, {ChessDirections.LEFT, ChessDirections.UP}
         };
         piece.directionalMoveSearch(board, moves, directions);
         String[] expectedMoves = {"b2", "c2", "c1", "a1", "a2", null, null, null};

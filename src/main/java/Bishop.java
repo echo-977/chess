@@ -9,7 +9,7 @@ public class Bishop extends LinearPiece{
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
      */
     public Bishop(String colour, char file, int rank) {
-        super("Bishop", colour, file, rank);
+        super(PieceType.BISHOP, colour, file, rank);
     }
 
     /**
@@ -19,7 +19,7 @@ public class Bishop extends LinearPiece{
      */
     @Override
     public String[] generateMoves(Board board) {
-        String[] moves = new String[13]; //max number of bishop moves in any position
+        String[] moves = new String[ChessConstants.MAX_BISHOP_MOVES];
         int movesIndex = 0;
         movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP);
         movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP);

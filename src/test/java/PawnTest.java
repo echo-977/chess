@@ -2,9 +2,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -15,8 +12,8 @@ class PawnTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Pawn("White", 'a', 1, false, false);
-        piece2 = new Pawn("Black", 'd', 5, false, false);
+        piece1 = new Pawn(ChessConstants.WHITE, 'a', 1, false, false);
+        piece2 = new Pawn(ChessConstants.BLACK, 'd', 5, false, false);
     }
 
     @Test

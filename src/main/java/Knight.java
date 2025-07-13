@@ -9,7 +9,7 @@ public class Knight extends DirectionalPiece{
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
      */
     public Knight(String colour, char file, int rank) {
-        super("Knight", colour, file, rank);
+        super(PieceType.KNIGHT, colour, file, rank);
     }
 
     /**
@@ -19,7 +19,7 @@ public class Knight extends DirectionalPiece{
      */
     @Override
     public String[] generateMoves(Board board) {
-        String[] moves = new String[8]; //number of knight moves in any position
+        String[] moves = new String[ChessConstants.MAX_KNIGHT_MOVES];
         int[][] directions = {
                 {ChessDirections.RIGHT, 2 * ChessDirections.UP}, {2 * ChessDirections.RIGHT, ChessDirections.UP},
                 {2 * ChessDirections.RIGHT, ChessDirections.DOWN}, {ChessDirections.RIGHT, 2 * ChessDirections.DOWN},

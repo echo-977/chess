@@ -12,8 +12,8 @@ class RookTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Rook("White", 'a', 1, false);
-        piece2 = new Rook("Black", 'c', 5, false);
+        piece1 = new Rook(ChessConstants.WHITE, 'a', 1, false);
+        piece2 = new Rook(ChessConstants.BLACK, 'c', 5, false);
     }
 
     @Test

@@ -9,7 +9,7 @@ public class Queen extends LinearPiece{
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
      */
     public Queen(String colour, char file, int rank) {
-        super("Queen", colour, file, rank);
+        super(PieceType.QUEEN, colour, file, rank);
     }
 
     /**
@@ -19,7 +19,7 @@ public class Queen extends LinearPiece{
      */
     @Override
     public String[] generateMoves(Board board) {
-        String[] moves = new String[27]; //max number of queen moves
+        String[] moves = new String[ChessConstants.MAX_QUEEN_MOVES];
         int movesIndex = 0;
         movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP);
         movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP);
