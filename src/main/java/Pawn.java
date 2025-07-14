@@ -107,6 +107,32 @@ public class Pawn extends Piece{
     }
 
     /**
+     * Check if the pawn can capture a given square.
+     * Used for detection of checks so en passant is excluded here.
+     * @param board the board the capture is searched for on.
+     * @param targetSquare the square we are checking.
+     * @return a boolean for whether the piece can capture that square.
+     */
+    @Override
+    public boolean canCaptureKing(Board board, String targetSquare) {
+        if (!super.isLegalMove(targetSquare)) {
+            return false;
+        }
+        char file = getFile();
+        int rank = getRank();
+        char targetFile = targetSquare.charAt(0);
+        int targetRank = Integer.parseInt(targetSquare.substring(1, 2));
+        int direction;
+        if (getColour() == PieceColour.WHITE) {
+            direction = ChessDirections.UP;
+        } else {
+            direction = ChessDirections.DOWN;
+        }
+        return targetRank == rank + direction &&
+                (targetFile == (char) (file + ChessDirections.LEFT) || targetFile == (char) (file + ChessDirections.RIGHT));
+    }
+
+    /**
      * Simple getter for the boolean moved
      * @return the moved boolean
      */

@@ -45,4 +45,32 @@ public class Bishop extends LinearPiece{
         return Math.abs(rank - moveRank) == Math.abs(file - moveFile);
 
     }
+
+    /**
+     * Check if the bishop can capture a given square.
+     * Used for detection of checks.
+     * @param board the board the capture is searched for on.
+     * @param targetSquare the square we are checking.
+     * @return a boolean for whether the piece can capture that square.
+     */
+    @Override
+    public boolean canCaptureKing(Board board, String targetSquare) {
+        char targetFile = targetSquare.charAt(0);
+        int targetRank = Integer.parseInt(targetSquare.substring(1, 2));
+        if (!isLegalMove(targetSquare)) {
+            return false;
+        }
+        int[] directions;
+        int fileDirection, rankDirection;
+        char file = getFile();
+        int rank = getRank();
+        if ((targetFile - file) == (targetRank - rank) || -(targetFile - file) == (targetRank - rank)) {
+            directions = getDiagonalDirections(targetFile, targetRank);
+        } else {
+            return false;
+        }
+        fileDirection = directions[ChessConstants.FILE_DIRECTION_INDEX];
+        rankDirection = directions[ChessConstants.RANK_DIRECTION_INDEX];
+        return recursiveCaptureCheck(board, (char) (targetFile + fileDirection), targetRank + rankDirection, fileDirection, rankDirection);
+    }
 }

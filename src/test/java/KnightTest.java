@@ -53,4 +53,9 @@ class KnightTest {
         String[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
+
+    @Test
+    @DisplayName("Test canCaptureKing")
+    void testCanCaptureKing() { //given the canCaptureKing method just calls the isLegalMove method there is no test required
+    }
 }

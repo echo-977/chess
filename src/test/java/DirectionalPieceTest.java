@@ -13,7 +13,12 @@ class DirectionalPieceTest {
         piece = new DirectionalPiece(PieceType.KING, PieceColour.WHITE, 'b', 1) {
             @Override
             public String[] generateMoves(Board board) {
-                return new String[0];
+                return new String[0]; //minimal implementation here to allow testing of concrete methods
+            }
+
+            @Override
+            public boolean canCaptureKing(Board board, String move) {
+                return false; //minimal implementation here to allow testing of concrete methods
             }
         };
     }

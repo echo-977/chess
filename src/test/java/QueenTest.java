@@ -60,4 +60,28 @@ class QueenTest {
         String[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
+
+    @Test
+    @DisplayName(("Test canCaptureKing"))
+    void testCanCaptureKing() {
+        Board board = new Board("8/1P1P1P2/8/1P1q2P1/8/1P3P2/3P4/8 w - - 0 1");
+        Queen queen =  (Queen) board.getBlackPieces()[0];
+        assertFalse(queen.canCaptureKing(board, "d8"));
+        assertTrue(queen.canCaptureKing(board, "d7"));
+        assertFalse(queen.canCaptureKing(board, "g8"));
+        assertTrue(queen.canCaptureKing(board, "f7"));
+        assertFalse(queen.canCaptureKing(board, "h5"));
+        assertTrue(queen.canCaptureKing(board, "g5"));
+        assertFalse(queen.canCaptureKing(board, "g2"));
+        assertTrue(queen.canCaptureKing(board, "f3"));
+        assertFalse(queen.canCaptureKing(board, "d1"));
+        assertTrue(queen.canCaptureKing(board, "d2"));
+        assertFalse(queen.canCaptureKing(board, "a2"));
+        assertTrue(queen.canCaptureKing(board, "b3"));
+        assertFalse(queen.canCaptureKing(board, "a5"));
+        assertTrue(queen.canCaptureKing(board, "b5"));
+        assertFalse(queen.canCaptureKing(board, "a8"));
+        assertTrue(queen.canCaptureKing(board, "b7"));
+
+    }
 }

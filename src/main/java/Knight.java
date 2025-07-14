@@ -50,5 +50,17 @@ public class Knight extends DirectionalPiece{
             return Math.abs(moveRank - rank) == 2 && Math.abs(moveFile - file) == 1;
         }
     }
+
+    /**
+     * Check if the knight can capture a given square.
+     * Used for detection of checks.
+     * @param board the board the capture is searched for on.
+     * @param targetSquare the square we are checking.
+     * @return a boolean for whether the piece can capture that square.
+     */
+    @Override
+    public boolean canCaptureKing(Board board, String targetSquare) {
+        return isLegalMove(targetSquare); //if the knight can move to where the king is it can capture it
+    }
 }
 

@@ -170,4 +170,13 @@ public abstract class Piece{
      * @return a string array of all the legal moves.
      */
     public abstract String[] generateMoves(Board board);
+
+    /**
+     * Abstract method to check if a piece can capture a given square.
+     * Concrete piece subclasses will implement this.
+     * @param board the board the capture is searched for on.
+     * @param targetSquare the square we are checking.
+     * @return a boolean for whether the piece can capture that square.
+     */
+    public abstract boolean canCaptureKing(Board board, String targetSquare);
 }

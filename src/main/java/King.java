@@ -65,6 +65,19 @@ public class King extends DirectionalPiece{
     }
 
     /**
+     * Check if the king can capture a given square.
+     * Used for detection of checks so is always false.
+     * (A king cannot capture another king as this would mean the other king could capture it first, hence illegal move).
+     * @param board the board the capture is searched for on.
+     * @param targetSquare the square we are checking.
+     * @return false.
+     */
+    @Override
+    public boolean canCaptureKing(Board board, String targetSquare) {
+        return false;
+    }
+
+    /**
      * Simple getter for the boolean moved
      * @return the moved boolean
      */

@@ -60,4 +60,20 @@ class RookTest {
         String[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
+
+    @Test
+    @DisplayName("Test canCaptureKing")
+    void testCanCaptureKing() {
+        Board board = new Board("8/3P4/8/1P1r2P1/8/8/3P4/8 w - - 0 1");
+        Rook rook =  (Rook) board.getBlackPieces()[0];
+        assertFalse(rook.canCaptureKing(board, "d8"));
+        assertTrue(rook.canCaptureKing(board, "d7"));
+        assertFalse(rook.canCaptureKing(board, "h5"));
+        assertTrue(rook.canCaptureKing(board, "g5"));
+        assertFalse(rook.canCaptureKing(board, "d1"));
+        assertTrue(rook.canCaptureKing(board, "d2"));
+        assertFalse(rook.canCaptureKing(board, "a5"));
+        assertTrue(rook.canCaptureKing(board, "b5"));
+
+    }
 }

@@ -14,8 +14,12 @@ class PieceTest {
         piece = new Piece(PieceType.PAWN, PieceColour.WHITE, 'a', 2) {
             @Override
             public String[] generateMoves(Board board) {
-                // minimal implementation here to allow testing of concrete functions
-                return new String[8];
+                return new String[8]; // minimal implementation here to allow testing of concrete methods
+            }
+
+            @Override
+            public boolean canCaptureKing(Board board, String color) {
+                return false; // minimal implementation here to allow testing of concrete methods
             }
         };
     }
@@ -26,8 +30,12 @@ class PieceTest {
         piece = new Piece(PieceType.PAWN, PieceColour.WHITE, 'a', 2) {
             @Override
             public String[] generateMoves(Board board) {
-                // minimal implementation here to allow testing of concrete functions
-                return new String[8];
+                return new String[8]; // minimal implementation here to allow testing of concrete methods
+            }
+
+            @Override
+            public boolean canCaptureKing(Board board, String color) {
+                return false; // minimal implementation here to allow testing of concrete methods
             }
         };
         assertEquals("a2", piece.getSquare());

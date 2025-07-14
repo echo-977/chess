@@ -98,4 +98,18 @@ class PawnTest {
         piece1.move("a4");
         assertFalse(piece1.getEnPassantable());
     }
+
+    @Test
+    @DisplayName("Test canCaptureKing")
+    void testCanCaptureKing() {
+        Board board = new Board("8/8/8/3p4/8/8/8/PK6 w - - 0 1");
+        assertTrue(piece1.canCaptureKing(board, "b2"));
+        assertFalse(piece1.canCaptureKing(board, "a2"));
+        assertFalse(piece1.canCaptureKing(board, "b1"));
+        assertTrue(piece2.canCaptureKing(board, "c4"));
+        assertTrue(piece2.canCaptureKing(board, "e4"));
+        assertFalse(piece2.canCaptureKing(board, "d4"));
+        assertFalse(piece2.canCaptureKing(board, "d6"));
+        assertFalse(piece2.canCaptureKing(board, "f3"));
+    }
 }
