@@ -48,7 +48,7 @@ public class King extends DirectionalPiece{
         char file = getFile();
         int rank = getRank();
         char moveFile = move.charAt(0);
-        int moveRank = Integer.parseInt(move.substring(1, 2));
+        int moveRank = move.charAt(1) - '0';
         return Math.abs(moveRank - rank) <= 1 && Math.abs(moveFile - file) <= 1;
     }
 

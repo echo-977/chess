@@ -39,7 +39,7 @@ public class Bishop extends LinearPiece{
             return false;
         }
         char moveFile = move.charAt(0);
-        int moveRank = Integer.parseInt(move.substring(1, 2));
+        int moveRank = move.charAt(1) - '0';
         char file = getFile();
         int rank = getRank();
         return Math.abs(rank - moveRank) == Math.abs(file - moveFile);
@@ -56,7 +56,7 @@ public class Bishop extends LinearPiece{
     @Override
     public boolean canCaptureKing(Board board, String targetSquare) {
         char targetFile = targetSquare.charAt(0);
-        int targetRank = Integer.parseInt(targetSquare.substring(1, 2));
+        int targetRank = targetSquare.charAt(1) - '0';
         if (!isLegalMove(targetSquare)) {
             return false;
         }

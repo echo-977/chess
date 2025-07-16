@@ -43,7 +43,7 @@ public class Knight extends DirectionalPiece{
         char file = getFile();
         int rank = getRank();
         char moveFile = move.charAt(0);
-        int moveRank = Integer.parseInt(move.substring(1, 2));
+        int moveRank = move.charAt(1) - '0';
         if (Math.abs(moveRank - rank) == 1 && Math.abs(moveFile - file) == 2) {
             return true;
         } else {

@@ -135,7 +135,7 @@ public abstract class Piece{
      */
     public void move(String square) {
         file = square.charAt(0);
-        rank = Character.getNumericValue(square.charAt(1));
+        rank = square.charAt(1) - '0';
     }
 
     /**
@@ -152,15 +152,8 @@ public abstract class Piece{
         if (file < 'a' || file > 'h') {
             return false;
         }
-        try {
-            int rank = Integer.parseInt(move.substring(1, 2));
-            if (rank < 1 || rank > 8) {
-                return false;
-            }
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+        int rank = move.charAt(1) - '0';
+        return !(rank < 1 || rank > 8);
     }
 
     /**

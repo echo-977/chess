@@ -81,7 +81,7 @@ public class Pawn extends Piece{
         char file = getFile();
         int rank = getRank();
         char moveFile = move.charAt(0);
-        int moveRank = Integer.parseInt(move.substring(1, 2));
+        int moveRank = move.charAt(1) - '0';
         if (Math.abs(moveRank - rank) == 1 && moveFile == file) {
             return true;
         }
@@ -121,7 +121,7 @@ public class Pawn extends Piece{
         char file = getFile();
         int rank = getRank();
         char targetFile = targetSquare.charAt(0);
-        int targetRank = Integer.parseInt(targetSquare.substring(1, 2));
+        int targetRank = targetSquare.charAt(1) - '0';
         int direction;
         if (getColour() == PieceColour.WHITE) {
             direction = ChessDirections.UP;

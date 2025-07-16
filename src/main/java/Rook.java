@@ -42,7 +42,7 @@ public class Rook extends LinearPiece{
             return false;
         }
         char file = move.charAt(0);
-        int rank = Integer.parseInt(move.substring(1, 2));
+        int rank = move.charAt(1) - '0';
         return (rank == getRank() ^ file == getFile());
     }
 
@@ -68,7 +68,7 @@ public class Rook extends LinearPiece{
     @Override
     public boolean canCaptureKing(Board board, String targetSquare) {
         char targetFile = targetSquare.charAt(0);
-        int targetRank = Integer.parseInt(targetSquare.substring(1, 2));
+        int targetRank = targetSquare.charAt(1) - '0';
         if (!isLegalMove(targetSquare)) {
             return false;
         }
