@@ -21,8 +21,8 @@ public class Rook extends LinearPiece{
      * @return an array of all the squares the rook can move to as strings.
      */
     @Override
-    public String[] generateMoves(Board board) {
-        String[] moves = new String[ChessConstants.MAX_ROOK_MOVES];
+    public Move[] generateMoves(Board board) {
+        Move[] moves = new Move[ChessConstants.MAX_ROOK_MOVES];
         int movesIndex = 0;
         movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.NONE);
         movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.NONE);

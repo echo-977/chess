@@ -18,8 +18,8 @@ public class Knight extends DirectionalPiece{
      * @return an array of all the squares the knight can move to as strings.
      */
     @Override
-    public String[] generateMoves(Board board) {
-        String[] moves = new String[ChessConstants.MAX_KNIGHT_MOVES];
+    public Move[] generateMoves(Board board) {
+        Move[] moves = new Move[ChessConstants.MAX_KNIGHT_MOVES];
         int[][] directions = {
                 {ChessDirections.RIGHT, 2 * ChessDirections.UP}, {2 * ChessDirections.RIGHT, ChessDirections.UP},
                 {2 * ChessDirections.RIGHT, ChessDirections.DOWN}, {ChessDirections.RIGHT, 2 * ChessDirections.DOWN},

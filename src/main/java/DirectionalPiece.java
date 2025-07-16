@@ -20,7 +20,7 @@ public abstract class DirectionalPiece extends Piece {
      * @param moves the current string of moves generated (legal moves are added to this)
      * @param directions array of 2d directions the piece can go in
      */
-    public void directionalMoveSearch(Board board, String[] moves, int[][] directions) {
+    public void directionalMoveSearch(Board board, Move[] moves, int[][] directions) {
         char file = getFile();
         int rank = getRank();
         char checkFile;
@@ -35,7 +35,7 @@ public abstract class DirectionalPiece extends Piece {
             if (isLegalMove(candidateMove)) {
                 piece = board.pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    moves[movesIndex] = candidateMove;
+                    moves[movesIndex] = new Move(this, candidateMove);
                     movesIndex++;
                 }
             }

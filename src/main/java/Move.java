@@ -173,8 +173,23 @@ public class Move {
         if (isCheck) {
             move.append(AlgebraicNotation.CHECK);
         }
-
-
         return move.toString();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        } else if (object == this) {
+            return true;
+        }
+        if (!(object instanceof Move other)) {
+            return false;
+        }
+        return other.piece == this.piece && other.destination.equals(this.destination) &&
+                other.isCapture == this.isCapture && other.isCheck == this .isCheck &&
+                other.isCheckmate == this.isCheckmate && other.isCastle == this.isCastle &&
+                other.fileDisambiguation == this.fileDisambiguation &&
+                other.rankDisambiguation == this.rankDisambiguation;
     }
 }

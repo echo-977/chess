@@ -24,8 +24,8 @@ public class King extends DirectionalPiece{
      * @return an array of all the squares the king can move to as strings.
      */
     @Override
-    public String[] generateMoves(Board board) {
-        String[] moves = new String[ChessConstants.MAX_KING_MOVES];
+    public Move[] generateMoves(Board board) {
+        Move[] moves = new Move[ChessConstants.MAX_KING_MOVES];
         int[][] directions = {
                 {ChessDirections.NONE, ChessDirections.UP}, {ChessDirections.RIGHT, ChessDirections.UP},
                 {ChessDirections.RIGHT, ChessDirections.NONE}, {ChessDirections.RIGHT, ChessDirections.DOWN},

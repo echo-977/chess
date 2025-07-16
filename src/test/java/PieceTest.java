@@ -13,8 +13,8 @@ class PieceTest {
     public static void init() {
         piece = new Piece(PieceType.PAWN, PieceColour.WHITE, 'a', 2) {
             @Override
-            public String[] generateMoves(Board board) {
-                return new String[8]; // minimal implementation here to allow testing of concrete methods
+            public Move[] generateMoves(Board board) {
+                return new Move[8]; // minimal implementation here to allow testing of concrete methods
             }
 
             @Override
@@ -29,8 +29,8 @@ class PieceTest {
     void getSquareTest() {
         piece = new Piece(PieceType.PAWN, PieceColour.WHITE, 'a', 2) {
             @Override
-            public String[] generateMoves(Board board) {
-                return new String[8]; // minimal implementation here to allow testing of concrete methods
+            public Move[] generateMoves(Board board) {
+                return new Move[8]; // minimal implementation here to allow testing of concrete methods
             }
 
             @Override

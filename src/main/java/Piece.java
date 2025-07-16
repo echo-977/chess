@@ -162,7 +162,7 @@ public abstract class Piece{
      * @param board the board that we are searching for moves on.
      * @return a string array of all the legal moves.
      */
-    public abstract String[] generateMoves(Board board);
+    public abstract Move[] generateMoves(Board board);
 
     /**
      * Abstract method to check if a piece can capture a given square.
