@@ -24,7 +24,7 @@ public abstract class LinearPiece extends Piece {
      * @param rankDirection direction to go in for the rank (e.g. -1, 0, 1)
      * @return new index for the next available space in the moves array
      */
-    public int linearMoveSearch(Board board, String[] moves, int movesIndex, int fileDirection, int rankDirection) {
+    public int linearMoveSearch(Board board, Move[] moves, int movesIndex, int fileDirection, int rankDirection) {
         char file = getFile();
         int rank = getRank();
         String candidateMove;
@@ -36,10 +36,10 @@ public abstract class LinearPiece extends Piece {
             if (isLegalMove(candidateMove)) {
                 piece = board.pieceSearch(candidateMove);
                 if (piece == null) { //no piece so the move is legal
-                    moves[movesIndex] = candidateMove;
+                    moves[movesIndex] = new Move(this, candidateMove);
                     movesIndex++;
                 } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    moves[movesIndex] = candidateMove;
+                    moves[movesIndex] = new Move(this, candidateMove);
                     movesIndex++;
                     break;
                 } else { //same coloured piece

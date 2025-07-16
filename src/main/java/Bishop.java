@@ -18,8 +18,8 @@ public class Bishop extends LinearPiece{
      * @return an array of all the squares the bishop can move to as strings.
      */
     @Override
-    public String[] generateMoves(Board board) {
-        String[] moves = new String[ChessConstants.MAX_BISHOP_MOVES];
+    public Move[] generateMoves(Board board) {
+        Move[] moves = new Move[ChessConstants.MAX_BISHOP_MOVES];
         int movesIndex = 0;
         movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP);
         movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP);

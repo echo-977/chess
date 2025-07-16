@@ -31,11 +31,11 @@ class PawnTest {
     @DisplayName("Test generateMoves (pawn pushes only)")
     void testGenerateMoves() {
         Board board = new Board("8/8/8/3p4/8/8/8/P7 w - - 0 1");
-        String[] piece1MovesExpected = {"a2", "a3", null, null};
-        String[] piece2MovesExpected = {"d4", "d3", null, null};
-        String[] piece1MovesActual = piece1.generateMoves(board);
+        Move[] piece1MovesExpected = {new Move(piece1, "a2"), new Move(piece1, "a3"), null, null};
+        Move[] piece2MovesExpected = {new Move(piece2, "d4"), new Move(piece2, "d3"), null, null};
+        Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        String[] piece2MovesActual = piece2.generateMoves(board);
+        Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 
@@ -45,11 +45,11 @@ class PawnTest {
         Board board = new Board("rnbqkb1r/pppppppp/5n2/8/N7/8/PPPPPPPP/R1BQKBNR b KQkq - 3 2");
         piece1 = (Pawn) board.getWhitePieces()[1];
         piece2 = (Pawn) board.getBlackPieces()[12];
-        String[] piece1MovesExpected = {"a3", null, null, null};
-        String[] piece2MovesExpected = {null, null, null, null};
-        String[] piece1MovesActual = piece1.generateMoves(board);
+        Move[] piece1MovesExpected = {new Move(piece1, "a3"), null, null, null};
+        Move[] piece2MovesExpected = {null, null, null, null};
+        Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        String[] piece2MovesActual = piece2.generateMoves(board);
+        Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 
@@ -59,11 +59,11 @@ class PawnTest {
         Board board = new Board("rn1qkb1r/p1pp2pp/1p3p2/1b1npNB1/2PP4/5N2/PP2PPPP/R2QKB1R b KQkq - 7 10");
         piece1 = (Pawn) board.getWhitePieces()[2];
         piece2 = (Pawn) board.getBlackPieces()[12];
-        String[] piece1MovesExpected = {"c5", "b5", "d5", null};
-        String[] piece2MovesExpected = {"g5", null, null, null};
-        String[] piece1MovesActual = piece1.generateMoves(board);
+        Move[] piece1MovesExpected = {new Move(piece1, "c5"), new Move(piece1, "b5"), new Move(piece1, "d5"), null};
+        Move[] piece2MovesExpected = {new Move(piece2, "g5"), null, null, null};
+        Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        String[] piece2MovesActual = piece2.generateMoves(board);
+        Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 
@@ -73,11 +73,11 @@ class PawnTest {
         Board board = new Board("rn1qkb1r/pp3p1p/5n2/2pPp3/6p1/2B2P2/PPP1P1PP/RN1QKB1R w KQkq c6 0 10");
         piece1 = (Pawn) board.getWhitePieces()[0];
         piece2 = (Pawn) board.getBlackPieces()[13];
-        String[] piece1MovesExpected = {"d6", "c6", null, null};
-        String[] piece2MovesExpected = {"g3", "f3", null, null};
-        String[] piece1MovesActual = piece1.generateMoves(board);
+        Move[] piece1MovesExpected = {new Move(piece1, "d6"), new Move(piece1 ,"c6"), null, null};
+        Move[] piece2MovesExpected = {new Move(piece2, "g3"), new Move(piece2, "f3"), null, null};
+        Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        String[] piece2MovesActual = piece2.generateMoves(board);
+        Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 

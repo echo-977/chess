@@ -18,8 +18,8 @@ public class Queen extends LinearPiece{
      * @return an array of all the squares the queen can move to as strings.
      */
     @Override
-    public String[] generateMoves(Board board) {
-        String[] moves = new String[ChessConstants.MAX_QUEEN_MOVES];
+    public Move[] generateMoves(Board board) {
+        Move[] moves = new Move[ChessConstants.MAX_QUEEN_MOVES];
         int movesIndex = 0;
         movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP);
         movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP);

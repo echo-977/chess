@@ -39,11 +39,15 @@ class RookTest {
         piece1.move("c4");
         piece2.move("e5");
         Board board = new Board("8/8/8/4r3/2R5/8/8/8 w - - 0 1");
-        String[] piece1MovesExpected = {"b4", "a4", "d4", "e4", "f4", "g4", "h4", "c5", "c6", "c7", "c8", "c3", "c2", "c1"};
-        String[] piece2MovesExpected = {"d5", "c5", "b5", "a5", "f5", "g5", "h5", "e6", "e7", "e8", "e4", "e3", "e2", "e1"};
-        String[] piece1MovesActual = piece1.generateMoves(board);
+        Move[] piece1MovesExpected = {new Move(piece1, "b4"), new Move(piece1, "a4"),
+                new Move(piece1, "d4"), new Move(piece1, "e4"), new Move(piece1, "f4"),
+                new Move(piece1, "g4"), new Move(piece1, "h4"), new Move(piece1, "c5"),
+                new Move(piece1, "c6"), new Move(piece1, "c7"), new Move(piece1, "c8"),
+                new Move(piece1, "c3"), new Move(piece1, "c2"), new Move(piece1, "c1")};
+        Move[] piece2MovesExpected = {new Move(piece2, "d5"), new Move(piece2, "c5"), new Move(piece2, "b5"), new Move(piece2, "a5"), new Move(piece2, "f5"), new Move(piece2, "g5"), new Move(piece2, "h5"), new Move(piece2, "e6"), new Move(piece2, "e7"), new Move(piece2, "e8"), new Move(piece2, "e4"), new Move(piece2, "e3"), new Move(piece2, "e2"), new Move(piece2, "e1")};
+        Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        String[] piece2MovesActual = piece2.generateMoves(board);
+        Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 
@@ -53,11 +57,18 @@ class RookTest {
         Board board = new Board("rnbqkbn1/pppppp2/1r6/3R2pp/P3P3/2N5/1PPP1PPP/2BQKBNR w Kq - 0 1");
         piece1 = (Rook) board.getWhitePieces()[0];
         piece2 = (Rook) board.getBlackPieces()[13];
-        String[] piece1MovesExpected = {"c5", "b5", "a5", "e5", "f5", "g5", "d6", "d7", "d4", "d3", null, null, null, null};
-        String[] piece2MovesExpected = {"a6", "c6", "d6", "e6", "f6", "g6", "h6", "b5", "b4", "b3", "b2", null, null, null};
-        String[] piece1MovesActual = piece1.generateMoves(board);
+        Move[] piece1MovesExpected = {new Move(piece1, "c5"), new Move(piece1, "b5"),
+                new Move(piece1, "a5"), new Move(piece1, "e5"), new Move(piece1, "f5"),
+                new Move(piece1, "g5"), new Move(piece1, "d6"), new Move(piece1, "d7"),
+                new Move(piece1, "d4"), new Move(piece1, "d3"), null, null, null, null};
+        Move[] piece2MovesExpected = {new Move(piece2, "a6"), new Move(piece2, "c6"),
+                new Move(piece2, "d6"), new Move(piece2, "e6"), new Move(piece2, "f6"),
+                new Move(piece2, "g6"), new Move(piece2, "h6"), new Move(piece2, "b5"),
+                new Move(piece2, "b4"), new Move(piece2, "b3"), new Move(piece2, "b2"),
+                null, null, null};
+        Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        String[] piece2MovesActual = piece2.generateMoves(board);
+        Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 
