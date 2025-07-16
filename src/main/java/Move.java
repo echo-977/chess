@@ -7,6 +7,7 @@ public class Move {
     private boolean isCastle;
     private boolean fileDisambiguation;
     private boolean rankDisambiguation;
+    private PieceType promotionType;
 
     /**
      * Simple constructor
@@ -186,10 +187,6 @@ public class Move {
         if (!(object instanceof Move other)) {
             return false;
         }
-        return other.piece == this.piece && other.destination.equals(this.destination) &&
-                other.isCapture == this.isCapture && other.isCheck == this .isCheck &&
-                other.isCheckmate == this.isCheckmate && other.isCastle == this.isCastle &&
-                other.fileDisambiguation == this.fileDisambiguation &&
-                other.rankDisambiguation == this.rankDisambiguation;
+        return other.piece == this.piece && other.destination.equals(this.destination);
     }
 }
