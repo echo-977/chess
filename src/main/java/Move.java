@@ -7,6 +7,7 @@ public class Move {
     private boolean isCastle;
     private boolean fileDisambiguation;
     private boolean rankDisambiguation;
+    private boolean isEnPassant;
     private PieceType promotionType;
 
     /**
@@ -76,6 +77,14 @@ public class Move {
     }
 
     /**
+     * Simple setter for isEnPassant
+     * @param enPassant state isEnPassant is set to
+     */
+    public void setEnPassant(boolean enPassant) {
+        isEnPassant = enPassant;
+    }
+
+    /**
      * Simpler getter for the piece
      * @return the piece
      */
@@ -137,6 +146,14 @@ public class Move {
      */
     public PieceType getPromotionType() {
         return promotionType;
+    }
+
+    /**
+     * Simple getter for isEnPassant
+     * @return whether the move is an en passant capture
+     */
+    public boolean isEnPassant() {
+        return isEnPassant;
     }
 
     /**
