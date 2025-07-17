@@ -2,6 +2,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -78,12 +80,17 @@ class PawnTest {
         Board board = new Board("rn1qkb1r/pp3p1p/5n2/2pPp3/6p1/2B2P2/PPP1P1PP/RN1QKB1R w KQkq c6 0 10");
         piece1 = (Pawn) board.getWhitePieces()[0];
         piece2 = (Pawn) board.getBlackPieces()[13];
-        Move[] piece1MovesExpected = {new Move(piece1, "d6"), new Move(piece1 ,"c6"), null, null,
-                null, null, null, null, null, null, null, null};
-        Move[] piece2MovesExpected = {new Move(piece2, "g3"), new Move(piece2, "f3"), null, null,
+        Move move1 = new Move(piece1, "d6");
+        Move move2 = new Move(piece1 ,"c6");
+        move2.setEnPassant(true);
+        Move[] piece1MovesExpected = {move1, move2, null, null,
                 null, null, null, null, null, null, null, null};
         Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+        move1 = new Move(piece2, "g3");
+        move2 = new Move(piece2, "f3");
+        Move[] piece2MovesExpected = {move1, move2, null, null,
+                null, null, null, null, null, null, null, null};
         Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
