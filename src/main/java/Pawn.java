@@ -56,10 +56,14 @@ public class Pawn extends Piece{
         piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank()));
         if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
             movesIndex = addMove(moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
+            moves[movesIndex - 1].setEnPassant(true);
+            moves[movesIndex - 1].setCapture(true);
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank()));
         if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
             addMove(moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
+            moves[movesIndex - 1].setEnPassant(true);
+            moves[movesIndex - 1].setCapture(true);
         }
         return moves;
     }

@@ -237,6 +237,7 @@ public class Move {
         if (!(object instanceof Move other)) {
             return false;
         }
-        return other.piece == this.piece && other.destination.equals(this.destination) && other.promotionType == this.promotionType;
+        return other.piece == this.piece && other.destination.equals(this.destination) &&
+                other.promotionType == this.promotionType && other.isEnPassant == this.isEnPassant;
     }
 }
