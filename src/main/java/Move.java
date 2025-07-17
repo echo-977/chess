@@ -60,11 +60,19 @@ public class Move {
     }
 
     /**
-     * Simple getter for the isCastle boolean
+     * Simple setter for the isCastle boolean
      * @param castle state isCastle is set to
      */
     public void setCastle(boolean castle) {
         isCastle = castle;
+    }
+
+    /**
+     * Simple setter for promotionType
+     * @param promotionType the type of promotion
+     */
+    public void setPromotionType(PieceType promotionType) {
+        this.promotionType = promotionType;
     }
 
     /**
@@ -124,8 +132,16 @@ public class Move {
     }
 
     /**
-     *
-     * @return the move in standard algebraic notation
+     * Simple getter for promotionType
+     * @return the promotionType
+     */
+    public PieceType getPromotionType() {
+        return promotionType;
+    }
+
+    /**
+     * Takes the move and converts it to notation
+     * @return the move in standard algebraic notation as a String
      */
     public String getAlgebraicNotation() {
         StringBuilder move =  new StringBuilder();
@@ -147,6 +163,16 @@ public class Move {
                 break;
             case PAWN:
                 move.append(AlgebraicNotation.PAWN);
+                if (promotionType != null) {
+                    move.append(destination);
+                    move.append(AlgebraicNotation.PROMOTION);
+                    switch (promotionType) {
+                        case QUEEN ->  move.append(AlgebraicNotation.QUEEN);
+                        case ROOK ->  move.append(AlgebraicNotation.ROOK);
+                        case BISHOP ->   move.append(AlgebraicNotation.BISHOP);
+                        case KNIGHT -> move.append(AlgebraicNotation.KNIGHT);
+                    }
+                }
                 break;
             case ROOK:
                 move.append(AlgebraicNotation.ROOK);
@@ -165,6 +191,9 @@ public class Move {
             move.append(piece.getRank());
         }
         if (isCapture) {
+            if (piece.getType() == PieceType.PAWN) {
+                move.append(piece.getFile());
+            }
             move.append(AlgebraicNotation.CAPTURE);
         }
         move.append(destination);
@@ -178,6 +207,10 @@ public class Move {
     }
 
     @Override
+    /**
+     * Compares move to a given move to check if they are equal
+     * @return boolean object for if the moves are the same
+     */
     public boolean equals(Object object) {
         if (object == null) {
             return false;
@@ -187,6 +220,6 @@ public class Move {
         if (!(object instanceof Move other)) {
             return false;
         }
-        return other.piece == this.piece && other.destination.equals(this.destination);
+        return other.piece == this.piece && other.destination.equals(this.destination) && other.promotionType == this.promotionType;
     }
 }

@@ -40,32 +40,67 @@ public class Pawn extends Piece{
             checkRank = checkRank + moveDirection;
             candidateMove = file + String.valueOf(checkRank);
             if (isLegalMove(candidateMove) && board.pieceSearch(candidateMove) == null) {
-                moves[movesIndex] = new Move(this, candidateMove);
-                movesIndex++;
+                movesIndex = addMove(moves, movesIndex, candidateMove);
             } else {
                 break; //if single push is blocked then double push is blocked
             }
         }
         Piece piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT)+ String.valueOf(getRank() + moveDirection));
         if (piece != null && piece.getColour() != getColour()) {
-            moves[movesIndex] = new Move(this, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
-            movesIndex++;
+            movesIndex = addMove(moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
         if (piece != null && piece.getColour() != getColour()) {
-            moves[movesIndex] = new Move(this, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
-            movesIndex++;
+            movesIndex = addMove(moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank()));
         if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
-            moves[movesIndex] = new Move(this, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
-            movesIndex++;
+            movesIndex = addMove(moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank()));
         if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
-            moves[movesIndex] = new Move(this, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
+            addMove(moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
         }
         return moves;
+    }
+
+    /**
+     * Helper function to add moves for the generateMoves method
+     * @param moves the array of moves from generateMoves
+     * @param movesIndex index of next available spot in moves
+     * @param destination where the piece is going to
+     * @return updated value of movesIndex
+     */
+    public int addMove(Move[] moves, int movesIndex, String destination) {
+        char file = destination.charAt(0);
+        int rank = destination.charAt(1) - '0';
+        Move move;
+        if ((getColour() == PieceColour.WHITE && rank == 8) || (getColour() == PieceColour.BLACK && rank == 1)) {
+            for (PieceType type : PieceType.values()) {
+                if (canPromoteTo(type)) {
+                    move = new Move(this, destination);
+                    move.setPromotionType(type);
+                    moves[movesIndex] = move;
+                    movesIndex++;
+                }
+            }
+        } else {
+            moves[movesIndex] = new Move(this, destination);
+            movesIndex++;
+        }
+        return movesIndex;
+    }
+
+    /**
+     * Filters piece types based on whether they can be promoted to
+     * @param type the piece type
+     * @return true if the piece can be promoted to, false otherwise
+     */
+    public boolean canPromoteTo(PieceType type) {
+        return switch (type) {
+            case QUEEN, ROOK, BISHOP, KNIGHT -> true;
+            default -> false;
+        };
     }
 
     /**
@@ -88,7 +123,6 @@ public class Pawn extends Piece{
         else {
             return (!getMoved() && Math.abs(moveRank - rank) == 2 && moveFile == file);
         }
-
     }
 
     /**

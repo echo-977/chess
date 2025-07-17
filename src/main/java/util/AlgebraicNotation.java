@@ -8,4 +8,5 @@ public class AlgebraicNotation {
     public static final String CAPTURE = "x";
     public static final String CHECK = "+";
     public static final String CHECKMATE = "#";
+    public static final String PROMOTION = "=";
 }
