@@ -50,14 +50,20 @@ class KingTest {
         Board board = new Board("8/6p1/4PkR1/3r4/2K2p2/2P5/8/8 b - - 0 1");
         piece1 = (King) board.getWhitePieces()[2];
         piece2 = (King) board.getBlackPieces()[1];
-        Move[] piece1MovesExpected = {new Move(piece1, "c5"), new Move(piece1, "d5"),
-                new Move(piece1, "d4"), new Move(piece1, "d3"), new Move(piece1, "b3"),
-                new Move(piece1, "b4"), new Move(piece1, "b5"), null};
+        Move move1 = new Move(piece1, "d5");
+        move1.setCapture(true);
+        Move[] piece1MovesExpected = {new Move(piece1, "c5"), move1, new Move(piece1, "d4"),
+                new Move(piece1, "d3"), new Move(piece1, "b3"), new Move(piece1, "b4"),
+                new Move(piece1, "b5"), null};
         Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        Move[] piece2MovesExpected = {new Move(piece2, "f7"), new Move(piece2, "g6"),
-                new Move(piece2, "g5"), new Move(piece2, "f5"), new Move(piece2, "e5"),
-                new Move(piece2, "e6"), new Move(piece2, "e7"), null};
+        move1 = new Move(piece2, "g6");
+        move1.setCapture(true);
+        Move move2 = new Move(piece2, "e6");
+        move2.setCapture(true);
+        Move[] piece2MovesExpected = {new Move(piece2, "f7"), move1, new Move(piece2, "g5"),
+                new Move(piece2, "f5"), new Move(piece2, "e5"), move2,
+                new Move(piece2, "e7"), null};
         Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
