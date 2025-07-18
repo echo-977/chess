@@ -238,6 +238,11 @@ public class Move {
             return false;
         }
         return other.piece == this.piece && other.destination.equals(this.destination) &&
-                other.promotionType == this.promotionType && other.isEnPassant == this.isEnPassant;
+                other.promotionType == this.promotionType && other.isEnPassant == this.isEnPassant &&
+                other.isCapture == this.isCapture;
+    }
+
+    public String toString() {
+        return "" + isCapture;
     }
 }

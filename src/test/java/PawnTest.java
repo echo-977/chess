@@ -64,12 +64,17 @@ class PawnTest {
         Board board = new Board("rn1qkb1r/p1pp2pp/1p3p2/1b1npNB1/2PP4/5N2/PP2PPPP/R2QKB1R b KQkq - 7 10");
         piece1 = (Pawn) board.getWhitePieces()[2];
         piece2 = (Pawn) board.getBlackPieces()[12];
-        Move[] piece1MovesExpected = {new Move(piece1, "c5"), new Move(piece1, "b5"),
-                new Move(piece1, "d5"), null, null, null, null, null, null, null, null, null};
-        Move[] piece2MovesExpected = {new Move(piece2, "g5"), null, null, null, null, null, null, null, null,
-                null, null, null};
+        Move move1 = new Move(piece1, "b5");
+        move1.setCapture(true);
+        Move move2 = new Move(piece1, "d5");
+        move2.setCapture(true);
+        Move[] piece1MovesExpected = {new Move(piece1, "c5"), move1, move2, null, null, null, null, null,
+                null, null, null, null};
         Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+        move1 = new Move(piece2, "g5");
+        move1.setCapture(true);
+        Move[] piece2MovesExpected = {move1, null, null, null, null, null, null, null, null, null, null, null};
         Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
@@ -90,6 +95,7 @@ class PawnTest {
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
         move1 = new Move(piece2, "g3");
         move2 = new Move(piece2, "f3");
+        move2.setCapture(true);
         Move[] piece2MovesExpected = {move1, move2, null, null,
                 null, null, null, null, null, null, null, null};
         Move[] piece2MovesActual = piece2.generateMoves(board);
@@ -114,7 +120,11 @@ class PawnTest {
                 }
             }
         }
+        for (int i = 4; i < 8; i++) {
+            piece1MovesExpected[i].setCapture(true);
+        }
         Move[] piece1MovesActual = piece1.generateMoves(board);
+
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
         destinations = new String[] {"d1", "c1", "e1"};
         Move[] piece2MovesExpected = new Move[12];
@@ -128,8 +138,12 @@ class PawnTest {
                 }
             }
         }
+        for (int i = 4; i < 12; i++) {
+            piece2MovesExpected[i].setCapture(true);
+        }
         Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
+
     }
 
     @Test

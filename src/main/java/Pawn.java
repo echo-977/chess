@@ -40,28 +40,30 @@ public class Pawn extends Piece{
             checkRank = checkRank + moveDirection;
             candidateMove = file + String.valueOf(checkRank);
             if (isLegalMove(candidateMove) && board.pieceSearch(candidateMove) == null) {
-                movesIndex = addMove(moves, movesIndex, candidateMove);
+                movesIndex = addMove(board, moves, movesIndex, candidateMove);
             } else {
                 break; //if single push is blocked then double push is blocked
             }
         }
         Piece piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT)+ String.valueOf(getRank() + moveDirection));
         if (piece != null && piece.getColour() != getColour()) {
-            movesIndex = addMove(moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
+            movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
+            moves[movesIndex - 1].setCapture(true);
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
         if (piece != null && piece.getColour() != getColour()) {
-            movesIndex = addMove(moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
+            movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
+            moves[movesIndex - 1].setCapture(true);
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank()));
         if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
-            movesIndex = addMove(moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
+            movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
             moves[movesIndex - 1].setEnPassant(true);
             moves[movesIndex - 1].setCapture(true);
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank()));
         if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
-            addMove(moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
+            addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
             moves[movesIndex - 1].setEnPassant(true);
             moves[movesIndex - 1].setCapture(true);
         }
@@ -70,20 +72,24 @@ public class Pawn extends Piece{
 
     /**
      * Helper function to add moves for the generateMoves method
+     * @param board the board we are looking for moves on
      * @param moves the array of moves from generateMoves
      * @param movesIndex index of next available spot in moves
      * @param destination where the piece is going to
      * @return updated value of movesIndex
      */
-    public int addMove(Move[] moves, int movesIndex, String destination) {
-        char file = destination.charAt(0);
+    public int addMove(Board board, Move[] moves, int movesIndex, String destination) {
         int rank = destination.charAt(1) - '0';
         Move move;
         if ((getColour() == PieceColour.WHITE && rank == 8) || (getColour() == PieceColour.BLACK && rank == 1)) {
+            Piece piece = board.pieceSearch(destination);
             for (PieceType type : PieceType.values()) {
                 if (canPromoteTo(type)) {
                     move = new Move(this, destination);
                     move.setPromotionType(type);
+                    if (piece != null) {
+                        move.setCapture(true);
+                    }
                     moves[movesIndex] = move;
                     movesIndex++;
                 }
