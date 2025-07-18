@@ -52,7 +52,9 @@ class LinearPieceTest {
         Move[] moves = new Move[7];
         int movesIndex = 0;
         piece.linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP); //up left
-        Move[] expectedMoves = {new Move(piece, "e5"), new Move(piece, "f6"), null, null, null,
+        Move move1 = new Move(piece, "f6");
+        move1.setCapture(true);
+        Move[] expectedMoves = {new Move(piece, "e5"), move1, null, null, null,
                 null, null};
         assertArrayEquals(expectedMoves, moves);
     }

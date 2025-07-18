@@ -40,6 +40,7 @@ public abstract class LinearPiece extends Piece {
                     movesIndex++;
                 } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
                     moves[movesIndex] = new Move(this, candidateMove);
+                    moves[movesIndex].setCapture(true);
                     movesIndex++;
                     break;
                 } else { //same coloured piece

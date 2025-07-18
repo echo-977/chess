@@ -54,16 +54,22 @@ class BishopTest {
         Board board = new Board("r2qkbnr/pp2pp2/n1p3pp/3p1b2/3P1B2/6PP/PPP1PP2/RN1QKBNR w KQkq - 0 1");
         piece1 = (Bishop) board.getWhitePieces()[1];
         piece2 = (Bishop) board.getBlackPieces()[15];
+        Move move1 = new Move(piece1, "h6");
+        move1.setCapture(true);
         Move[] piece1MovesExpected = {new Move(piece1, "e5"), new Move(piece1, "d6"),
                 new Move(piece1, "c7"), new Move(piece1, "b8"), new Move(piece1, "g5"),
-                new Move(piece1, "h6"), new Move(piece1, "e3"), new Move(piece1, "d2"),
+                move1, new Move(piece1, "e3"), new Move(piece1, "d2"),
                 new Move(piece1, "c1"), null, null, null, null};
-        Move[] piece2MovesExpected = {new Move(piece2, "e6"), new Move(piece2, "d7"),
-                new Move(piece2, "c8"), new Move(piece2, "g4"), new Move(piece2, "h3"),
-                new Move(piece2, "e4"), new Move(piece2, "d3"), new Move(piece2, "c2"),
-                null, null, null, null, null};
         Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+        move1 = new Move(piece2, "h3");
+        move1.setCapture(true);
+        Move move2 = new Move(piece2, "c2");
+        move2.setCapture(true);
+        Move[] piece2MovesExpected = {new Move(piece2, "e6"), new Move(piece2, "d7"),
+                new Move(piece2, "c8"), new Move(piece2, "g4"), move1,
+                new Move(piece2, "e4"), new Move(piece2, "d3"), move2, null, null, null, null,
+                null};
         Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }

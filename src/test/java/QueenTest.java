@@ -66,24 +66,32 @@ class QueenTest {
         Board board = new Board("8/2P5/b7/4q3/2Q2P2/8/4p3/8 w - - 0 1");
         piece1 = (Queen) board.getWhitePieces()[1];
         piece2 = (Queen) board.getBlackPieces()[1];
+        Move move1 = new Move(piece1, "e2");
+        move1.setCapture(true);
+        Move move2 = new Move(piece1, "a6");
+        move2.setCapture(true);
         Move[] piece1MovesExpected = {new Move(piece1, "c5"), new Move(piece1, "c6"),
                 new Move(piece1, "d5"), new Move(piece1, "e6"), new Move(piece1, "f7"),
                 new Move(piece1, "g8"), new Move(piece1, "d4"), new Move(piece1, "e4"),
-                new Move(piece1, "d3"), new Move(piece1, "e2"), new Move(piece1, "c3"),
+                new Move(piece1, "d3"), move1, new Move(piece1, "c3"),
                 new Move(piece1, "c2"), new Move(piece1, "c1"), new Move(piece1, "b3"),
                 new Move(piece1, "a2"), new Move(piece1, "b4"), new Move(piece1, "a4"),
-                new Move(piece1, "b5"), new Move(piece1, "a6"), null, null, null, null, null, null,
+                new Move(piece1, "b5"), move2, null, null, null, null, null, null,
                 null, null};
         Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+        move1 = new Move(piece2, "f4");
+        move1.setCapture(true);
+        move2 = new Move(piece2, "c7");
+        move2.setCapture(true);
         Move[] piece2MovesExpected = {new Move(piece2, "e6"), new Move(piece2, "e7"),
                 new Move(piece2, "e8"), new Move(piece2, "f6"), new Move(piece2, "g7"),
                 new Move(piece2, "h8"), new Move(piece2, "f5"), new Move(piece2, "g5"),
-                new Move(piece2, "h5"), new Move(piece2, "f4"), new Move(piece2, "e4"),
+                new Move(piece2, "h5"), move1, new Move(piece2, "e4"),
                 new Move(piece2, "e3"), new Move(piece2, "d4"), new Move(piece2, "c3"),
                 new Move(piece2, "b2"), new Move(piece2, "a1"), new Move(piece2, "d5"),
                 new Move(piece2, "c5"), new Move(piece2, "b5"), new Move(piece2, "a5"),
-                new Move(piece2, "d6"), new Move(piece2, "c7"), null, null, null, null, null};
+                new Move(piece2, "d6"), move2, null, null, null, null, null};
         Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
