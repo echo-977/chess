@@ -40,9 +40,9 @@ class DirectionalPieceTest {
                 {ChessDirections.LEFT, ChessDirections.NONE}, {ChessDirections.LEFT, ChessDirections.UP}
         };
         piece.directionalMoveSearch(board, moves, directions);
-        Move[] expectedMoves = {new Move(piece, "b2"), new Move(piece, "c2"),
-                new Move(piece, "c1"), new Move(piece, "a1"), new Move(piece, "a2"),
-                null, null, null};
+        Move[] expectedMoves = {new Move(board, piece, "b2"), new Move(board, piece, "c2"),
+                new Move(board, piece, "c1"), new Move(board, piece, "a1"),
+                new Move(board, piece, "a2"), null, null, null};
         assertArrayEquals(expectedMoves, moves);
     }
 }

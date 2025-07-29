@@ -35,10 +35,7 @@ public abstract class DirectionalPiece extends Piece {
             if (isLegalMove(candidateMove)) {
                 piece = board.pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    moves[movesIndex] = new Move(this, candidateMove);
-                    if (piece != null && piece.getColour() != getColour()) {
-                        moves[movesIndex].setCapture(true);
-                    }
+                    moves[movesIndex] = new Move(board, this, candidateMove);
                     movesIndex++;
                 }
             }

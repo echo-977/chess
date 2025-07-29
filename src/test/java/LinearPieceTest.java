@@ -34,8 +34,8 @@ class LinearPieceTest {
         Move[] moves = new Move[7];
         int movesIndex = 0;
         piece.linearMoveSearch(board, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP); //up
-        Move[] expectedMoves = {new Move(piece, "d5"), new Move(piece, "d6"),
-                new Move(piece, "d7"), new Move(piece, "d8"), null, null, null};
+        Move[] expectedMoves = {new Move(board, piece, "d5"), new Move(board, piece, "d6"),
+                new Move(board, piece, "d7"), new Move(board, piece, "d8"), null, null, null};
         assertArrayEquals(expectedMoves, moves);
     }
 
@@ -46,7 +46,7 @@ class LinearPieceTest {
         Move[] moves = new Move[7];
         int movesIndex = 0;
         piece.linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP); //up left
-        Move[] expectedMoves = {new Move(piece, "c5"), null, null, null, null, null, null};
+        Move[] expectedMoves = {new Move(board, piece, "c5"), null, null, null, null, null, null};
         assertArrayEquals(expectedMoves, moves);
     }
 
@@ -57,9 +57,9 @@ class LinearPieceTest {
         Move[] moves = new Move[7];
         int movesIndex = 0;
         piece.linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP); //up left
-        Move move1 = new Move(piece, "f6");
+        Move move1 = new Move(board, piece, "f6");
         move1.setCapture(true);
-        Move[] expectedMoves = {new Move(piece, "e5"), move1, null, null, null,
+        Move[] expectedMoves = {new Move(board, piece, "e5"), move1, null, null, null,
                 null, null};
         assertArrayEquals(expectedMoves, moves);
     }

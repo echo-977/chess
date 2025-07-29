@@ -48,12 +48,10 @@ public class Pawn extends Piece{
         Piece piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT)+ String.valueOf(getRank() + moveDirection));
         if (piece != null && piece.getColour() != getColour()) {
             movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
-            moves[movesIndex - 1].setCapture(true);
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
         if (piece != null && piece.getColour() != getColour()) {
             movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
-            moves[movesIndex - 1].setCapture(true);
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank()));
         if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
@@ -80,20 +78,16 @@ public class Pawn extends Piece{
         int rank = destination.charAt(1) - '0';
         Move move;
         if ((getColour() == PieceColour.WHITE && rank == 8) || (getColour() == PieceColour.BLACK && rank == 1)) {
-            Piece piece = board.pieceSearch(destination);
             for (PieceType type : PieceType.values()) {
                 if (canPromoteTo(type)) {
-                    move = new Move(this, destination);
+                    move = new Move(board, this, destination);
                     move.setPromotionType(type);
-                    if (piece != null) {
-                        move.setCapture(true);
-                    }
                     moves[movesIndex] = move;
                     movesIndex++;
                 }
             }
         } else {
-            moves[movesIndex] = new Move(this, destination);
+            moves[movesIndex] = new Move(board, this, destination);
             movesIndex++;
         }
         return movesIndex;

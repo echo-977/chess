@@ -15,9 +15,12 @@ public class Move {
      * @param piece the piece that will do the move
      * @param destination square the piece moves to
      */
-    public Move(Piece piece, String destination) {
+    public Move(Board board, Piece piece, String destination) {
         this.piece = piece;
         this.destination = destination;
+        if (board.pieceSearch(destination) != null) {
+            isCapture = true;
+        }
     }
 
     /**
