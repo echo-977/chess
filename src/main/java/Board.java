@@ -306,4 +306,19 @@ public class Board {
     public int getHalfMoveClock() {
         return halfMoveClock;
     }
+
+    public King findKing(PieceColour colour) {
+        Piece[] pieces = new Piece[0];
+        if (colour == PieceColour.WHITE) {
+            pieces = whitePieces;
+        } else if (colour == PieceColour.BLACK) {
+            pieces = blackPieces;
+        }
+        for (Piece piece : pieces) {
+            if (piece.getType() == PieceType.KING) {
+                return (King) piece;
+            }
+        }
+        return null;
+    }
 }

@@ -383,4 +383,13 @@ class BoardTest {
         board = new Board(fen);
         assertEquals(fen, board.getFEN());
     }
+
+    @Test
+    @DisplayName("Test findKing")
+    void testFindKing() {
+        King whiteKing = board.findKing(PieceColour.WHITE);
+        assertEquals("e1", whiteKing.getSquare());
+        King blackKing = board.findKing(PieceColour.BLACK);
+        assertEquals("e8", blackKing.getSquare());
+    }
 }
