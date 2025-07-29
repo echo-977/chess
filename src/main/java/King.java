@@ -99,6 +99,18 @@ public class King extends DirectionalPiece{
     public void setCheck(boolean check) {
         this.check = check;
     }
+
+    /**
+     * Creates a copy of the king at a given square.
+     * @param square the square the piece copy will be at.
+     * @return a king object at the given square with the same properties.
+     */
+    @Override
+    public Piece copyToSquare(String square) {
+        char file = square.charAt(0);
+        int rank = square.charAt(1) - '0';
+        return new King(getColour(), file, rank, getMoved(), isCheck());
+    }
 }
 
 

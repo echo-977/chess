@@ -2,10 +2,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class KnightTest {
     static Knight piece1;
@@ -68,5 +66,13 @@ class KnightTest {
     @Test
     @DisplayName("Test canCaptureKing")
     void testCanCaptureKing() { //given the canCaptureKing method just calls the isLegalMove method there is no test required
+    }
+
+    @Test
+    @DisplayName("Test copyToSquare")
+    void testCopyToSquare() {
+        Knight test = (Knight) piece1.copyToSquare("d8");
+        assertEquals("d8", test.getSquare());
+        assertEquals(piece1.getColour(), test.getColour());
     }
 }

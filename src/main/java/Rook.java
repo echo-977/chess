@@ -1,3 +1,8 @@
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class Rook extends LinearPiece{
     private boolean moved;
 
@@ -92,5 +97,17 @@ public class Rook extends LinearPiece{
      */
     public boolean getMoved() {
         return moved;
+    }
+    
+    /**
+     * Creates a copy of the rook at a given square.
+     * @param square the square the piece copy will be at.
+     * @return a rook object at the given square with the same properties.
+     */
+    @Override
+    public Piece copyToSquare(String square) {
+        char file = square.charAt(0);
+        int rank = square.charAt(1) - '0';
+        return new Rook(getColour(), file, rank, getMoved());
     }
 }

@@ -82,6 +82,9 @@ public class Move {
      */
     public void setEnPassant(boolean enPassant) {
         isEnPassant = enPassant;
+        if (enPassant) {
+            isCapture = true;
+        }
     }
 
     /**

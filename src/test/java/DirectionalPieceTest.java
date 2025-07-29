@@ -20,6 +20,11 @@ class DirectionalPieceTest {
             public boolean canCaptureKing(Board board, String move) {
                 return false; //minimal implementation here to allow testing of concrete methods
             }
+
+            @Override
+            public Piece copyToSquare(String square) {
+                return null;
+            }
         };
     }
 

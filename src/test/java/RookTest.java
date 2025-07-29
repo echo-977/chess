@@ -2,9 +2,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 class RookTest {
     static Rook piece1;
@@ -90,6 +88,14 @@ class RookTest {
         assertTrue(rook.canCaptureKing(board, "d2"));
         assertFalse(rook.canCaptureKing(board, "a5"));
         assertTrue(rook.canCaptureKing(board, "b5"));
+    }
 
+    @Test
+    @DisplayName("Test copyToSquare")
+    void testCopyToSquare() {
+        Rook test = (Rook) piece1.copyToSquare("d8");
+        assertEquals("d8", test.getSquare());
+        assertEquals(piece1.getColour(), test.getColour());
+        assertEquals(piece1.getMoved(), test.getMoved());
     }
 }

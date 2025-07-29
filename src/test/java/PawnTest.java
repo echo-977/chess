@@ -4,9 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PawnTest {
     public Pawn piece1;
@@ -176,5 +174,15 @@ class PawnTest {
         assertFalse(piece2.canCaptureKing(board, "d4"));
         assertFalse(piece2.canCaptureKing(board, "d6"));
         assertFalse(piece2.canCaptureKing(board, "f3"));
+    }
+
+    @Test
+    @DisplayName("Test copyToSquare")
+    void testCopyToSquare() {
+        Pawn test = (Pawn) piece1.copyToSquare("d8");
+        assertEquals("d8", test.getSquare());
+        assertEquals(piece1.getColour(), test.getColour());
+        assertEquals(piece1.getMoved(), test.getMoved());
+        assertEquals(piece1.getEnPassantable(), test.getEnPassantable());
     }
 }

@@ -21,6 +21,11 @@ class PieceTest {
             public boolean canCaptureKing(Board board, String color) {
                 return false; // minimal implementation here to allow testing of concrete methods
             }
+
+            @Override
+            public Piece copyToSquare(String square) {
+                return null;
+            }
         };
     }
 
@@ -36,6 +41,11 @@ class PieceTest {
             @Override
             public boolean canCaptureKing(Board board, String color) {
                 return false; // minimal implementation here to allow testing of concrete methods
+            }
+
+            @Override
+            public Piece copyToSquare(String square) {
+                return null;
             }
         };
         assertEquals("a2", piece.getSquare());

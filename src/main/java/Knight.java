@@ -62,5 +62,17 @@ public class Knight extends DirectionalPiece{
     public boolean canCaptureKing(Board board, String targetSquare) {
         return isLegalMove(targetSquare); //if the knight can move to where the king is it can capture it
     }
+
+    /**
+     * Creates a copy of the knight at a given square.
+     * @param square the square the piece copy will be at.
+     * @return a knight object at the given square with the same properties.
+     */
+    @Override
+    public Piece copyToSquare(String square) {
+        char file = square.charAt(0);
+        int rank = square.charAt(1) - '0';
+        return new Knight(getColour(), file, rank);
+    }
 }
 

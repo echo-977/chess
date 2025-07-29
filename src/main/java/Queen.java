@@ -79,4 +79,16 @@ public class Queen extends LinearPiece{
         rankDirection = directions[ChessConstants.RANK_DIRECTION_INDEX];
         return recursiveCaptureCheck(board, (char) (targetFile + fileDirection), targetRank + rankDirection, fileDirection, rankDirection);
     }
+
+    /**
+     * Creates a copy of the queen at a given square.
+     * @param square the square the piece copy will be at.
+     * @return a queen object at the given square with the same properties.
+     */
+    @Override
+    public Piece copyToSquare(String square) {
+        char file = square.charAt(0);
+        int rank = square.charAt(1) - '0';
+        return new Queen(getColour(), file, rank);
+    }
 }

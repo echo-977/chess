@@ -2,10 +2,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BishopTest {
     static Bishop piece1;
@@ -87,5 +84,14 @@ class BishopTest {
         assertTrue(bishop.canCaptureKing(board, "b3"));
         assertFalse(bishop.canCaptureKing(board, "a8"));
         assertTrue(bishop.canCaptureKing(board, "b7"));
+    }
+
+
+    @Test
+    @DisplayName("Test copyToSquare")
+    void testCopyToSquare() {
+        Bishop test = (Bishop) piece1.copyToSquare("d8");
+        assertEquals("d8", test.getSquare());
+        assertEquals(piece1.getColour(), test.getColour());
     }
 }

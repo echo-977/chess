@@ -2,9 +2,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class QueenTest {
     static Queen piece1;
@@ -117,6 +116,13 @@ class QueenTest {
         assertTrue(queen.canCaptureKing(board, "b5"));
         assertFalse(queen.canCaptureKing(board, "a8"));
         assertTrue(queen.canCaptureKing(board, "b7"));
+    }
 
+    @Test
+    @DisplayName("Test copyToSquare")
+    void testCopyToSquare() {
+        Queen test = (Queen) piece1.copyToSquare("d8");
+        assertEquals("d8", test.getSquare());
+        assertEquals(piece1.getColour(), test.getColour());
     }
 }

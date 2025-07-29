@@ -59,13 +59,11 @@ public class Pawn extends Piece{
         if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
             movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
             moves[movesIndex - 1].setEnPassant(true);
-            moves[movesIndex - 1].setCapture(true);
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank()));
         if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
             addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
             moves[movesIndex - 1].setEnPassant(true);
-            moves[movesIndex - 1].setCapture(true);
         }
         return moves;
     }
@@ -190,6 +188,18 @@ public class Pawn extends Piece{
      */
     public boolean getEnPassantable() {
         return enPassantable;
+    }
+
+    /**
+     * Creates a copy of the pawn at a given square.
+     * @param square the square the piece copy will be at.
+     * @return a pawn object at the given square with the same properties.
+     */
+    @Override
+    public Piece copyToSquare(String square) {
+        char file = square.charAt(0);
+        int rank = square.charAt(1) - '0';
+        return new Pawn(getColour(), file, rank, getMoved(), getEnPassantable());
     }
 }
 

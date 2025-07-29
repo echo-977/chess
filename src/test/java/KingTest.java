@@ -2,10 +2,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class KingTest {
     static King piece1;
@@ -96,5 +94,15 @@ class KingTest {
     void testMove() {
         piece1.move("a2");
         assertTrue(piece1.getMoved());
+    }
+
+    @Test
+    @DisplayName("Test copyToSquare")
+    void testCopyToSquare() {
+        King test = (King) piece1.copyToSquare("d8");
+        assertEquals("d8", test.getSquare());
+        assertEquals(piece1.getColour(), test.getColour());
+        assertEquals(piece1.getMoved(), test.getMoved());
+        assertEquals(piece1.isCheck(), test.isCheck());
     }
 }

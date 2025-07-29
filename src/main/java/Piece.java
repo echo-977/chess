@@ -172,4 +172,13 @@ public abstract class Piece{
      * @return a boolean for whether the piece can capture that square.
      */
     public abstract boolean canCaptureKing(Board board, String targetSquare);
+
+
+    /**
+     * Abstract method to create a copy of a piece at a given square.
+     * Concrete subclasses will implement this.
+     * @param square the square the piece copy will be at.
+     * @return a copy of the piece at the given square.
+     */
+    public abstract Piece copyToSquare(String square);
 }
