@@ -307,6 +307,11 @@ public class Board {
         return halfMoveClock;
     }
 
+    /**
+     * Utility method to return the king of the given colour.
+     * @param colour the king we want to return.
+     * @return king of the given colour.
+     */
     public King findKing(PieceColour colour) {
         Piece[] pieces = new Piece[0];
         if (colour == PieceColour.WHITE) {
@@ -315,10 +320,11 @@ public class Board {
             pieces = blackPieces;
         }
         for (Piece piece : pieces) {
-            if (piece.getType() == PieceType.KING) {
+            if (piece != null && piece.getType() == PieceType.KING) {
                 return (King) piece;
             }
         }
+        System.out.println("No king found");
         return null;
     }
 }

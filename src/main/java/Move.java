@@ -21,6 +21,17 @@ public class Move {
         if (board.pieceSearch(destination) != null) {
             isCapture = true;
         }
+        Piece checkTest = piece.copyToSquare(destination);
+        PieceColour enemyKingColour;
+        if (piece.getColour() == PieceColour.WHITE) {
+            enemyKingColour = PieceColour.BLACK;
+        } else {
+            enemyKingColour = PieceColour.WHITE;
+        }
+        King enemyKing = board.findKing(enemyKingColour);
+        if (enemyKing != null && checkTest.canCaptureKing(board, enemyKing.getSquare())) {
+            isCheck = true;
+        }
     }
 
     /**

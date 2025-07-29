@@ -2,6 +2,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MoveTest {
     public Move move;
@@ -33,6 +34,16 @@ class MoveTest {
     move = new Move(board, piece, "g1");
     move.setCastle(true);
     assertEquals("O-O",  move.getAlgebraicNotation());
+    }
+
+
+    @Test
+    @DisplayName("Test moveConstructor")
+    void testMove() {
+        Board board = new Board("8/8/8/3r4/8/8/8/4K3 w - - 0 1");
+        Piece piece = board.getBlackPieces()[0];
+        Move move = new Move(board, piece, "e5");
+        assertTrue(move.isCheck());
     }
 }
 
