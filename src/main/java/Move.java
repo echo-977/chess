@@ -21,23 +21,13 @@ public class Move {
         if (board.pieceSearch(destination) != null) {
             isCapture = true;
         }
-        Piece checkTest = piece.copyToSquare(destination);
-        PieceColour enemyKingColour;
-        if (piece.getColour() == PieceColour.WHITE) {
-            enemyKingColour = PieceColour.BLACK;
-        } else {
-            enemyKingColour = PieceColour.WHITE;
-        }
-        King enemyKing = board.findKing(enemyKingColour);
-        if (enemyKing != null && checkTest.canCaptureKing(board, enemyKing.getSquare())) {
-            isCheck = true;
-        }
         if (piece.getType() == PieceType.KING) {
             char destinationFile = destination.charAt(0);
             if (Math.abs(piece.getFile() - destinationFile) == 2) {
                 isCastle = true;
             }
         }
+        isCheck = causesCheck(board, piece, destination);
     }
 
     /**
@@ -185,6 +175,51 @@ public class Move {
      */
     public boolean isEnPassant() {
         return isEnPassant;
+    }
+
+    /**
+     * Calculates whether moving a piece to a certain square will cause a check.
+     * @param board the board the piece is being moved on.
+     * @param piece the piece being moved.
+     * @param destination the square the piece is moved to.
+     * @return boolean stating whether the move is a check on the enemy king.
+     */
+    public boolean causesCheck(Board board, Piece piece, String destination) {
+        Piece checkTest = piece.copyToSquare(destination);
+        PieceColour enemyKingColour;
+        if (piece.getColour() == PieceColour.WHITE) {
+            enemyKingColour = PieceColour.BLACK;
+        } else {
+            enemyKingColour = PieceColour.WHITE;
+        }
+        King enemyKing = board.findKing(enemyKingColour);
+        if (enemyKing == null) {
+            return false;
+        }
+        if (checkTest.canCaptureKing(board, enemyKing.getSquare())) {
+            return true; //direct check
+        } //discovered checks
+        String currentPosition = board.getFEN();
+        Board boardAfterMove = new Board(currentPosition);
+        Piece pieceOnNewBoard = boardAfterMove.pieceSearch(piece.getSquare());
+        pieceOnNewBoard.move(destination);
+        if (piece.getColour() == PieceColour.WHITE) {
+            for (Piece updatedBoardPiece : boardAfterMove.getWhitePieces()) {
+                if (updatedBoardPiece != null &&
+                        updatedBoardPiece.canCaptureKing(boardAfterMove, enemyKing.getSquare())) {
+                    return true;
+                }
+            }
+        }
+        else {
+            for (Piece updatedBoardPiece : boardAfterMove.getBlackPieces()) {
+                if (updatedBoardPiece != null &&
+                        updatedBoardPiece.canCaptureKing(boardAfterMove, enemyKing.getSquare())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

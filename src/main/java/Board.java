@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Board {
     private Piece[] whitePieces;
     private Piece[] blackPieces;

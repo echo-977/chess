@@ -460,6 +460,7 @@ class BoardTest {
         Piece piece = board.pieceSearch("f1");
         assertEquals(PieceType.ROOK, piece.getType());
         board = new Board("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1");
+        whiteKing = board.findKing(PieceColour.WHITE);
         move = new Move(board, whiteKing, "c1");
         move.setCastle(true);
         board.doMove(move);
@@ -473,6 +474,7 @@ class BoardTest {
         piece = board.pieceSearch("f8");
         assertEquals(PieceType.ROOK, piece.getType());
         board = new Board("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1");
+        blackKing = board.findKing(PieceColour.BLACK);
         move = new Move(board, blackKing, "c8");
         move.setCastle(true);
         board.doMove(move);

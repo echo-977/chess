@@ -1,8 +1,7 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MoveTest {
     public Move move;
@@ -60,6 +59,24 @@ class MoveTest {
         assertTrue(move.isCastle());
         move = new Move(board, blackKing, "c8");
         assertTrue(move.isCastle());
+    }
+
+    @Test
+    @DisplayName("Test discoveredCheckDetection")
+    void testDiscoveredCheckDetection() {
+        Board board = new Board("8/2r5/2n5/5k2/8/2KR4/2B5/8 w - - 0 1");
+        Piece piece = board.getWhitePieces()[1];
+        Move move = new Move(board, piece, "d4");
+        assertTrue(move.isCheck());
+        piece = board.getBlackPieces()[1];
+        move = new Move(board, piece, "e5");
+        assertTrue(move.isCheck());
+        piece = board.getWhitePieces()[1];
+        move = new Move(board, piece, "f3");
+        assertTrue(move.isCheck());
+        piece = board.getWhitePieces()[2];
+        move = new Move(board, piece, "b1");
+        assertFalse(move.isCheck());
     }
 }
 
