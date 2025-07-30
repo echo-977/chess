@@ -229,15 +229,15 @@ public class Board {
         }
         String enPassantTarget = FENConstants.NONE;
         for (int i = 0; i < 16; i++) {
-            if (whitePieces[i].getType() == PieceType.PAWN) {
+            if (whitePieces[i] != null && whitePieces[i].getType() == PieceType.PAWN) {
                 if (((Pawn) whitePieces[i]).getEnPassantable()) {
-                    enPassantTarget = whitePieces[i].getFile() + String.valueOf(whitePieces[i].getRank() - 1);
+                    enPassantTarget = whitePieces[i].getFile() + String.valueOf(whitePieces[i].getRank() + ChessDirections.DOWN);
                     break;
                 }
             }
-            if (blackPieces[i].getType() == PieceType.PAWN) {
+            if (blackPieces[i] != null && blackPieces[i].getType() == PieceType.PAWN) {
                 if (((Pawn) blackPieces[i]).getEnPassantable()) {
-                    enPassantTarget = blackPieces[i].getFile() + String.valueOf(blackPieces[i].getRank() + 1);
+                    enPassantTarget = blackPieces[i].getFile() + String.valueOf(blackPieces[i].getRank() + ChessDirections.UP);
                     break;
                 }
             }
