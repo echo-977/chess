@@ -173,7 +173,6 @@ public abstract class Piece{
      */
     public abstract boolean canCaptureKing(Board board, String targetSquare);
 
-
     /**
      * Abstract method to create a copy of a piece at a given square.
      * Concrete subclasses will implement this.
@@ -181,4 +180,24 @@ public abstract class Piece{
      * @return a copy of the piece at the given square.
      */
     public abstract Piece copyToSquare(String square);
+
+    /**
+     * Compares the piece to a given object to check if they are equal.
+     * Equality is determined by all the attributes of the pieces matching.
+     * @param object the object we compare the piece to
+     * @return a boolean stating whether the object is equal to the piece.
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        } else if (object == this) {
+            return true;
+        }
+        if (!(object instanceof Piece other)) {
+            return false;
+        }
+        return other.type == this.type && other.colour == this.colour && other.file == this.file &&
+                other.rank == this.rank;
+    }
 }
