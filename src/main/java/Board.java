@@ -327,4 +327,133 @@ public class Board {
         System.out.println("No king found");
         return null;
     }
+
+    /**
+     * Plays out a given move on the board.
+     * @param move the move to be played.
+     * @return a boolean flag for if the move was completed successfully.
+     */
+    public boolean doMove(Move move) {
+        boolean handleCapture = true;
+        boolean handleCastle = true;
+        boolean handlePromotion = true;
+        if (move.isCapture()) {
+            handleCapture = handleCaptureMove(move);
+        }
+        if (move.isCastle()) {
+            handleCastle = handleCastleMove(move);
+        }
+        if (move.getPromotionType() != null) {
+            handlePromotion = handlePromotion(move);
+        } else {
+            move.getPiece().move(move.getDestination());
+        }
+        return handleCapture && handleCastle && handlePromotion;
+    }
+
+    /**
+     * Handles the logic that is specific to a capture.
+     * Removes the captured piece from the relevant pieces array.
+     * @param move the move being played.
+     * @return boolean flag for if the capture logic was completed successfully.
+     */
+    public boolean handleCaptureMove(Move move) {
+        String captureDestination = getCaptureDestination(move);
+        Piece capturedPiece = pieceSearch(captureDestination);
+        Piece[] pieces;
+        if (move.getPiece().getColour() == PieceColour.WHITE) {
+            pieces = blackPieces;
+        } else {
+            pieces = whitePieces;
+        }
+        for (int i = 0; i < (ChessConstants.NUM_PIECES / 2); i++) {
+            if (pieces[i] == capturedPiece) {
+                pieces[i] = null;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Finds the square of the piece being captured.
+     * @param move the move of the capture.
+     * @return the square of the captured piece.
+     */
+    public String getCaptureDestination(Move move) {
+        String captureDestination = move.getDestination();
+        if (move.isEnPassant()){
+            int targetDirection;
+            if (move.getPiece().getColour() == PieceColour.WHITE) {
+                targetDirection = ChessDirections.DOWN;
+            } else {
+                targetDirection = ChessDirections.UP;
+            }
+            char file = move.getDestination().charAt(0);
+            int rank = move.getDestination().charAt(1) - '0';
+            int captureRank = rank + targetDirection;
+            captureDestination = file + String.valueOf(captureRank);
+        }
+        return captureDestination;
+    }
+
+    /**
+     * Handles the logic that is specific to castling.
+     * Moves the rook to the correct square.
+     * @param move the move being played.
+     * @return boolean flag for if the castle logic was completed successfully.
+     */
+    public boolean handleCastleMove(Move move) {
+        String destination = move.getDestination();
+        char file = destination.charAt(0);
+        int rank = destination.charAt(1) - '0';
+        String rookSquare;
+        Rook rook;
+        if (file == 'g') {
+            rookSquare = "h" + rank;
+            rook = (Rook) pieceSearch(rookSquare);
+            rook.move("f" + rank);
+            return true;
+        } else if (file == 'c') {
+            rookSquare = "a" + rank;
+            rook = (Rook) pieceSearch(rookSquare);
+            rook.move("d" + rank);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean handlePromotion(Move move) {
+        PieceColour colour = move.getPiece().getColour();
+        char file = move.getDestination().charAt(0);
+        int rank = move.getDestination().charAt(1) - '0';
+        Piece promotedPiece = switch (move.getPromotionType()) {
+            case QUEEN -> new Queen(colour, file, rank);
+            case ROOK -> new Rook(colour, file, rank, true);
+            case BISHOP -> new Bishop(colour, file, rank);
+            case KNIGHT -> new Knight(colour, file, rank);
+            default -> null;
+        };
+        if (promotedPiece == null) {
+            return false;
+        }
+        Piece promotingPiece = pieceSearch(move.getPiece().getSquare());
+        if (colour == PieceColour.WHITE) {
+            for (int i = 0; i < ChessConstants.NUM_PIECES / 2; i++) {
+                if (whitePieces[i] == promotingPiece) {
+                    whitePieces[i] = promotedPiece;
+                    return true;
+                }
+            }
+        } else {
+            for (int i = 0; i < ChessConstants.NUM_PIECES / 2; i++) {
+                if (blackPieces[i] == promotingPiece) {
+                    blackPieces[i] = promotedPiece;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
