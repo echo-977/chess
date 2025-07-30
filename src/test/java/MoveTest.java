@@ -45,5 +45,21 @@ class MoveTest {
         Move move = new Move(board, piece, "e5");
         assertTrue(move.isCheck());
     }
+
+    @Test
+    @DisplayName("Test castling detection")
+    void testCastlingDetection() {
+        Board board = new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+        King whiteKing = board.findKing(PieceColour.WHITE);
+        Move move = new Move(board, whiteKing, "g1");
+        assertTrue(move.isCastle());
+        move = new Move(board, whiteKing, "c1");
+        assertTrue(move.isCastle());
+        King blackKing = board.findKing(PieceColour.BLACK);
+        move = new Move(board, blackKing, "g8");
+        assertTrue(move.isCastle());
+        move = new Move(board, blackKing, "c8");
+        assertTrue(move.isCastle());
+    }
 }
 

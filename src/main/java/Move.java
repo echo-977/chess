@@ -32,6 +32,12 @@ public class Move {
         if (enemyKing != null && checkTest.canCaptureKing(board, enemyKing.getSquare())) {
             isCheck = true;
         }
+        if (piece.getType() == PieceType.KING) {
+            char destinationFile = destination.charAt(0);
+            if (Math.abs(piece.getFile() - destinationFile) == 2) {
+                isCastle = true;
+            }
+        }
     }
 
     /**
@@ -155,6 +161,14 @@ public class Move {
      */
     public boolean isRankDisambiguation() {
         return rankDisambiguation;
+    }
+
+    /**
+     * Simple getter for isCastle
+     * @return whether the move is a castle
+     */
+    public boolean isCastle() {
+        return isCastle;
     }
 
     /**
