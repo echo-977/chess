@@ -200,4 +200,13 @@ public abstract class Piece{
         return other.type == this.type && other.colour == this.colour && other.file == this.file &&
                 other.rank == this.rank;
     }
+
+    /**
+     * Returns all the information about the piece.
+     * @return a string of the colour, type and location.
+     */
+    @Override
+    public String toString() {
+        return colour + " " + type + " " + file + " " + rank;
+    }
 }
