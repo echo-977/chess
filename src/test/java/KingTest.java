@@ -108,4 +108,28 @@ class KingTest {
         assertEquals(piece1.getMoved(), test.getMoved());
         assertEquals(piece1.isCheck(), test.isCheck());
     }
+
+    @Test
+    @DisplayName("Test canCaptureSquare")
+    void testCanCaptureSquare() {
+        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w kq - 0 1");
+        assertTrue(piece2.canCaptureSquare(board, "d6"));
+        assertTrue(piece2.canCaptureSquare(board, "e6"));
+        assertTrue(piece2.canCaptureSquare(board, "e5"));
+        assertTrue(piece2.canCaptureSquare(board, "e4"));
+        assertTrue(piece2.canCaptureSquare(board, "d4"));
+        assertTrue(piece2.canCaptureSquare(board, "c4"));
+        assertTrue(piece2.canCaptureSquare(board, "c5"));
+        assertTrue(piece2.canCaptureSquare(board, "c6"));
+    }
+
+    @Test
+    @DisplayName("Test findNextIndex")
+    void testFindNextIndex() {
+        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        Move[] moves = new Move[8];
+        moves[0] = new Move(board, board.getWhitePieces()[0], "a1");
+        King king = (King) board.findKing(PieceColour.WHITE);
+        assertEquals(1, king.findNextIndex(moves));
+    }
 }

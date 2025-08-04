@@ -59,7 +59,7 @@ public class Knight extends DirectionalPiece{
      * @return a boolean for whether the piece can capture that square.
      */
     @Override
-    public boolean canCaptureKing(Board board, String targetSquare) {
+    public boolean canCaptureSquare(Board board, String targetSquare) {
         return isLegalMove(targetSquare); //if the knight can move to where the king is it can capture it
     }
 

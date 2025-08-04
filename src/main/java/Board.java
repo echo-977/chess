@@ -426,6 +426,11 @@ public class Board {
         }
     }
 
+    /**
+     * Handles a promotion, replacing the pawn with a piece of the given type.
+     * @param move the promotion move to be carried out.
+     * @return boolean flag confirming if the move was successfully carried out.
+     */
     public boolean handlePromotion(Move move) {
         PieceColour colour = move.getPiece().getColour();
         char file = move.getDestination().charAt(0);
@@ -457,5 +462,28 @@ public class Board {
             }
         }
         return false;
+    }
+
+    /**
+     * Gets a boolean array of all squared attacked by a certain colour.
+     * @param colour the colour of squares we want.
+     * @return array of true values for which squares can be captured by the colour.
+     */
+    public boolean[] getThreatMap(PieceColour colour) {
+        Piece[] pieces;
+        if (colour == PieceColour.WHITE) {
+            pieces =  whitePieces;
+        } else {
+            pieces =  blackPieces;
+        }
+        boolean[] threatMap = new boolean[ChessConstants.NUM_SQUARES];
+        for (Piece piece : pieces) {
+            for (int i = 0; i < ChessConstants.NUM_SQUARES; i++) {
+                if (piece != null && piece.canCaptureSquare(this, mapIntToSquare(i))) {
+                    threatMap[i] = true;
+                }
+            }
+        }
+        return threatMap;
     }
 }

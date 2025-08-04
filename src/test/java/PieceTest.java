@@ -18,7 +18,7 @@ class PieceTest {
             }
 
             @Override
-            public boolean canCaptureKing(Board board, String color) {
+            public boolean canCaptureSquare(Board board, String color) {
                 return false; // minimal implementation here to allow testing of concrete methods
             }
 
@@ -39,7 +39,7 @@ class PieceTest {
             }
 
             @Override
-            public boolean canCaptureKing(Board board, String color) {
+            public boolean canCaptureSquare(Board board, String color) {
                 return false; // minimal implementation here to allow testing of concrete methods
             }
 

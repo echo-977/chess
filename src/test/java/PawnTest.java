@@ -2,8 +2,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class PawnTest {
@@ -164,16 +162,16 @@ class PawnTest {
 
     @Test
     @DisplayName("Test canCaptureKing")
-    void testCanCaptureKing() {
+    void testCanCaptureSquare() {
         Board board = new Board("8/8/8/3p4/8/8/8/PK6 w - - 0 1");
-        assertTrue(piece1.canCaptureKing(board, "b2"));
-        assertFalse(piece1.canCaptureKing(board, "a2"));
-        assertFalse(piece1.canCaptureKing(board, "b1"));
-        assertTrue(piece2.canCaptureKing(board, "c4"));
-        assertTrue(piece2.canCaptureKing(board, "e4"));
-        assertFalse(piece2.canCaptureKing(board, "d4"));
-        assertFalse(piece2.canCaptureKing(board, "d6"));
-        assertFalse(piece2.canCaptureKing(board, "f3"));
+        assertTrue(piece1.canCaptureSquare(board, "b2"));
+        assertFalse(piece1.canCaptureSquare(board, "a2"));
+        assertFalse(piece1.canCaptureSquare(board, "b1"));
+        assertTrue(piece2.canCaptureSquare(board, "c4"));
+        assertTrue(piece2.canCaptureSquare(board, "e4"));
+        assertFalse(piece2.canCaptureSquare(board, "d4"));
+        assertFalse(piece2.canCaptureSquare(board, "d6"));
+        assertFalse(piece2.canCaptureSquare(board, "f3"));
     }
 
     @Test

@@ -523,4 +523,20 @@ class BoardTest {
         board.doMove(move);
         assertEquals("g6", piece.getSquare());
     }
+
+    @Test
+    @DisplayName("Test getThreatMap")
+    void testGetThreatMap() {
+        Board board = new Board("8/8/3r4/4r3/4b3/8/8/8 w - - 0 1");
+        boolean[] expectedThreatMap = {true, false, false, true, true, false, false, false,
+                false, true, false, true, true, false, false, true,
+                true, true, true, false, true, true, true, true,
+                true, true, true, true, false, true, true, true,
+                false, false, false, true, false, false, false, false,
+                false, false, false, true, false, true, false, false,
+                false, false, true, true, false, false, true, false,
+                false, true, false, true, false, false, false, true};
+        boolean[] actualThreatMap = board.getThreatMap(PieceColour.BLACK);
+        assertArrayEquals(expectedThreatMap,  actualThreatMap);
+    }
 }

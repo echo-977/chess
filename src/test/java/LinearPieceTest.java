@@ -16,7 +16,7 @@ class LinearPieceTest {
             }
 
             @Override
-            public boolean canCaptureKing(Board board, String targetSquare) {
+            public boolean canCaptureSquare(Board board, String targetSquare) {
                 return false; //minimal implementation here to allow testing of concrete methods
             }
 

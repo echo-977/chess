@@ -58,7 +58,7 @@ public class Queen extends LinearPiece{
      * @return a boolean for whether the piece can capture that square.
      */
     @Override
-    public boolean canCaptureKing(Board board, String targetSquare) {
+    public boolean canCaptureSquare(Board board, String targetSquare) {
         char targetFile = targetSquare.charAt(0);
         int targetRank = targetSquare.charAt(1) - '0';
         if (!isLegalMove(targetSquare)) {
@@ -77,7 +77,7 @@ public class Queen extends LinearPiece{
         }
         fileDirection = directions[ChessConstants.FILE_DIRECTION_INDEX];
         rankDirection = directions[ChessConstants.RANK_DIRECTION_INDEX];
-        return recursiveCaptureCheck(board, (char) (targetFile + fileDirection), targetRank + rankDirection, fileDirection, rankDirection);
+        return recursiveCaptureCheck(board, targetFile, targetRank, fileDirection, rankDirection);
     }
 
     /**

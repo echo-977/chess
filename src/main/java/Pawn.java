@@ -150,7 +150,7 @@ public class Pawn extends Piece{
      * @return a boolean for whether the piece can capture that square.
      */
     @Override
-    public boolean canCaptureKing(Board board, String targetSquare) {
+    public boolean canCaptureSquare(Board board, String targetSquare) {
         if (!super.isLegalMove(targetSquare)) {
             return false;
         }

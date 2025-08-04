@@ -171,7 +171,7 @@ public abstract class Piece{
      * @param targetSquare the square we are checking.
      * @return a boolean for whether the piece can capture that square.
      */
-    public abstract boolean canCaptureKing(Board board, String targetSquare);
+    public abstract boolean canCaptureSquare(Board board, String targetSquare);
 
     /**
      * Abstract method to create a copy of a piece at a given square.

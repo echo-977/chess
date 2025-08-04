@@ -78,17 +78,17 @@ class BishopTest {
 
     @Test
     @DisplayName("Test canCaptureKing")
-    void testCanCaptureKing() {
+    void testCanCaptureSquare() {
         Board board = new Board("8/1P3P2/8/3b4/8/1P6/6P1/8 w - - 0 1");
         Bishop bishop = (Bishop) board.getBlackPieces()[0];
-        assertFalse(bishop.canCaptureKing(board, "g8"));
-        assertTrue(bishop.canCaptureKing(board, "f7"));
-        assertFalse(bishop.canCaptureKing(board, "h1"));
-        assertTrue(bishop.canCaptureKing(board, "g2"));
-        assertFalse(bishop.canCaptureKing(board, "a2"));
-        assertTrue(bishop.canCaptureKing(board, "b3"));
-        assertFalse(bishop.canCaptureKing(board, "a8"));
-        assertTrue(bishop.canCaptureKing(board, "b7"));
+        assertFalse(bishop.canCaptureSquare(board, "g8"));
+        assertTrue(bishop.canCaptureSquare(board, "f7"));
+        assertFalse(bishop.canCaptureSquare(board, "h1"));
+        assertTrue(bishop.canCaptureSquare(board, "g2"));
+        assertFalse(bishop.canCaptureSquare(board, "a2"));
+        assertTrue(bishop.canCaptureSquare(board, "b3"));
+        assertFalse(bishop.canCaptureSquare(board, "a8"));
+        assertTrue(bishop.canCaptureSquare(board, "b7"));
     }
 
 

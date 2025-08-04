@@ -86,17 +86,17 @@ class RookTest {
 
     @Test
     @DisplayName("Test canCaptureKing")
-    void testCanCaptureKing() {
+    void testCanCaptureSquare() {
         Board board = new Board("8/3P4/8/1P1r2P1/8/8/3P4/8 w - - 0 1");
         Rook rook =  (Rook) board.getBlackPieces()[0];
-        assertFalse(rook.canCaptureKing(board, "d8"));
-        assertTrue(rook.canCaptureKing(board, "d7"));
-        assertFalse(rook.canCaptureKing(board, "h5"));
-        assertTrue(rook.canCaptureKing(board, "g5"));
-        assertFalse(rook.canCaptureKing(board, "d1"));
-        assertTrue(rook.canCaptureKing(board, "d2"));
-        assertFalse(rook.canCaptureKing(board, "a5"));
-        assertTrue(rook.canCaptureKing(board, "b5"));
+        assertFalse(rook.canCaptureSquare(board, "d8"));
+        assertTrue(rook.canCaptureSquare(board, "d7"));
+        assertFalse(rook.canCaptureSquare(board, "h5"));
+        assertTrue(rook.canCaptureSquare(board, "g5"));
+        assertFalse(rook.canCaptureSquare(board, "d1"));
+        assertTrue(rook.canCaptureSquare(board, "d2"));
+        assertFalse(rook.canCaptureSquare(board, "a5"));
+        assertTrue(rook.canCaptureSquare(board, "b5"));
     }
 
     @Test

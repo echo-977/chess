@@ -196,7 +196,7 @@ public class Move {
         if (enemyKing == null) {
             return false;
         }
-        if (checkTest.canCaptureKing(board, enemyKing.getSquare())) {
+        if (checkTest.canCaptureSquare(board, enemyKing.getSquare())) {
             return true; //direct check
         } //discovered checks
         String currentPosition = board.getFEN();
@@ -206,7 +206,7 @@ public class Move {
         if (piece.getColour() == PieceColour.WHITE) {
             for (Piece updatedBoardPiece : boardAfterMove.getWhitePieces()) {
                 if (updatedBoardPiece != null &&
-                        updatedBoardPiece.canCaptureKing(boardAfterMove, enemyKing.getSquare())) {
+                        updatedBoardPiece.canCaptureSquare(boardAfterMove, enemyKing.getSquare())) {
                     return true;
                 }
             }
@@ -214,7 +214,7 @@ public class Move {
         else {
             for (Piece updatedBoardPiece : boardAfterMove.getBlackPieces()) {
                 if (updatedBoardPiece != null &&
-                        updatedBoardPiece.canCaptureKing(boardAfterMove, enemyKing.getSquare())) {
+                        updatedBoardPiece.canCaptureSquare(boardAfterMove, enemyKing.getSquare())) {
                     return true;
                 }
             }
@@ -291,8 +291,9 @@ public class Move {
 
     @Override
     /**
-     * Compares move to a given move to check if they are equal
-     * @return boolean object for if the moves are the same
+     * Checks if two moves are equal.
+     * @param object the move to compare to.
+     * @return boolean for if the moves are equal.
      */
     public boolean equals(Object object) {
         if (object == null) {

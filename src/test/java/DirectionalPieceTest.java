@@ -17,7 +17,7 @@ class DirectionalPieceTest {
             }
 
             @Override
-            public boolean canCaptureKing(Board board, String move) {
+            public boolean canCaptureSquare(Board board, String move) {
                 return false; //minimal implementation here to allow testing of concrete methods
             }
 
