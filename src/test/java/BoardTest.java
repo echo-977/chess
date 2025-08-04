@@ -532,11 +532,20 @@ class BoardTest {
                 false, true, false, true, true, false, false, true,
                 true, true, true, false, true, true, true, true,
                 true, true, true, true, false, true, true, true,
-                false, false, false, true, false, false, false, false,
+                false, false, false, true, true, false, false, false,
                 false, false, false, true, false, true, false, false,
                 false, false, true, true, false, false, true, false,
                 false, true, false, true, false, false, false, true};
         boolean[] actualThreatMap = board.getThreatMap(PieceColour.BLACK);
         assertArrayEquals(expectedThreatMap,  actualThreatMap);
+    }
+
+    @Test
+    @DisplayName("Test mapSquareToInt")
+    void testMapSquareToInt() {
+        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w kq - 0 1");
+        assertEquals(63, board.mapSquareToInt("h1"));
+        assertEquals(0, board.mapSquareToInt("a8"));
+        assertEquals(35, board.mapSquareToInt("d4"));
     }
 }

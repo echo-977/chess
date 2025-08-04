@@ -62,10 +62,13 @@ public abstract class LinearPiece extends Piece {
      */
     public boolean recursiveCaptureCheck(Board board, char file, int rank, int fileDirection, int rankDirection) {
         String currentSquare = file + String.valueOf(rank);
+        Piece pieceInPath = board.pieceSearch(currentSquare);
         if (currentSquare.equals(getSquare())) { //base case, we are back to the piece's square
             return true;
-        } else if (board.pieceSearch(currentSquare) != null) { //if we run into a piece then we cannot move to the target
-            return false;
+        } else if (pieceInPath != null) { //if we run into a piece then we cannot move to the target
+            return pieceInPath instanceof King && pieceInPath.getColour() != getColour();
+            //if it is the enemy king we can move to the square on the next move
+            //since the king must move out of the way (it is in check).
         } else { //recursive step
             return recursiveCaptureCheck(board, (char) (file + fileDirection), rank + rankDirection, fileDirection,  rankDirection);
         }

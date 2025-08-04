@@ -33,6 +33,26 @@ public class King extends DirectionalPiece{
                 {ChessDirections.LEFT, ChessDirections.NONE}, {ChessDirections.LEFT, ChessDirections.UP}
         };
         directionalMoveSearch(board, moves, directions);
+        if (!moved) {
+            int nextIndex;
+            int rank = getRank();
+            Piece piece = board.pieceSearch("a" + rank);
+            if (piece instanceof Rook rook) {
+                if (!rook.getMoved() && canCastleSearch(board, 'c')) {
+                    nextIndex = findNextIndex(moves);
+                    moves[nextIndex] = new Move(board, this, "c" + String.valueOf(rank));
+                    moves[nextIndex].setCastle(true);
+                }
+            }
+            piece = board.pieceSearch("h" + rank);
+            if (piece instanceof Rook rook) {
+                if (!rook.getMoved() && canCastleSearch(board, 'g')) {
+                    nextIndex = findNextIndex(moves);
+                    moves[nextIndex] = new Move(board, this, "g" + String.valueOf(rank));
+                    moves[nextIndex].setCastle(true);
+                }
+            }
+        }
         return moves;
     }
     /**
@@ -114,6 +134,105 @@ public class King extends DirectionalPiece{
         char file = square.charAt(0);
         int rank = square.charAt(1) - '0';
         return new King(getColour(), file, rank, getMoved(), isCheck());
+    }
+
+    /**
+     * Utility function to find the next available empty slot for a move.
+     * @param moves the array of moves.
+     * @return index of first empty slot in the array.
+     */
+    public int findNextIndex(Move[] moves) {
+        for (int i = 0; i < moves.length; i++) {
+            if (moves[i] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Checks whether a king can castle to a given file without passing through or ending up in check.
+     * @param board the board in play.
+     * @param file the target file of the king.
+     * @return boolean for if it is legal to castle.
+     */
+    public boolean canCastleSearch(Board board, char file) {
+        boolean[] threatMap;
+        if (getColour() == PieceColour.WHITE) {
+            threatMap = board.getThreatMap(PieceColour.BLACK);
+        } else {
+            threatMap = board.getThreatMap(PieceColour.WHITE);
+        }
+        int rank = getRank();
+        char start, end;
+        if (file > getFile()) {
+            start = getFile();
+            end = file;
+        } else {
+            start = file;
+            end = getFile();
+        }
+        String square;
+        for (char f = start; f <= end; f++ ) {
+            square = f + String.valueOf(rank);
+            if (threatMap[board.mapSquareToInt(square)]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Performs a castling move in the most basic way.
+     * Used for checking if castling will result in a check on the enemy king.
+     * @param board the board the castling will take place on.
+     * @param square square the king is moved to.
+     */
+    public void castleMove(Board board, String square) {
+        super.move(square);
+        char file = square.charAt(0);
+        if (file == 'g') {
+            board.pieceSearch("h" + getRank()).move("f" + getRank());
+        } else if (file == 'c') {
+            board.pieceSearch("a" + getRank()).move("d" + getRank());
+        }
+
+    }
+
+    /**
+     * Searches each given direction from the king, checking if it is valid to move to that square.
+     * Updated to not allow moving to a square threatened by the opponent.
+     * @param board the board the king is moving on.
+     * @param moves the current string of moves generated (legal moves are added to this).
+     * @param directions array of 2d directions the king can go in.
+     */
+    @Override
+    public void directionalMoveSearch(Board board, Move[] moves, int[][] directions) {
+        char file = getFile();
+        int rank = getRank();
+        char checkFile;
+        int checkRank;
+        String candidateMove;
+        Piece piece;
+        int movesIndex = 0;
+        for (int i = 0; i < 8; i++) {
+            checkFile = (char) (file + directions[i][0]);
+            checkRank = rank + directions[i][1];
+            candidateMove = checkFile + String.valueOf(checkRank);
+            boolean[] threatMap;
+            if (getColour() == PieceColour.WHITE) {
+                threatMap = board.getThreatMap(PieceColour.BLACK);
+            } else {
+                threatMap = board.getThreatMap(PieceColour.WHITE);
+            }
+            if (isLegalMove(candidateMove) && !threatMap[board.mapSquareToInt(candidateMove)]) {
+                piece = board.pieceSearch(candidateMove);
+                if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
+                    moves[movesIndex] = new Move(board, this, candidateMove);
+                    movesIndex++;
+                }
+            }
+        }
     }
 }
 

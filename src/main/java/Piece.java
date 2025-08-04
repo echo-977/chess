@@ -132,6 +132,7 @@ public abstract class Piece{
     /**
      * Method to move the piece to a given square.
      * Validation of if the move is legal will be done elsewhere.
+     * @param square the square the piece is moved to.
      */
     public void move(String square) {
         file = square.charAt(0);

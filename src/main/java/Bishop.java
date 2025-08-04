@@ -71,7 +71,7 @@ public class Bishop extends LinearPiece{
         }
         fileDirection = directions[ChessConstants.FILE_DIRECTION_INDEX];
         rankDirection = directions[ChessConstants.RANK_DIRECTION_INDEX];
-        return recursiveCaptureCheck(board, targetFile, targetRank, fileDirection, rankDirection);
+        return recursiveCaptureCheck(board, (char) (targetFile + fileDirection), targetRank + rankDirection, fileDirection, rankDirection);
     }
 
     /**

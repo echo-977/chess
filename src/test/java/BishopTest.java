@@ -77,7 +77,7 @@ class BishopTest {
     }
 
     @Test
-    @DisplayName("Test canCaptureKing")
+    @DisplayName("Test canCaptureSquare")
     void testCanCaptureSquare() {
         Board board = new Board("8/1P3P2/8/3b4/8/1P6/6P1/8 w - - 0 1");
         Bishop bishop = (Bishop) board.getBlackPieces()[0];

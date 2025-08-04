@@ -15,10 +15,10 @@ public abstract class DirectionalPiece extends Piece {
 
     /**
      * Searches each given direction from the piece, checking if it is valid to move to that square.
-     * Used in the move generation methods for rook, bishop and queen
-     * @param board the board the piece is moving on
-     * @param moves the current string of moves generated (legal moves are added to this)
-     * @param directions array of 2d directions the piece can go in
+     * Used in the move generation methods for king and knight.
+     * @param board the board the piece is moving on.
+     * @param moves the current string of moves generated (legal moves are added to this).
+     * @param directions array of 2d directions the piece can go in.
      */
     public void directionalMoveSearch(Board board, Move[] moves, int[][] directions) {
         char file = getFile();

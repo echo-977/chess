@@ -265,6 +265,17 @@ public class Board {
     }
 
     /**
+     * Give the integer index for a given square.
+     * @param square the square in question.
+     * @return the index of the square.
+     */
+    public int mapSquareToInt(String square) {
+        char file =  square.charAt(0);
+        int rank = square.charAt(1) - '0';
+        return (8 - rank) * 8 + ((int) file - 'a');
+    }
+
+    /**
      * Simple getter for the white pieces
      *
      * @return piece array of all the white pieces

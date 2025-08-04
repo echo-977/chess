@@ -85,7 +85,7 @@ class RookTest {
     }
 
     @Test
-    @DisplayName("Test canCaptureKing")
+    @DisplayName("Test canCaptureSquare")
     void testCanCaptureSquare() {
         Board board = new Board("8/3P4/8/1P1r2P1/8/8/3P4/8 w - - 0 1");
         Rook rook =  (Rook) board.getBlackPieces()[0];

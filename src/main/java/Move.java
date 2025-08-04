@@ -9,6 +9,7 @@ public class Move {
     private boolean rankDisambiguation;
     private boolean isEnPassant;
     private PieceType promotionType;
+    private Board board;
 
     /**
      * Simple constructor
@@ -18,6 +19,7 @@ public class Move {
     public Move(Board board, Piece piece, String destination) {
         this.piece = piece;
         this.destination = destination;
+        this.board = board;
         if (board.pieceSearch(destination) != null) {
             isCapture = true;
         }
@@ -72,10 +74,14 @@ public class Move {
 
     /**
      * Simple setter for the isCastle boolean
+     * Checks again whether the move is a check since the rook movement wouldn't have been accounted for.
      * @param castle state isCastle is set to
      */
     public void setCastle(boolean castle) {
         isCastle = castle;
+        if (castle) {
+            isCheck = causesCheck(board, piece, destination);
+        }
     }
 
     /**
@@ -202,6 +208,10 @@ public class Move {
         String currentPosition = board.getFEN();
         Board boardAfterMove = new Board(currentPosition);
         Piece pieceOnNewBoard = boardAfterMove.pieceSearch(piece.getSquare());
+        char destinationFile = destination.charAt(0);
+        if (pieceOnNewBoard instanceof King king && Math.abs(destinationFile - pieceOnNewBoard.getFile()) == 2) {
+            king.castleMove(boardAfterMove, destination);
+        }
         pieceOnNewBoard.move(destination);
         if (piece.getColour() == PieceColour.WHITE) {
             for (Piece updatedBoardPiece : boardAfterMove.getWhitePieces()) {
@@ -310,6 +320,6 @@ public class Move {
     }
 
     public String toString() {
-        return "" + isCapture;
+        return "" + isCastle + " " + destination;
     }
 }

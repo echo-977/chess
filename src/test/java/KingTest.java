@@ -2,6 +2,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -48,23 +50,19 @@ class KingTest {
     @DisplayName("Test generateMoves with other pieces")
     void testGenerateMovesWithOtherPieces() {
         Board board = new Board("8/6p1/4PkR1/3r4/2K2p2/2P5/8/8 b - - 0 1");
+        System.out.println(Arrays.toString(board.getThreatMap(PieceColour.WHITE)));
         piece1 = (King) board.getWhitePieces()[2];
         piece2 = (King) board.getBlackPieces()[1];
         Move move1 = new Move(board, piece1, "d5");
         move1.setCapture(true);
-        Move[] piece1MovesExpected = {new Move(board, piece1, "c5"), move1,
-                new Move(board, piece1, "d4"), new Move(board, piece1, "d3"),
-                new Move(board, piece1, "b3"), new Move(board, piece1, "b4"),
-                new Move(board, piece1, "b5"), null};
+        Move[] piece1MovesExpected = {move1, new Move(board, piece1, "b3"),
+                new Move(board, piece1, "b4"), null, null, null, null, null};
         Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
         move1 = new Move(board, piece2, "g6");
         move1.setCapture(true);
-        Move move2 = new Move(board, piece2, "e6");
-        move2.setCapture(true);
-        Move[] piece2MovesExpected = {new Move(board, piece2, "f7"), move1,
-                new Move(board, piece2, "g5"), new Move(board, piece2, "f5"),
-                new Move(board, piece2, "e5"), move2, new Move(board, piece2, "e7"), null};
+        Move[] piece2MovesExpected = {move1, new Move(board, piece2, "f5"),
+                new Move(board, piece2, "e5"), new Move(board, piece2, "e7"), null, null, null, null};
         Move[] piece2MovesActual = piece2.generateMoves(board);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
@@ -129,7 +127,25 @@ class KingTest {
         Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         Move[] moves = new Move[8];
         moves[0] = new Move(board, board.getWhitePieces()[0], "a1");
-        King king = (King) board.findKing(PieceColour.WHITE);
+        King king = board.findKing(PieceColour.WHITE);
         assertEquals(1, king.findNextIndex(moves));
     }
+
+    @Test
+    @DisplayName("Test generateMoves with castling")
+    void testGenerateMovesWithCastling() {
+        Board board = new Board("r3k2r/8/5R2/8/8/8/2b5/R3K2R w KQkq - 0 1");
+        King whiteKing = board.findKing(PieceColour.WHITE);
+        Move[] expectedMovesWhite = {new Move(board, whiteKing, "e2"), new Move(board, whiteKing, "f2"),
+                new Move(board, whiteKing, "f1"), new Move(board, whiteKing, "d2"), new Move(board, whiteKing, "g1"),
+                null, null, null};
+        expectedMovesWhite[3].setCastle(true);
+        assertArrayEquals(expectedMovesWhite, whiteKing.generateMoves(board));
+        King blackKing = board.findKing(PieceColour.BLACK);
+        Move[] expectedMovesBlack = {new Move(board, blackKing, "e7"), new Move(board, blackKing, "d7"),
+                new Move(board, blackKing, "d8"), new Move(board, blackKing, "c8"), null, null,null, null};
+        expectedMovesBlack[0].setCastle(true);
+        assertArrayEquals(expectedMovesBlack, blackKing.generateMoves(board));
+    }
+
 }

@@ -161,7 +161,7 @@ class PawnTest {
     }
 
     @Test
-    @DisplayName("Test canCaptureKing")
+    @DisplayName("Test canCaptureSquare")
     void testCanCaptureSquare() {
         Board board = new Board("8/8/8/3p4/8/8/8/PK6 w - - 0 1");
         assertTrue(piece1.canCaptureSquare(board, "b2"));

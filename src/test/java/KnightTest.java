@@ -65,7 +65,7 @@ class KnightTest {
     }
 
     @Test
-    @DisplayName("Test canCaptureKing")
+    @DisplayName("Test canCaptureSquare")
     void testCanCaptureSquare() { //given the canCaptureKing method just calls the isLegalMove method there is no test required
     }
 
