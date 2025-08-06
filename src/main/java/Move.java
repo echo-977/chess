@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Move {
     private final Piece piece;
     private final String destination;
@@ -304,9 +306,44 @@ public class Move {
         return move.toString();
     }
 
+    /**
+     * Static factory method to filter out illegal moves (moves that leave the king in check).
+     * In the event that the move is illegal a null object is returned, otherwise the move is returned.
+     * @param board the board the move will be on.
+     * @param piece the piece that is being moved.
+     * @param destination the square the piece is moved to.
+     * @return null if the move is illegal, otherwise the move object.
+     */
+    public static Move createIfLegal(Board board, Piece piece, String destination) {
+        Board boardAfterMove = new Board(board.getFEN());
+        Piece pieceCopy = boardAfterMove.pieceSearch(piece.getSquare());
+        Move moveCopy = new Move(boardAfterMove, pieceCopy, destination);
+        boardAfterMove.doMove(moveCopy);
+        PieceColour colour;
+        PieceColour enemyColour;
+        if (piece.getColour() == PieceColour.WHITE) {
+            colour = PieceColour.WHITE;
+            enemyColour = PieceColour.BLACK;
+        } else {
+            colour = PieceColour.BLACK;
+            enemyColour = PieceColour.WHITE;
+        }
+        King king = boardAfterMove.findKing(colour);
+        if (king == null) { //only occurs in test positions in which case there is no check to worry about
+            return new Move(board, piece, destination);
+        }
+        boolean[] threatMap = boardAfterMove.getThreatMap(enemyColour);
+        String kingSquare = king.getSquare();
+        if (threatMap[board.mapSquareToInt(kingSquare)]) { //king is in check so move is invalid
+            return null;
+        } else {
+            return new Move(board, piece, destination);
+        }
+    }
+
     @Override
     /**
-     * Checks if two moves are equal.
+     * Checks if two moves are equal by comparing their flags.
      * @param object the move to compare to.
      * @return boolean for if the moves are equal.
      */
@@ -324,7 +361,8 @@ public class Move {
                 other.isCapture == this.isCapture;
     }
 
+    @Override
     public String toString() {
-        return "" + isCastle + " " + destination;
+        return isCastle + " " + destination;
     }
 }

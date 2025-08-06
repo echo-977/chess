@@ -50,7 +50,6 @@ class KingTest {
     @DisplayName("Test generateMoves with other pieces")
     void testGenerateMovesWithOtherPieces() {
         Board board = new Board("8/6p1/4PkR1/3r4/2K2p2/2P5/8/8 b - - 0 1");
-        System.out.println(Arrays.toString(board.getThreatMap(PieceColour.WHITE)));
         piece1 = (King) board.getWhitePieces()[2];
         piece2 = (King) board.getBlackPieces()[1];
         Move move1 = new Move(board, piece1, "d5");

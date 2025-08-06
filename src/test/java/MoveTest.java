@@ -88,5 +88,25 @@ class MoveTest {
         move.setCastle(true);
         assertTrue(move.isCheck());
     }
+
+    @Test
+    @DisplayName("Test illegalMoveDetection (pin)")
+    void testIllegalMoveDetection() {
+        Board board = new Board("8/8/R2b1k2/8/8/8/8/8 w - - 0 1");
+        Piece piece = board.getBlackPieces()[0];
+        Move[] expectedMoves = new Move[ChessConstants.MAX_BISHOP_MOVES];
+        assertArrayEquals(expectedMoves, piece.generateMoves(board));
+    }
+
+    @Test
+    @DisplayName("Test illegalMoveDetection (blocking check)")
+    void testIllegalMoveDetection2() {
+        Board board = new Board("8/8/R4k2/2b5/8/8/8/8 w - - 0 1");
+        Piece piece = board.getBlackPieces()[1];
+        Move[] expectedMoves = new Move[ChessConstants.MAX_BISHOP_MOVES];
+        expectedMoves[0] = new Move(board, piece, "b6");
+        expectedMoves[1] = new Move(board, piece, "d6");
+        assertArrayEquals(expectedMoves, piece.generateMoves(board));
+    }
 }
 

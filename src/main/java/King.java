@@ -40,7 +40,7 @@ public class King extends DirectionalPiece{
             if (piece instanceof Rook rook) {
                 if (!rook.getMoved() && canCastleSearch(board, 'c')) {
                     nextIndex = findNextIndex(moves);
-                    moves[nextIndex] = new Move(board, this, "c" + String.valueOf(rank));
+                    moves[nextIndex] = new Move(board, this, "c" + rank);
                     moves[nextIndex].setCastle(true);
                 }
             }
@@ -48,7 +48,7 @@ public class King extends DirectionalPiece{
             if (piece instanceof Rook rook) {
                 if (!rook.getMoved() && canCastleSearch(board, 'g')) {
                     nextIndex = findNextIndex(moves);
-                    moves[nextIndex] = new Move(board, this, "g" + String.valueOf(rank));
+                    moves[nextIndex] = new Move(board, this, "g" + rank);
                     moves[nextIndex].setCastle(true);
                 }
             }
@@ -228,8 +228,10 @@ public class King extends DirectionalPiece{
             if (isLegalMove(candidateMove) && !threatMap[board.mapSquareToInt(candidateMove)]) {
                 piece = board.pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    moves[movesIndex] = new Move(board, this, candidateMove);
-                    movesIndex++;
+                    moves[movesIndex] = Move.createIfLegal(board, this, candidateMove);
+                    if (moves[movesIndex] != null) {
+                        movesIndex++;
+                    }
                 }
             }
         }

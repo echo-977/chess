@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class Board {
     private Piece[] whitePieces;
     private Piece[] blackPieces;
@@ -337,7 +335,6 @@ public class Board {
                 return (King) piece;
             }
         }
-        System.out.println("No king found");
         return null;
     }
 

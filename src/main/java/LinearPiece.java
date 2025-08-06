@@ -36,11 +36,15 @@ public abstract class LinearPiece extends Piece {
             if (isLegalMove(candidateMove)) {
                 piece = board.pieceSearch(candidateMove);
                 if (piece == null) { //no piece so the move is legal
-                    moves[movesIndex] = new Move(board, this, candidateMove);
-                    movesIndex++;
+                    moves[movesIndex] = Move.createIfLegal(board, this, candidateMove);
+                    if (moves[movesIndex] != null) {
+                        movesIndex++;
+                    }
                 } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    moves[movesIndex] = new Move(board, this, candidateMove);
-                    movesIndex++;
+                    moves[movesIndex] = Move.createIfLegal(board, this, candidateMove);
+                    if (moves[movesIndex] != null) {
+                        movesIndex++;
+                    }
                     break;
                 } else { //same coloured piece
                     break;
