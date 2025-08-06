@@ -79,16 +79,21 @@ public class Pawn extends Piece{
         Move move;
         if ((getColour() == PieceColour.WHITE && rank == 8) || (getColour() == PieceColour.BLACK && rank == 1)) {
             for (PieceType type : PieceType.values()) {
-                if (canPromoteTo(type)) {
-                    move = new Move(board, this, destination);
+                if (!canPromoteTo(type)) {
+                    continue;
+                }
+                move = Move.createIfLegal(board, this, destination);
+                if (move != null) {
                     move.setPromotionType(type);
                     moves[movesIndex] = move;
                     movesIndex++;
                 }
             }
         } else {
-            moves[movesIndex] = new Move(board, this, destination);
-            movesIndex++;
+            moves[movesIndex] = Move.createIfLegal(board, this, destination);
+            if (moves[movesIndex] != null) {
+                movesIndex++;
+            }
         }
         return movesIndex;
     }
