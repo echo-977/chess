@@ -90,6 +90,7 @@ public class Move {
      */
     public void setPromotionType(PieceType promotionType) {
         this.promotionType = promotionType;
+        isCheck = causesCheck(board, piece, destination);
     }
 
     /**
@@ -212,7 +213,11 @@ public class Move {
         if (pieceOnNewBoard instanceof King king && Math.abs(destinationFile - pieceOnNewBoard.getFile()) == 2) {
             king.castleMove(boardAfterMove, destination);
         }
-        pieceOnNewBoard.move(destination);
+        if (promotionType != null) {
+            boardAfterMove.handlePromotion(this);
+        } else {
+            pieceOnNewBoard.move(destination);
+        }
         if (piece.getColour() == PieceColour.WHITE) {
             for (Piece updatedBoardPiece : boardAfterMove.getWhitePieces()) {
                 if (updatedBoardPiece != null &&

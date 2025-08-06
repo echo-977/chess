@@ -548,4 +548,14 @@ class BoardTest {
         assertEquals(0, board.mapSquareToInt("a8"));
         assertEquals(35, board.mapSquareToInt("d4"));
     }
+
+    @Test
+    @DisplayName("Test promotionCheck")
+    void testPromotionCheck() {
+        Board board = new Board("8/3P4/5k2/8/8/8/8/8 w - - 0 1");
+        Piece piece = board.getWhitePieces()[0];
+        Move move = new Move(board, piece, "d8");
+        move.setPromotionType(PieceType.BISHOP);
+        assertTrue(move.isCheck());
+    }
 }
