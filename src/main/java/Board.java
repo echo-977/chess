@@ -1,7 +1,7 @@
 public class Board {
     private Piece[] whitePieces;
     private Piece[] blackPieces;
-    private boolean turn;
+    private PieceColour turn;
     private int moveCount;
     private int halfMoveClock;
 
@@ -14,7 +14,11 @@ public class Board {
         String[] fen = FEN.split(FENConstants.SPACE);
         moveCount = Integer.parseInt(fen[FENConstants.FULLMOVE_CLOCK_FIELD]);
         halfMoveClock = Integer.parseInt(fen[FENConstants.HALFMOVE_CLOCK_FIELD]);
-        turn = fen[FENConstants.TURN_FIELD].equals(FENConstants.WHITE);
+        if (fen[FENConstants.TURN_FIELD].equals(FENConstants.WHITE)) {
+            turn = PieceColour.WHITE;
+        } else {
+            turn = PieceColour.BLACK;
+        }
         fen[FENConstants.PIECE_FIELD] = fen[FENConstants.PIECE_FIELD].replaceAll(FENConstants.NEW_RANK, "");
         String currentSquare;
         int skip = 0;
@@ -185,7 +189,7 @@ public class Board {
             }
         }
         fen.append(FENConstants.SPACE);
-        if (getTurn()) {
+        if (getTurn() == PieceColour.WHITE) {
             fen.append(FENConstants.WHITE);
         } else {
             fen.append(FENConstants.BLACK);
@@ -296,7 +300,7 @@ public class Board {
      *
      * @return boolean value (true for White move, false for Black move)
      */
-    public boolean getTurn() {
+    public PieceColour getTurn() {
         return turn;
     }
 
@@ -357,6 +361,11 @@ public class Board {
             handlePromotion = handlePromotion(move);
         } else {
             move.getPiece().move(move.getDestination());
+        }
+        if (turn == PieceColour.WHITE) {
+            turn = PieceColour.BLACK;
+        } else {
+            turn = PieceColour.WHITE;
         }
         return handleCapture && handleCastle && handlePromotion;
     }

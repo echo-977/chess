@@ -75,7 +75,7 @@ class BoardTest {
         hRook = (Rook) whitePieces[15];
         assertEquals("h1", hRook.getSquare());
         assertFalse(hRook.getMoved());
-        assertTrue(board.getTurn());
+        assertEquals(PieceColour.WHITE, board.getTurn());
         assertEquals(1, board.getMoveCount());
         assertEquals(0, board.getHalfMoveClock());
     }
@@ -205,7 +205,7 @@ class BoardTest {
         assertEquals(PieceType.KING, king.getType());
         assertEquals(0, board.getHalfMoveClock());
         assertEquals(13, board.getMoveCount());
-        assertTrue(board.getTurn());
+        assertEquals(PieceColour.WHITE, board.getTurn());
     }
 
     @Test
@@ -339,7 +339,7 @@ class BoardTest {
         assertEquals("g1", king.getSquare());
         assertTrue(king.getMoved());
         assertEquals(PieceType.KING, king.getType());
-        assertFalse(board.getTurn());
+        assertEquals(PieceColour.BLACK, board.getTurn());
         assertEquals(0, board.getHalfMoveClock());
         assertEquals(9, board.getMoveCount());
     }
