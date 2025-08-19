@@ -3,6 +3,8 @@ public class ChessConstants {
 
     public static final int NUM_PIECES = 32;
     public static final int NUM_SQUARES = 64;
+    public static final int NUM_FILES = 8;
+    public static final int NUM_RANKS = 8;
     public static final int NUM_PROMOTIONS = 4;
 
     public static final int MAX_PAWN_MOVES = 12;
