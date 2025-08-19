@@ -166,16 +166,16 @@ public class King extends DirectionalPiece{
         int rank = getRank();
         char start, end;
         if (file > getFile()) {
-            start = getFile();
+            start = (char) (getFile() + 1);
             end = file;
         } else {
             start = file;
-            end = getFile();
+            end = (char) (getFile() - 1);
         }
         String square;
         for (char f = start; f <= end; f++ ) {
             square = f + String.valueOf(rank);
-            if (threatMap[board.mapSquareToInt(square)]) {
+            if (threatMap[board.mapSquareToInt(square)] || board.pieceSearch(square) != null) {
                 return false;
             }
         }

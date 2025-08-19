@@ -583,4 +583,44 @@ public class Board {
             move.setRankDisambiguation(needsRankDisambiguation);
         }
     }
+
+    /**
+     * Generates all the moves for a given colour.
+     * @param colour the colour we want to generate moves for.
+     * @return an array of all the moves the colour can do.
+     */
+    public Move[] generateMoves(PieceColour colour) {
+        int moveCount = 0;
+        Piece[] pieces;
+        if (colour == PieceColour.WHITE) {
+            pieces =  whitePieces;
+        } else {
+            pieces =  blackPieces;
+        }
+        for (Piece piece : pieces) {
+            if (piece == null) {
+                continue;
+            }
+            for (Move move : piece.generateMoves(this)) {
+                if (move != null) {
+                    moveCount++;
+                }
+            }
+        }
+        Move[] moves = new Move[moveCount];
+        moveCount = 0;
+        for (Piece piece : pieces) {
+            if (piece == null) {
+                continue;
+            }
+            for (Move move : piece.generateMoves(this)) {
+                if (move != null) {
+                    moves[moveCount] = move;
+                    moveCount++;
+                }
+            }
+        }
+        handleDisambiguation(moves);
+        return moves;
+    }
 }
