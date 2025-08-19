@@ -2,7 +2,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -135,14 +134,16 @@ class KingTest {
     void testGenerateMovesWithCastling() {
         Board board = new Board("r3k2r/8/5R2/8/8/8/2b5/R3K2R w KQkq - 0 1");
         King whiteKing = board.findKing(PieceColour.WHITE);
-        Move[] expectedMovesWhite = {new Move(board, whiteKing, "e2"), new Move(board, whiteKing, "f2"),
-                new Move(board, whiteKing, "f1"), new Move(board, whiteKing, "d2"), new Move(board, whiteKing, "g1"),
+        Move[] expectedMovesWhite = {new Move(board, whiteKing, "e2"),
+                new Move(board, whiteKing, "f2"), new Move(board, whiteKing, "f1"),
+                new Move(board, whiteKing, "d2"), new Move(board, whiteKing, "g1"),
                 null, null, null};
         expectedMovesWhite[3].setCastle(true);
         assertArrayEquals(expectedMovesWhite, whiteKing.generateMoves(board));
         King blackKing = board.findKing(PieceColour.BLACK);
-        Move[] expectedMovesBlack = {new Move(board, blackKing, "e7"), new Move(board, blackKing, "d7"),
-                new Move(board, blackKing, "d8"), new Move(board, blackKing, "c8"), null, null,null, null};
+        Move[] expectedMovesBlack = {new Move(board, blackKing, "e7"),
+                new Move(board, blackKing, "d7"), new Move(board, blackKing, "d8"),
+                new Move(board, blackKing, "c8"), null, null,null, null};
         expectedMovesBlack[0].setCastle(true);
         assertArrayEquals(expectedMovesBlack, blackKing.generateMoves(board));
     }

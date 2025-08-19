@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class Move {
     private final Piece piece;
     private final String destination;
@@ -11,7 +9,7 @@ public class Move {
     private boolean rankDisambiguation;
     private boolean isEnPassant;
     private PieceType promotionType;
-    private Board board;
+    private final Board board;
 
     /**
      * Simple constructor
@@ -342,11 +340,6 @@ public class Move {
     }
 
     @Override
-    /**
-     * Checks if two moves are equal by comparing their flags.
-     * @param object the move to compare to.
-     * @return boolean for if the moves are equal.
-     */
     public boolean equals(Object object) {
         if (object == null) {
             return false;
@@ -363,6 +356,6 @@ public class Move {
 
     @Override
     public String toString() {
-        return isCastle + " " + destination;
+        return piece + " " + destination;
     }
 }
