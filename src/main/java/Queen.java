@@ -68,7 +68,7 @@ public class Queen extends LinearPiece{
         int fileDirection, rankDirection;
         char file = getFile();
         int rank = getRank();
-        if ((targetFile - file) == (targetRank - rank) || (targetFile - file) == -(targetRank - rank)) {
+        if (Math.abs(targetFile - file) == Math.abs(targetRank - rank)) {
             directions = getDiagonalDirections(targetFile, targetRank);
         } else if ((targetFile == file || targetRank == rank)) {
             directions = getOrthogonalDirections(targetFile, targetRank);

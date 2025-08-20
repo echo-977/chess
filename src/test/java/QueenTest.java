@@ -108,7 +108,7 @@ class QueenTest {
     }
 
     @Test
-    @DisplayName(("Test canCaptureKingSquare"))
+    @DisplayName(("Test canCaptureSquare"))
     void testCanCaptureSquare() {
         Board board = new Board("8/1P1P1P2/8/1P1q2P1/8/1P3P2/3P4/8 w - - 0 1");
         Queen queen =  (Queen) board.getBlackPieces()[0];
