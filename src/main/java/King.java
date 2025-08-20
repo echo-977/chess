@@ -38,9 +38,9 @@ public class King extends DirectionalPiece{
             int rank = getRank();
             Piece piece = board.pieceSearch("a" + rank);
             if (piece instanceof Rook rook) {
-                if (!rook.getMoved() && canCastleSearch(board, 'c')) {
+                if (!rook.getMoved() && canCastleSearch(board, 'c') && board.pieceSearch("b" + rank) == null) {
                     nextIndex = findNextIndex(moves);
-                    moves[nextIndex] = new Move(board, this, "c" + rank);
+                    moves[nextIndex] = Move.createIfLegal(board, this, "c" + rank);
                     moves[nextIndex].setCastle(true);
                 }
             }
@@ -48,7 +48,7 @@ public class King extends DirectionalPiece{
             if (piece instanceof Rook rook) {
                 if (!rook.getMoved() && canCastleSearch(board, 'g')) {
                     nextIndex = findNextIndex(moves);
-                    moves[nextIndex] = new Move(board, this, "g" + rank);
+                    moves[nextIndex] = Move.createIfLegal(board, this, "g" + rank);
                     moves[nextIndex].setCastle(true);
                 }
             }
