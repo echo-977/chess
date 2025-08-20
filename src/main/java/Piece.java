@@ -208,6 +208,6 @@ public abstract class Piece{
      */
     @Override
     public String toString() {
-        return colour + " " + type + " " + file + rank;
+        return /*colour + " " + type + " " + */ file + String.valueOf(rank);
     }
 }

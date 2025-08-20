@@ -356,6 +356,6 @@ public class Move {
 
     @Override
     public String toString() {
-        return piece + " " + destination;
+        return piece + destination;
     }
 }
