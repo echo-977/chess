@@ -351,6 +351,17 @@ public class Board {
         boolean handleCapture = true;
         boolean handleCastle = true;
         boolean handlePromotion = true;
+        Piece[] pieces;
+        if (turn == PieceColour.WHITE) {
+            pieces = blackPieces;
+        } else {
+            pieces = whitePieces;
+        }
+        for (Piece piece : pieces) {
+            if (piece != null && piece.getType() == PieceType.PAWN) {
+                ((Pawn) piece).setEnPassantable(false);
+            }
+        }
         if (move.isCapture()) {
             handleCapture = handleCaptureMove(move);
         }
@@ -489,15 +500,16 @@ public class Board {
     public boolean[] getThreatMap(PieceColour colour) {
         Piece[] pieces;
         if (colour == PieceColour.WHITE) {
-            pieces =  whitePieces;
+            pieces = whitePieces;
         } else {
-            pieces =  blackPieces;
+            pieces = blackPieces;
         }
         boolean[] threatMap = new boolean[ChessConstants.NUM_SQUARES];
-        for (Piece piece : pieces) {
-            for (int i = 0; i < ChessConstants.NUM_SQUARES; i++) {
+        for (int i = 0; i < ChessConstants.NUM_SQUARES; i++) {
+            for (Piece piece : pieces) {
                 if (piece != null && piece.canCaptureSquare(this, mapIntToSquare(i))) {
                     threatMap[i] = true;
+                    break;
                 }
             }
         }

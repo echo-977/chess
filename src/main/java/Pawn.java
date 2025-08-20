@@ -60,8 +60,13 @@ public class Pawn extends Piece{
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank()));
         if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
-            addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
-            moves[movesIndex - 1].setEnPassant(true);
+            movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
+            try {
+                moves[movesIndex - 1].setEnPassant(true);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println(movesIndex + " " + moves[movesIndex]);
+                throw e;
+            }
         }
         return moves;
     }
@@ -87,6 +92,8 @@ public class Pawn extends Piece{
                     move.setPromotionType(type);
                     moves[movesIndex] = move;
                     movesIndex++;
+                } else {
+                    break;
                 }
             }
         } else {
@@ -187,6 +194,14 @@ public class Pawn extends Piece{
      */
     public boolean getEnPassantable() {
         return enPassantable;
+    }
+
+    /**
+     * Simple setter for the boolean enPassantable.
+     * @param enPassant whether the pawn can be captured by en passant.
+     */
+    public void setEnPassantable(boolean enPassant) {
+        enPassantable = enPassant;
     }
 
     /**
