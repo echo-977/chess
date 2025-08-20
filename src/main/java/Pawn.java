@@ -147,8 +147,11 @@ public class Pawn extends Piece{
     public void move(String move) {
         if (!moved) {
             moved = true;
-            enPassantable = true;
-        } else {
+            int moveRank = move.charAt(1) - '0';
+            if (Math.abs(moveRank - getRank()) == 2) {
+                enPassantable = true;
+            }
+        } else if (enPassantable) {
             enPassantable = false;
         }
         super.move(move);
