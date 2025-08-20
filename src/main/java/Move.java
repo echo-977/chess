@@ -339,6 +339,25 @@ public class Move {
         }
     }
 
+    /**
+     * Method to produce an exact copy of the move on a given board.
+     * @param board the board we generate the move clone on.
+     * @return a move that has identical properties just on the given board.
+     */
+    public Move clone(Board board) {
+        Move copy = new Move(board, board.pieceSearch(getPiece().getSquare()), getDestination());
+        copy.setCapture(isCapture());
+        copy.setCheck(isCheck());
+        copy.setCheckmate(isCheckmate());
+        copy.setCastle(isCastle());
+        copy.setFileDisambiguation(isFileDisambiguation());
+        copy.setRankDisambiguation(isRankDisambiguation());
+        copy.setEnPassant(isEnPassant());
+        copy.setPromotionType(getPromotionType());
+        return copy;
+    }
+
+
     @Override
     public boolean equals(Object object) {
         if (object == null) {

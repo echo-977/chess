@@ -8,8 +8,7 @@ public class Perft {
         for (Move move : moves) {
             if (move != null) {
                 Board boardCopy = new Board(board.getFEN());
-                Piece pieceCopy = boardCopy.pieceSearch(move.getPiece().getSquare());
-                Move moveCopy = new Move(boardCopy, pieceCopy, move.getDestination());
+                Move moveCopy = move.clone(boardCopy);
                 boardCopy.doMove(moveCopy);
                 nodes += Perft(boardCopy, depth - 1);
             }
@@ -27,8 +26,7 @@ public class Perft {
         for (Move move : moves) {
             if (move != null) {
                 Board boardCopy = new Board(board.getFEN());
-                Piece pieceCopy = boardCopy.pieceSearch(move.getPiece().getSquare());
-                Move moveCopy = new Move(boardCopy, pieceCopy, move.getDestination());
+                Move moveCopy = move.clone(boardCopy);
                 boardCopy.doMove(moveCopy);
                 count = Perft(boardCopy, depth - 1);
                 System.out.println(move + ": " + count);
@@ -48,9 +46,7 @@ public class Perft {
         for (Move move : moves) {
             if (move != null) {
                 Board boardCopy = new Board(board.getFEN());
-                Piece pieceCopy = boardCopy.pieceSearch(move.getPiece().getSquare());
-                Move moveCopy = new Move(boardCopy, pieceCopy, move.getDestination());
-                boardCopy.doMove(moveCopy);
+                Move moveCopy = move.clone(boardCopy);
                 try {
                     count = Perft(boardCopy, depth - 1);
                     System.out.println(move + ": " + count);
@@ -96,7 +92,7 @@ public class Perft {
                 for (Move move : threadMoves[threadNum]) {
                     if (move != null) {
                         Board boardCopy = new Board(board.getFEN());
-                        Move moveCopy = new Move(boardCopy, boardCopy.pieceSearch(move.getPiece().getSquare()), move.getDestination());
+                        Move moveCopy = move.clone(boardCopy);
                         boardCopy.doMove(moveCopy);
                         if (doDivide) {
                             count = Perft(boardCopy, depth - 1);
