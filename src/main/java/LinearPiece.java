@@ -70,9 +70,13 @@ public abstract class LinearPiece extends Piece {
         if (currentSquare.equals(getSquare())) { //base case, we are back to the piece's square
             return true;
         } else if (pieceInPath != null) { //if we run into a piece then we cannot move to the target
-            return pieceInPath instanceof King && pieceInPath.getColour() != getColour();
-            //if it is the enemy king we can move to the square on the next move
-            //since the king must move out of the way (it is in check).
+            if (pieceInPath instanceof King && pieceInPath.getColour() != getColour()) {
+                return recursiveCaptureCheck(board, (char) (file + fileDirection), rank + rankDirection, fileDirection,  rankDirection);
+                //if it is the enemy king we can move to the square on the next move since the king must move
+                // out of the way (it is in check), therefore we continue checking
+            } else {
+                return false;
+            }
         } else { //recursive step
             return recursiveCaptureCheck(board, (char) (file + fileDirection), rank + rankDirection, fileDirection,  rankDirection);
         }
