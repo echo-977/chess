@@ -110,4 +110,13 @@ public class Rook extends LinearPiece{
         int rank = square.charAt(1) - '0';
         return new Rook(getColour(), file, rank, getMoved());
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (super.equals(object)) {
+            Rook other = (Rook) object;
+            return other.moved == this.moved;
+        }
+        return false;
+    }
 }

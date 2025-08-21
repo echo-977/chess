@@ -220,6 +220,15 @@ public class Pawn extends Piece{
         int rank = square.charAt(1) - '0';
         return new Pawn(getColour(), file, rank, getMoved(), getEnPassantable());
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (super.equals(object)) {
+            Pawn other = (Pawn) object;
+            return other.enPassantable == this.enPassantable && other.moved == this.moved;
+        }
+        return false;
+    }
 }
 
 

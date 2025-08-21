@@ -593,4 +593,11 @@ class BoardTest {
         assertFalse(moves[4].isFileDisambiguation());
         assertFalse(moves[4].isRankDisambiguation());
     }
+
+    @Test
+    @DisplayName("Test clone")
+    void testClone() {
+        Board board2 = board.copy();
+        assertEquals(board, board2);
+    }
 }
