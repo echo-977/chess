@@ -8,7 +8,7 @@ public class Perft {
         for (Move move : moves) {
             if (move != null) {
                 try {
-                    Board boardCopy = new Board(board.getFEN());
+                    Board boardCopy = board.copy();
                     Move moveCopy = move.clone(boardCopy);
                     boardCopy.doMove(moveCopy);
                     nodes += Perft(boardCopy, depth - 1);
@@ -30,7 +30,7 @@ public class Perft {
         Move[] moves = board.generateMoves(board.getTurn());
         for (Move move : moves) {
             if (move != null) {
-                Board boardCopy = new Board(board.getFEN());
+                Board boardCopy = board.copy();
                 Move moveCopy = move.clone(boardCopy);
                 boardCopy.doMove(moveCopy);
                 try {
@@ -77,7 +77,7 @@ public class Perft {
                 long count;
                 for (Move move : threadMoves[threadNum]) {
                     if (move != null) {
-                        Board boardCopy = new Board(board.getFEN());
+                        Board boardCopy = board.copy();
                         Move moveCopy = move.clone(boardCopy);
                         boardCopy.doMove(moveCopy);
                         if (doDivide) {

@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class King extends DirectionalPiece{
     private boolean check;
     private boolean moved;
@@ -241,6 +243,15 @@ public class King extends DirectionalPiece{
                 }
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (super.equals(object)) {
+            King other = (King) object;
+            return other.moved == this.moved && other.check == this.check;
+        }
+        return false;
     }
 }
 

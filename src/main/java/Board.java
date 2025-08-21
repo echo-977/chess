@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Board {
     private final Piece[] whitePieces;
     private final Piece[] blackPieces;
@@ -634,4 +636,60 @@ public class Board {
             return blackThreatMap;
         }
     }
+
+    /**
+     /**
+     * Constructs a board based on all the boards attributes.
+     * @param whitePieces array of all the white pieces on the board.
+     * @param blackPieces array of all the black pieces on the board.
+     * @param turn the current colour whose turn it is.
+     * @param moveCount the current move.
+     * @param halfMoveClock number of half moves since a capture or pawn move.
+     * @param whiteThreatMap boolean array of all squares white threatens.
+     * @param blackThreatMap boolean array of all squares black threatens.
+     */
+    public Board(Piece[] whitePieces, Piece[] blackPieces, PieceColour turn, int moveCount, int halfMoveClock,
+                 boolean[] whiteThreatMap, boolean[] blackThreatMap) {
+        this.whitePieces = whitePieces;
+        this.blackPieces = blackPieces;
+        this.turn = turn;
+        this.moveCount = moveCount;
+        this.halfMoveClock = halfMoveClock;
+        this.whiteThreatMap = whiteThreatMap;
+        this.blackThreatMap = blackThreatMap;
+    }
+
+    /**
+     * Returns a copy of the board in the same position.
+     * @return a functionally identical board.
+     */
+    public Board copy() {
+        Piece[] clonedWhitePieces = new Piece[ChessConstants.NUM_PIECES/2];
+        Piece[] clonedBlackPieces = new Piece[ChessConstants.NUM_PIECES/2];
+        for (int i = 0; i < ChessConstants.NUM_PIECES/2; i++) {
+            if (whitePieces[i] != null) {
+                clonedWhitePieces[i] = whitePieces[i].copyToSquare(whitePieces[i].getSquare());
+            }
+            if (blackPieces[i] != null) {
+                clonedBlackPieces[i] = blackPieces[i].copyToSquare(blackPieces[i].getSquare());
+            }
+        }
+        return new Board(clonedWhitePieces, clonedBlackPieces, turn, moveCount, halfMoveClock, whiteThreatMap.clone(), blackThreatMap.clone());
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        } else if (object == this) {
+            return true;
+        }
+        if (!(object instanceof Board other)) {
+            return false;
+        }
+        return Arrays.equals(other.whitePieces, this.whitePieces) && Arrays.equals(other.blackPieces, this.blackPieces) && other.turn == this.turn
+                && other.moveCount == this.moveCount && other.halfMoveClock == this.halfMoveClock &&
+                Arrays.equals(other.whiteThreatMap, this.whiteThreatMap) && Arrays.equals(other.blackThreatMap, this.blackThreatMap);
+    }
+
 }

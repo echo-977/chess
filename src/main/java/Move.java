@@ -313,7 +313,7 @@ public class Move {
      * @return null if the move is illegal, otherwise the move object.
      */
     public static Move createIfLegal(Board board, Piece piece, String destination) {
-        Board boardAfterMove = new Board(board.getFEN());
+        Board boardAfterMove = board.copy();
         Piece pieceCopy = boardAfterMove.pieceSearch(piece.getSquare());
         Move moveCopy = new Move(boardAfterMove, pieceCopy, destination);
         boardAfterMove.doMove(moveCopy);
