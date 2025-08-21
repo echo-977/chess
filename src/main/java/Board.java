@@ -4,6 +4,8 @@ public class Board {
     private PieceColour turn;
     private int moveCount;
     private int halfMoveClock;
+    private boolean[] whiteThreatMap;
+    private boolean[] blackThreatMap;
 
     /**
      * Constructs a board from a given FEN string
@@ -111,6 +113,8 @@ public class Board {
                 }
             }
         }
+        updateThreatMap(PieceColour.WHITE);
+        updateThreatMap(PieceColour.BLACK);
     }
 
     /**
@@ -361,6 +365,8 @@ public class Board {
         } else {
             turn = PieceColour.WHITE;
         }
+        whiteThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.WHITE);
+        whiteThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.WHITE);
         return handleCapture && handleCastle && handlePromotion;
     }
 
@@ -602,5 +608,30 @@ public class Board {
         }
         handleDisambiguation(moves);
         return moves;
+    }
+
+    /**
+     * Update the saved threat map with a new one.
+     * @param colour the colour of the threat map to be updated.
+     */
+    public void updateThreatMap(PieceColour colour) {
+        if (colour == PieceColour.WHITE) {
+            whiteThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.WHITE);
+        } else {
+            blackThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.BLACK);
+        }
+    }
+
+    /**
+     * Returns the current cached threat map for the colour.
+     * @param colour the threat map required.
+     * @return boolean array of whether the given colour threatens each square.
+     */
+    public boolean[] getThreatMap(PieceColour colour) {
+        if (colour == PieceColour.WHITE) {
+            return whiteThreatMap;
+        } else {
+            return blackThreatMap;
+        }
     }
 }
