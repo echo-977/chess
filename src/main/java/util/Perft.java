@@ -7,36 +7,21 @@ public class Perft {
         Move[] moves = board.generateMoves(board.getTurn());
         for (Move move : moves) {
             if (move != null) {
-                Board boardCopy = new Board(board.getFEN());
-                Move moveCopy = move.clone(boardCopy);
-                boardCopy.doMove(moveCopy);
-                nodes += Perft(boardCopy, depth - 1);
+                try {
+                    Board boardCopy = new Board(board.getFEN());
+                    Move moveCopy = move.clone(boardCopy);
+                    boardCopy.doMove(moveCopy);
+                    nodes += Perft(boardCopy, depth - 1);
+                } catch (Exception e) {
+                    System.out.println("Error with move: " + move);
+                    throw e;
+                }
             }
         }
         return nodes;
     }
 
-    public static long PerftDivide(Board board, int depth){
-        if (depth == 0) {
-            return 1;
-        }
-        long nodes = 0;
-        long count;
-        Move[] moves = board.generateMoves(board.getTurn());
-        for (Move move : moves) {
-            if (move != null) {
-                Board boardCopy = new Board(board.getFEN());
-                Move moveCopy = move.clone(boardCopy);
-                boardCopy.doMove(moveCopy);
-                count = Perft(boardCopy, depth - 1);
-                System.out.println(move + ": " + count);
-                nodes += count;
-            }
-        }
-        return nodes;
-    }
-
-    public static long PerftDivideWithDebug(Board board, int depth) {
+    public static long PerftDivide(Board board, int depth) {
         if (depth == 0) {
             return 1;
         }
