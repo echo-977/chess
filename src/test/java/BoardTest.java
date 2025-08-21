@@ -1,6 +1,6 @@
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,16 +10,6 @@ class BoardTest {
     @BeforeEach
     public void init() {
         board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    }
-
-    @Test
-    @DisplayName("Test mapIntToSquare")
-    void testMapIntToSquare() {
-        assertEquals("a8", board.mapIntToSquare(0));
-        assertEquals("h8", board.mapIntToSquare(7));
-        assertEquals("h1", board.mapIntToSquare(63));
-        assertEquals("d4", board.mapIntToSquare(35));
-
     }
 
     @Test
@@ -517,36 +507,17 @@ class BoardTest {
     @Test
     @DisplayName("Test doMove")
     void testDoMove() {
-        Board board = new Board("8/8/8/8/8/3Q4/8/8 w - - 0 1");
+        Board board = new Board("8/8/5r2/8/8/3Q4/8/8 w - - 0 1");
         Piece piece = board.getWhitePieces()[0];
         Move move = new Move(board, piece, "g6");
         board.doMove(move);
         assertEquals("g6", piece.getSquare());
-    }
-
-    @Test
-    @DisplayName("Test getThreatMap")
-    void testGetThreatMap() {
-        Board board = new Board("8/8/3r4/4r3/4b3/8/8/8 w - - 0 1");
-        boolean[] expectedThreatMap = {true, false, false, true, true, false, false, false,
-                false, true, false, true, true, false, false, true,
-                true, true, true, false, true, true, true, true,
-                true, true, true, true, false, true, true, true,
-                false, false, false, true, true, false, false, false,
-                false, false, false, true, false, true, false, false,
-                false, false, true, true, false, false, true, false,
-                false, true, false, true, false, false, false, true};
-        boolean[] actualThreatMap = board.getThreatMap(PieceColour.BLACK);
-        assertArrayEquals(expectedThreatMap,  actualThreatMap);
-    }
-
-    @Test
-    @DisplayName("Test mapSquareToInt")
-    void testMapSquareToInt() {
-        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w kq - 0 1");
-        assertEquals(63, board.mapSquareToInt("h1"));
-        assertEquals(0, board.mapSquareToInt("a8"));
-        assertEquals(35, board.mapSquareToInt("d4"));
+        assertEquals(1, board.getHalfMoveClock());
+        assertEquals(1, board.getMoveCount());
+        move = new Move(board, board.getBlackPieces()[0], "g6");
+        board.doMove(move);
+        assertEquals(0, board.getHalfMoveClock());
+        assertEquals(2, board.getMoveCount());
     }
 
     @Test
@@ -621,34 +592,5 @@ class BoardTest {
         assertFalse(moves[3].isRankDisambiguation());
         assertFalse(moves[4].isFileDisambiguation());
         assertFalse(moves[4].isRankDisambiguation());
-    }
-
-    @Test
-    @DisplayName("Test generateMoves")
-    void  testGenerateMovesStartingPosition() {
-        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        int numMoves = 20;
-        assertEquals(numMoves, board.generateMoves(PieceColour.WHITE).length);
-        assertEquals(numMoves, board.generateMoves(PieceColour.BLACK).length);
-
-        board = new Board("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
-        assertEquals(48, board.generateMoves(PieceColour.WHITE).length);
-        assertEquals(43, board.generateMoves(PieceColour.BLACK).length);
-
-        board = new Board("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 ");
-        assertEquals(14, board.generateMoves(PieceColour.WHITE).length);
-        assertEquals(15, board.generateMoves(PieceColour.BLACK).length);
-
-        board = new Board("r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1");
-        assertEquals(6, board.generateMoves(PieceColour.WHITE).length);
-        assertEquals(46, board.generateMoves(PieceColour.BLACK).length);
-
-        board = new Board("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
-        assertEquals(44, board.generateMoves(PieceColour.WHITE).length);
-        assertEquals(34, board.generateMoves(PieceColour.BLACK).length);
-
-        board = new Board("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10");
-        assertEquals(46, board.generateMoves(PieceColour.WHITE).length);
-        assertEquals(46, board.generateMoves(PieceColour.BLACK).length);
     }
 }

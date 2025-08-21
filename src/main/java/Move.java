@@ -330,9 +330,9 @@ public class Move {
         if (king == null) { //only occurs in test positions in which case there is no check to worry about
             return new Move(board, piece, destination);
         }
-        boolean[] threatMap = boardAfterMove.getThreatMap(enemyColour);
+        boolean[] threatMap = ThreatMapGenerator.getThreatMap(boardAfterMove, enemyColour);
         String kingSquare = king.getSquare();
-        if (threatMap[board.mapSquareToInt(kingSquare)]) { //king is in check so move is invalid
+        if (threatMap[SquareMapUtils.mapSquareToInt(kingSquare)]) { //king is in check so move is invalid
             return null;
         } else {
             return new Move(board, piece, destination);

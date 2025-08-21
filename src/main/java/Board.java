@@ -1,6 +1,6 @@
 public class Board {
-    private Piece[] whitePieces;
-    private Piece[] blackPieces;
+    private final Piece[] whitePieces;
+    private final Piece[] blackPieces;
     private PieceColour turn;
     private int moveCount;
     private int halfMoveClock;
@@ -43,7 +43,7 @@ public class Board {
             } else {
                 colour = PieceColour.BLACK;
             }
-            currentSquare = mapIntToSquare(i);
+            currentSquare = SquareMapUtils.mapIntToSquare(i);
             char file = currentSquare.charAt(0);
             int rank = Integer.parseInt(currentSquare.substring(1, 2));
             switch (Character.toLowerCase(fen[FENConstants.PIECE_FIELD].charAt(current))) {
@@ -151,7 +151,7 @@ public class Board {
                 }
                 fen.append(FENConstants.NEW_RANK);
             }
-            square = mapIntToSquare(i);
+            square = SquareMapUtils.mapIntToSquare(i);
             piece = pieceSearch(square);
             if (piece == null) {
                 if (Character.isDigit(current)) {
@@ -253,31 +253,6 @@ public class Board {
     }
 
     /**
-    * Give the square that an integer from 0 to 63 relates to
-    * 0 refers to a8 then it reads to the right and down
-    * 63 refers to h1
-    *
-    * @param location the integer that a square returns to
-    * @return a string of the square
-     */
-    public String mapIntToSquare(int location) {
-        int rank = 8 - location / 8;
-        char file = (char) ('a' + (location % 8));
-        return file + String.valueOf(rank);
-    }
-
-    /**
-     * Give the integer index for a given square.
-     * @param square the square in question.
-     * @return the index of the square.
-     */
-    public int mapSquareToInt(String square) {
-        char file =  square.charAt(0);
-        int rank = square.charAt(1) - '0';
-        return (8 - rank) * 8 + ((int) file - 'a');
-    }
-
-    /**
      * Simple getter for the white pieces
      *
      * @return piece array of all the white pieces
@@ -372,6 +347,14 @@ public class Board {
             handlePromotion = handlePromotion(move);
         } else {
             move.getPiece().move(move.getDestination());
+        }
+        if (!(move.getPiece().getType() == PieceType.PAWN || move.isCapture())) {
+            halfMoveClock++;
+        } else {
+            halfMoveClock = 0;
+        }
+        if (getTurn() == PieceColour.BLACK) {
+            moveCount++;
         }
         if (turn == PieceColour.WHITE) {
             turn = PieceColour.BLACK;
@@ -490,30 +473,6 @@ public class Board {
             }
         }
         return false;
-    }
-
-    /**
-     * Gets a boolean array of all squared attacked by a certain colour.
-     * @param colour the colour of squares we want.
-     * @return array of true values for which squares can be captured by the colour.
-     */
-    public boolean[] getThreatMap(PieceColour colour) {
-        Piece[] pieces;
-        if (colour == PieceColour.WHITE) {
-            pieces = whitePieces;
-        } else {
-            pieces = blackPieces;
-        }
-        boolean[] threatMap = new boolean[ChessConstants.NUM_SQUARES];
-        for (int i = 0; i < ChessConstants.NUM_SQUARES; i++) {
-            for (Piece piece : pieces) {
-                if (piece != null && piece.canCaptureSquare(this, mapIntToSquare(i))) {
-                    threatMap[i] = true;
-                    break;
-                }
-            }
-        }
-        return threatMap;
     }
 
     /**

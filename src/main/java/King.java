@@ -39,7 +39,7 @@ public class King extends DirectionalPiece{
         } else {
             enemyColour = PieceColour.WHITE;
         }
-        if (!moved && !board.getThreatMap(enemyColour)[board.mapSquareToInt(getSquare())]) {
+        if (!moved && !ThreatMapGenerator.getThreatMap(board, enemyColour)[SquareMapUtils.mapSquareToInt(getSquare())]) {
             int nextIndex;
             int rank = getRank();
             Piece piece = board.pieceSearch("a" + rank);
@@ -165,9 +165,9 @@ public class King extends DirectionalPiece{
     public boolean canCastleSearch(Board board, char file) {
         boolean[] threatMap;
         if (getColour() == PieceColour.WHITE) {
-            threatMap = board.getThreatMap(PieceColour.BLACK);
+            threatMap = ThreatMapGenerator.getThreatMap(board, PieceColour.BLACK);
         } else {
-            threatMap = board.getThreatMap(PieceColour.WHITE);
+            threatMap = ThreatMapGenerator.getThreatMap(board, PieceColour.WHITE);
         }
         int rank = getRank();
         char start, end;
@@ -181,7 +181,7 @@ public class King extends DirectionalPiece{
         String square;
         for (char f = start; f <= end; f++ ) {
             square = f + String.valueOf(rank);
-            if (threatMap[board.mapSquareToInt(square)] || board.pieceSearch(square) != null) {
+            if (threatMap[SquareMapUtils.mapSquareToInt(square)] || board.pieceSearch(square) != null) {
                 return false;
             }
         }
@@ -227,11 +227,11 @@ public class King extends DirectionalPiece{
             candidateMove = checkFile + String.valueOf(checkRank);
             boolean[] threatMap;
             if (getColour() == PieceColour.WHITE) {
-                threatMap = board.getThreatMap(PieceColour.BLACK);
+                threatMap = ThreatMapGenerator.getThreatMap(board, PieceColour.BLACK);
             } else {
-                threatMap = board.getThreatMap(PieceColour.WHITE);
+                threatMap = ThreatMapGenerator.getThreatMap(board, PieceColour.WHITE);
             }
-            if (isLegalMove(candidateMove) && !threatMap[board.mapSquareToInt(candidateMove)]) {
+            if (isLegalMove(candidateMove) && !threatMap[SquareMapUtils.mapSquareToInt(candidateMove)]) {
                 piece = board.pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
                     moves[movesIndex] = Move.createIfLegal(board, this, candidateMove);
