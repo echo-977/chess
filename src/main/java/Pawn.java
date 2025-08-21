@@ -54,14 +54,21 @@ public class Pawn extends Piece{
             movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank()));
+        int index;
         if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
+            index = movesIndex;
             movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
-            moves[movesIndex - 1].setEnPassant(true);
+            if (movesIndex == index + 1) { //en passant move was added so we need to set it as such
+                moves[movesIndex - 1].setEnPassant(true);
+            }
         }
         piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank()));
+        index = 0;
         if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
             movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
-            moves[movesIndex - 1].setEnPassant(true);
+            if (movesIndex == index + 1) { //en passant move was added so we need to set it as such
+                moves[movesIndex - 1].setEnPassant(true);
+            }
         }
         return moves;
     }
