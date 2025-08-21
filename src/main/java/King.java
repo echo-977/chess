@@ -39,7 +39,7 @@ public class King extends DirectionalPiece{
         } else {
             enemyColour = PieceColour.WHITE;
         }
-        if (!moved && !ThreatMapGenerator.getThreatMap(board, enemyColour)[SquareMapUtils.mapSquareToInt(getSquare())]) {
+        if (!moved && !board.getThreatMap(enemyColour)[SquareMapUtils.mapSquareToInt(getSquare())]) {
             int nextIndex;
             int rank = getRank();
             Piece piece = board.pieceSearch("a" + rank);
@@ -165,9 +165,9 @@ public class King extends DirectionalPiece{
     public boolean canCastleSearch(Board board, char file) {
         boolean[] threatMap;
         if (getColour() == PieceColour.WHITE) {
-            threatMap = ThreatMapGenerator.getThreatMap(board, PieceColour.BLACK);
+            threatMap = board.getThreatMap(PieceColour.BLACK);
         } else {
-            threatMap = ThreatMapGenerator.getThreatMap(board, PieceColour.WHITE);
+            threatMap = board.getThreatMap(PieceColour.WHITE);
         }
         int rank = getRank();
         char start, end;
@@ -227,9 +227,9 @@ public class King extends DirectionalPiece{
             candidateMove = checkFile + String.valueOf(checkRank);
             boolean[] threatMap;
             if (getColour() == PieceColour.WHITE) {
-                threatMap = ThreatMapGenerator.getThreatMap(board, PieceColour.BLACK);
+                threatMap = board.getThreatMap(PieceColour.BLACK);
             } else {
-                threatMap = ThreatMapGenerator.getThreatMap(board, PieceColour.WHITE);
+                threatMap = board.getThreatMap(PieceColour.WHITE);
             }
             if (isLegalMove(candidateMove) && !threatMap[SquareMapUtils.mapSquareToInt(candidateMove)]) {
                 piece = board.pieceSearch(candidateMove);

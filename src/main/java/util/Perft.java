@@ -32,6 +32,7 @@ public class Perft {
             if (move != null) {
                 Board boardCopy = new Board(board.getFEN());
                 Move moveCopy = move.clone(boardCopy);
+                boardCopy.doMove(moveCopy);
                 try {
                     count = Perft(boardCopy, depth - 1);
                     System.out.println(move + ": " + count);
