@@ -316,6 +316,13 @@ public class Move {
         Board boardAfterMove = board.copy();
         Piece pieceCopy = boardAfterMove.pieceSearch(piece.getSquare());
         Move moveCopy = new Move(boardAfterMove, pieceCopy, destination);
+        if (pieceCopy.getType() == PieceType.PAWN) {
+            Piece enPassantTarget = board.pieceSearch(destination.charAt(0) + String.valueOf(piece.getRank()));
+            if (enPassantTarget != null && piece.getColour() != enPassantTarget.getColour() && enPassantTarget.getType() == PieceType.PAWN && ((Pawn) enPassantTarget).getEnPassantable()) {
+                moveCopy.isEnPassant = true;
+                moveCopy.isCapture = true;
+            }
+        }
         boardAfterMove.doMove(moveCopy);
         PieceColour colour;
         PieceColour enemyColour;
