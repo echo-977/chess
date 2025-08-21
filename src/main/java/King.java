@@ -35,12 +35,7 @@ public class King extends DirectionalPiece{
                 {ChessDirections.LEFT, ChessDirections.NONE}, {ChessDirections.LEFT, ChessDirections.UP}
         };
         directionalMoveSearch(board, moves, directions);
-        PieceColour enemyColour;
-        if (getColour() == PieceColour.WHITE) {
-            enemyColour = PieceColour.BLACK;
-        } else {
-            enemyColour = PieceColour.WHITE;
-        }
+        PieceColour enemyColour = getColour().opponentColour();
         if (!moved && !board.getThreatMap(enemyColour)[SquareMapUtils.mapSquareToInt(getSquare())]) {
             int nextIndex;
             int rank = getRank();

@@ -193,12 +193,7 @@ public class Move {
      */
     public boolean causesCheck(Board board, Piece piece, String destination) {
         Piece checkTest = piece.copyToSquare(destination);
-        PieceColour enemyKingColour;
-        if (piece.getColour() == PieceColour.WHITE) {
-            enemyKingColour = PieceColour.BLACK;
-        } else {
-            enemyKingColour = PieceColour.WHITE;
-        }
+        PieceColour enemyKingColour = piece.getColour().opponentColour();
         King enemyKing = board.findKing(enemyKingColour);
         if (enemyKing == null) {
             return false;
@@ -323,15 +318,8 @@ public class Move {
             }
         }
         boardAfterMove.doMove(moveCopy);
-        PieceColour colour;
-        PieceColour enemyColour;
-        if (piece.getColour() == PieceColour.WHITE) {
-            colour = PieceColour.WHITE;
-            enemyColour = PieceColour.BLACK;
-        } else {
-            colour = PieceColour.BLACK;
-            enemyColour = PieceColour.WHITE;
-        }
+        PieceColour colour = piece.getColour();
+        PieceColour enemyColour = colour.opponentColour();
         King king = boardAfterMove.findKing(colour);
         if (king == null) { //only occurs in test positions in which case there is no check to worry about
             return new Move(board, piece, destination);

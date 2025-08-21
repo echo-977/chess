@@ -154,11 +154,7 @@ public class Board {
         if (getTurn() == PieceColour.BLACK) {
             moveCount++;
         }
-        if (turn == PieceColour.WHITE) {
-            turn = PieceColour.BLACK;
-        } else {
-            turn = PieceColour.WHITE;
-        }
+        turn = turn.opponentColour();
         whiteThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.WHITE);
         blackThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.BLACK);
         return handleCapture && handleCastle && handlePromotion;
