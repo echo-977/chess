@@ -30,7 +30,7 @@ class LinearPieceTest {
     @Test
     @DisplayName("Test linearMoveSearch without other piece")
     void testLinearMoveSearchNoOtherPieces() {
-        Board board = new Board("8/8/8/8/3Q4/8/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/8/3Q4/8/8/8 w - - 0 1");
         Move[] moves = new Move[7];
         int movesIndex = 0;
         piece.linearMoveSearch(board, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP); //up
@@ -42,7 +42,7 @@ class LinearPieceTest {
     @Test
     @DisplayName("Test linearMoveSearch with other piece")
     void testLinearMoveSearchOtherPieces() {
-        Board board = new Board("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
         Move[] moves = new Move[7];
         int movesIndex = 0;
         piece.linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP); //up left
@@ -53,7 +53,7 @@ class LinearPieceTest {
     @Test
     @DisplayName("Test linearMoveSearch with capture")
     void testLinearMoveSearchCapture() {
-        Board board = new Board("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
         Move[] moves = new Move[7];
         int movesIndex = 0;
         piece.linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP); //up left
@@ -67,7 +67,7 @@ class LinearPieceTest {
     @Test
     @DisplayName("Test recursiveCaptureCheck")
     void testRecursiveCaptureCheck() {
-        Board board = new Board("8/8/8/3q2P1/8/8/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/3q2P1/8/8/8/8 w - - 0 1");
         LinearPiece piece = (LinearPiece) board.getBlackPieces()[0];
         String targetSquare;
         //targetSquare = "h5";

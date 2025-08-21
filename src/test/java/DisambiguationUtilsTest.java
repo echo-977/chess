@@ -8,7 +8,7 @@ public class DisambiguationUtilsTest {
     @Test
     @DisplayName("Test setDisambiguationFlags (file only)")
     void testSetDisambiguationFlagsFile() {
-        Board board = new Board("8/8/3N1N2/2N5/4p3/6N1/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/3N1N2/2N5/4p3/6N1/8/8 w - - 0 1");
         Move[] moves = {new Move(board, board.pieceSearch("c5"), "e4"),
                 new Move(board, board.pieceSearch("d6"), "e4"),
                 new Move(board, board.pieceSearch("f6"), "e4"),
@@ -23,7 +23,7 @@ public class DisambiguationUtilsTest {
     @Test
     @DisplayName("Test setDisambiguationFlags (rank only)")
     void testSetDisambiguationFlagsRank() {
-        Board board = new Board("8/8/8/2N5/4p3/2N5/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/2N5/4p3/2N5/8/8 w - - 0 1");
         Move[] moves = {new Move(board, board.pieceSearch("c5"), "e4"),
                 new Move(board, board.pieceSearch("c3"), "e4")};
         DisambiguationUtils.setDisambiguationFlags(moves);
@@ -36,7 +36,7 @@ public class DisambiguationUtilsTest {
     @Test
     @DisplayName("Test setDisambiguationFlags (both)")
     void testSetDisambiguationFlagsBoth() {
-        Board board = new Board("8/8/8/2N5/4p3/2N3N1/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/2N5/4p3/2N3N1/8/8 w - - 0 1");
         Move[] moves = {new Move(board, board.pieceSearch("c5"), "e4"),
                 new Move(board, board.pieceSearch("c3"), "e4"),
                 new Move(board, board.pieceSearch("g3"), "e4")};
@@ -50,7 +50,7 @@ public class DisambiguationUtilsTest {
     @Test
     @DisplayName("Test handleDisambiguation")
     void  testHandleDisambiguation() {
-        Board board = new Board("8/8/8/2N5/4p1R1/2N3N1/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/2N5/4p1R1/2N3N1/8/8 w - - 0 1");
         Move[] moves = {new Move(board, board.pieceSearch("c5"), "e4"),
                 new Move(board, board.pieceSearch("c3"), "e4"),
                 new Move(board, board.pieceSearch("g3"), "e4"),

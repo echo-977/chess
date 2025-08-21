@@ -31,7 +31,7 @@ class QueenTest {
     @Test
     @DisplayName("Test generateMoves without pieces")
     void testGenerateMoves() {
-        Board board = new Board("8/8/8/4q3/2Q5/8/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/4q3/2Q5/8/8/8 w - - 0 1");
         piece1 = (Queen) board.getWhitePieces()[0];
         piece2 = (Queen) board.getBlackPieces()[0];
         Move[] piece1MovesExpected = {new Move(board, piece1, "c5"), new Move(board, piece1, "c6"),
@@ -70,7 +70,7 @@ class QueenTest {
     @Test
     @DisplayName("Test generateMoves with pieces")
     void testGenerateMovesWithPieces() {
-        Board board = new Board("8/2P5/b7/4q3/2Q2P2/8/4p3/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/2P5/b7/4q3/2Q2P2/8/4p3/8 w - - 0 1");
         piece1 = (Queen) board.getWhitePieces()[1];
         piece2 = (Queen) board.getBlackPieces()[1];
         Move move1 = new Move(board, piece1, "e2");
@@ -110,7 +110,7 @@ class QueenTest {
     @Test
     @DisplayName(("Test canCaptureSquare"))
     void testCanCaptureSquare() {
-        Board board = new Board("8/1P1P1P2/8/1P1q2P1/8/1P3P2/3P4/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/1P1P1P2/8/1P1q2P1/8/1P3P2/3P4/8 w - - 0 1");
         Queen queen =  (Queen) board.getBlackPieces()[0];
         assertFalse(queen.canCaptureSquare(board, "d8"));
         assertTrue(queen.canCaptureSquare(board, "d7"));

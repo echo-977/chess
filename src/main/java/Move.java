@@ -206,8 +206,7 @@ public class Move {
         if (checkTest.canCaptureSquare(board, enemyKing.getSquare())) {
             return true; //direct check
         } //discovered checks
-        String currentPosition = board.getFEN();
-        Board boardAfterMove = new Board(currentPosition);
+        Board boardAfterMove = board.copy();
         Piece pieceOnNewBoard = boardAfterMove.pieceSearch(piece.getSquare());
         char destinationFile = destination.charAt(0);
         if (pieceOnNewBoard instanceof King king && Math.abs(destinationFile - pieceOnNewBoard.getFile()) == 2) {

@@ -31,7 +31,7 @@ class DirectionalPieceTest {
     @Test
     @DisplayName("Test directionalMoveSearch")
     public void testDirectionalMoveSearch() {
-        Board board = new Board("8/8/8/8/8/8/8/1K6 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/8/8/8/8/1K6 w - - 0 1");
         Move[] moves = new Move[8];
         int[][] directions = {
                 {ChessDirections.NONE, ChessDirections.UP}, {ChessDirections.RIGHT, ChessDirections.UP},

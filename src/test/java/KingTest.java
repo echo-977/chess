@@ -28,7 +28,7 @@ class KingTest {
     @Test
     @DisplayName("Test generateMoves without other pieces")
     void testGenerateMoves() {
-        Board board = new Board("8/8/5k2/8/2K5/8/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/5k2/8/2K5/8/8/8 w - - 0 1");
         piece1 = (King) board.getWhitePieces()[0];
         piece2 = (King) board.getBlackPieces()[0];
         Move[] piece1MovesExpected = {new Move(board, piece1, "c5"), new Move(board, piece1, "d5"),
@@ -48,7 +48,7 @@ class KingTest {
     @Test
     @DisplayName("Test generateMoves with other pieces")
     void testGenerateMovesWithOtherPieces() {
-        Board board = new Board("8/6p1/4PkR1/3r4/2K2p2/2P5/8/8 b - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/6p1/4PkR1/3r4/2K2p2/2P5/8/8 b - - 0 1");
         piece1 = (King) board.getWhitePieces()[2];
         piece2 = (King) board.getBlackPieces()[1];
         Move move1 = new Move(board, piece1, "d5");
@@ -108,7 +108,7 @@ class KingTest {
     @Test
     @DisplayName("Test canCaptureSquare")
     void testCanCaptureSquare() {
-        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w kq - 0 1");
+        Board board = FENUtils.boardFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w kq - 0 1");
         assertTrue(piece2.canCaptureSquare(board, "d6"));
         assertTrue(piece2.canCaptureSquare(board, "e6"));
         assertTrue(piece2.canCaptureSquare(board, "e5"));
@@ -122,7 +122,7 @@ class KingTest {
     @Test
     @DisplayName("Test findNextIndex")
     void testFindNextIndex() {
-        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        Board board = FENUtils.boardFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         Move[] moves = new Move[8];
         moves[0] = new Move(board, board.getWhitePieces()[0], "a1");
         King king = board.findKing(PieceColour.WHITE);
@@ -132,7 +132,7 @@ class KingTest {
     @Test
     @DisplayName("Test generateMoves with castling")
     void testGenerateMovesWithCastling() {
-        Board board = new Board("r3k2r/8/5R2/8/8/8/2b5/R3K2R w KQkq - 0 1");
+        Board board = FENUtils.boardFromFEN("r3k2r/8/5R2/8/8/8/2b5/R3K2R w KQkq - 0 1");
         King whiteKing = board.findKing(PieceColour.WHITE);
         Move[] expectedMovesWhite = {new Move(board, whiteKing, "e2"),
                 new Move(board, whiteKing, "f2"), new Move(board, whiteKing, "f1"),

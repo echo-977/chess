@@ -27,7 +27,7 @@ class KnightTest {
     @Test
     @DisplayName("Test generateMoves without pieces")
     void testGenerateMoves() {
-        Board board = new Board("8/8/8/3n4/8/8/8/N7 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/3n4/8/8/8/N7 w - - 0 1");
         piece1 = (Knight) board.getWhitePieces()[0];
         piece2 = (Knight) board.getBlackPieces()[0];
         Move[] piece1MovesExpected = {new Move(board, piece1, "b3"), new Move(board, piece1, "c2"),
@@ -45,7 +45,7 @@ class KnightTest {
     @Test
     @DisplayName("Test generateMoves with pieces")
     void testGenerateMovesWithPieces() {
-        Board board = new Board("8/8/8/3n1P2/1p4Q1/4N3/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/3n1P2/1p4Q1/4N3/8/8 w - - 0 1");
         piece1 = (Knight) board.getWhitePieces()[2];
         piece2 = (Knight) board.getBlackPieces()[0];
         Move move1 = new Move(board, piece1, "d5");

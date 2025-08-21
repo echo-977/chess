@@ -36,7 +36,7 @@ class RookTest {
     void testGenerateMoves() {
         piece1.move("c4");
         piece2.move("e5");
-        Board board = new Board("8/8/8/4r3/2R5/8/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/4r3/2R5/8/8/8 w - - 0 1");
         Move[] piece1MovesExpected = {new Move(board, piece1, "b4"), new Move(board, piece1, "a4"),
                 new Move(board, piece1, "d4"), new Move(board, piece1, "e4"),
                 new Move(board, piece1, "f4"), new Move(board, piece1, "g4"),
@@ -60,7 +60,7 @@ class RookTest {
     @Test
     @DisplayName("Test generateMoves with pieces")
     void testGenerateMovesWithPieces() {
-        Board board = new Board("rnbqkbn1/pppppp2/1r6/3R2pp/P3P3/2N5/1PPP1PPP/2BQKBNR w Kq - 0 1");
+        Board board = FENUtils.boardFromFEN("rnbqkbn1/pppppp2/1r6/3R2pp/P3P3/2N5/1PPP1PPP/2BQKBNR w Kq - 0 1");
         piece1 = (Rook) board.getWhitePieces()[0];
         piece2 = (Rook) board.getBlackPieces()[13];
         Move move1 = new Move(board, piece1, "g5");
@@ -87,7 +87,7 @@ class RookTest {
     @Test
     @DisplayName("Test canCaptureSquare")
     void testCanCaptureSquare() {
-        Board board = new Board("8/3P4/8/1P1r2P1/8/8/3P4/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/3P4/8/1P1r2P1/8/8/3P4/8 w - - 0 1");
         Rook rook =  (Rook) board.getBlackPieces()[0];
         assertFalse(rook.canCaptureSquare(board, "d8"));
         assertTrue(rook.canCaptureSquare(board, "d7"));

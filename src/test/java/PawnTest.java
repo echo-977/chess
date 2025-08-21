@@ -28,7 +28,7 @@ class PawnTest {
     @Test
     @DisplayName("Test generateMoves (pawn pushes only)")
     void testGenerateMoves() {
-        Board board = new Board("8/8/8/3p4/8/8/8/P7 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/3p4/8/8/8/P7 w - - 0 1");
         Move[] piece1MovesExpected = {new Move(board, piece1, "a2"), new Move(board, piece1, "a3"),
                 null, null, null, null, null, null, null, null, null, null};
         Move[] piece2MovesExpected = {new Move(board, piece2, "d4"), new Move(board, piece2, "d3"),
@@ -42,7 +42,7 @@ class PawnTest {
     @Test
     @DisplayName("Test generateMoves (pushes blocked)")
     void testGenerateMovesBlocked() {
-        Board board = new Board("rnbqkb1r/pppppppp/5n2/8/N7/8/PPPPPPPP/R1BQKBNR b KQkq - 3 2");
+        Board board = FENUtils.boardFromFEN("rnbqkb1r/pppppppp/5n2/8/N7/8/PPPPPPPP/R1BQKBNR b KQkq - 3 2");
         piece1 = (Pawn) board.getWhitePieces()[1];
         piece2 = (Pawn) board.getBlackPieces()[12];
         Move[] piece1MovesExpected = {new Move(board, piece1, "a3"), null, null, null, null, null, null, null,
@@ -57,7 +57,7 @@ class PawnTest {
     @Test
     @DisplayName("Test generateMoves (captures)")
     void testGenerateMovesCaptures() {
-        Board board = new Board("rn1qkb1r/p1pp2pp/1p3p2/1b1npNB1/2PP4/5N2/PP2PPPP/R2QKB1R b KQkq - 7 10");
+        Board board = FENUtils.boardFromFEN("rn1qkb1r/p1pp2pp/1p3p2/1b1npNB1/2PP4/5N2/PP2PPPP/R2QKB1R b KQkq - 7 10");
         piece1 = (Pawn) board.getWhitePieces()[2];
         piece2 = (Pawn) board.getBlackPieces()[12];
         Move move1 = new Move(board, piece1, "b5");
@@ -78,7 +78,7 @@ class PawnTest {
     @Test
     @DisplayName("Test generateMoves (en passant)")
     void testGenerateMovesEnPassant() {
-        Board board = new Board("rn1qkb1r/pp3p1p/5n2/2pPp3/6p1/2B2P2/PPP1P1PP/RN1QKB1R w KQkq c6 0 10");
+        Board board = FENUtils.boardFromFEN("rn1qkb1r/pp3p1p/5n2/2pPp3/6p1/2B2P2/PPP1P1PP/RN1QKB1R w KQkq c6 0 10");
         piece1 = (Pawn) board.getWhitePieces()[0];
         piece2 = (Pawn) board.getBlackPieces()[13];
         Move move1 = new Move(board, piece1, "d6");
@@ -101,7 +101,7 @@ class PawnTest {
     @Test
     @DisplayName("Test generateMovesPromotions")
     void testGenerateMovesPromotions() {
-        Board board = new Board("2r1N3/3P4/8/8/8/8/3p4/2R1R3 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("2r1N3/3P4/8/8/8/8/3p4/2R1R3 w - - 0 1");
         piece1 = (Pawn) board.getWhitePieces()[1];
         piece2 = (Pawn) board.getBlackPieces()[1];
         String[] destinations = {"d8", "c8"};
@@ -163,7 +163,7 @@ class PawnTest {
     @Test
     @DisplayName("Test canCaptureSquare")
     void testCanCaptureSquare() {
-        Board board = new Board("8/8/8/3p4/8/8/8/PK6 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/3p4/8/8/8/PK6 w - - 0 1");
         assertTrue(piece1.canCaptureSquare(board, "b2"));
         assertFalse(piece1.canCaptureSquare(board, "a2"));
         assertFalse(piece1.canCaptureSquare(board, "b1"));

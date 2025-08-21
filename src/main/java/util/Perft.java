@@ -38,7 +38,7 @@ public class Perft {
                     System.out.println(move + ": " + count);
                     nodes += count;
                 } catch (Exception e) {
-                    System.out.println(boardCopy.getFEN());
+                    System.out.println(FENUtils.getFEN(boardCopy));
                     System.out.println(moveCopy);
                     throw e;
                 }

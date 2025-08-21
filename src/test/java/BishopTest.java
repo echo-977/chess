@@ -28,7 +28,7 @@ class BishopTest {
     void testGenerateMoves() {
         piece1 = new Bishop(PieceColour.WHITE, 'd', 4);
         piece2 = new Bishop(PieceColour.BLACK, 'e', 4);
-        Board board = new Board("8/8/8/8/3Bb3/8/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/8/8/3Bb3/8/8/8 w - - 0 1");
         Move[] piece1MovesExpected = {new Move(board, piece1, "c5"), new Move(board, piece1, "b6"),
                 new Move(board, piece1, "a7"), new Move(board, piece1, "e5"),
                 new Move(board, piece1, "f6"), new Move(board, piece1, "g7"),
@@ -52,7 +52,7 @@ class BishopTest {
     @Test
     @DisplayName("Test generateMoves with pieces")
     void testGenerateMovesWithPieces() {
-        Board board = new Board("r2qkbnr/pp2pp2/n1p3pp/3p1b2/3P1B2/6PP/PPP1PP2/RN1QKBNR w KQkq - 0 1");
+        Board board = FENUtils.boardFromFEN("r2qkbnr/pp2pp2/n1p3pp/3p1b2/3P1B2/6PP/PPP1PP2/RN1QKBNR w KQkq - 0 1");
         piece1 = (Bishop) board.getWhitePieces()[1];
         piece2 = (Bishop) board.getBlackPieces()[15];
         Move move1 = new Move(board, piece1, "h6");
@@ -79,7 +79,7 @@ class BishopTest {
     @Test
     @DisplayName("Test canCaptureSquare")
     void testCanCaptureSquare() {
-        Board board = new Board("8/1P3P2/8/3b4/8/1P6/6P1/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/1P3P2/8/3b4/8/1P6/6P1/8 w - - 0 1");
         Bishop bishop = (Bishop) board.getBlackPieces()[0];
         assertFalse(bishop.canCaptureSquare(board, "g8"));
         assertTrue(bishop.canCaptureSquare(board, "f7"));

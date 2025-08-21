@@ -16,7 +16,6 @@ public class SquareMapUtilsTest {
     @Test
     @DisplayName("Test mapSquareToInt")
     void testMapSquareToInt() {
-        Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w kq - 0 1");
         assertEquals(63, SquareMapUtils.mapSquareToInt("h1"));
         assertEquals(0, SquareMapUtils.mapSquareToInt("a8"));
         assertEquals(35, SquareMapUtils.mapSquareToInt("d4"));
