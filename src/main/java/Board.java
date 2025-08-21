@@ -366,7 +366,7 @@ public class Board {
             turn = PieceColour.WHITE;
         }
         whiteThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.WHITE);
-        whiteThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.WHITE);
+        blackThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.BLACK);
         return handleCapture && handleCastle && handlePromotion;
     }
 
