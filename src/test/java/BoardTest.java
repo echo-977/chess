@@ -209,4 +209,57 @@ class BoardTest {
         board = FENUtils.boardFromFEN("rnbqkbnr/p1pppppp/8/8/1pP5/8/PP1PPPPP/RNBQKBNR b KQkq c3 0 3");
         assertEquals("c3", board.getEnPassantTarget());
     }
+
+    @Test
+    @DisplayName("Test unDoMove (default)")
+    void testUnDoMove() {
+        Board board = FENUtils.boardFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        Move move = new Move(board, board.pieceSearch("g1"), "f3");
+        State stateBeforeMove = board.doMove(move);
+        board.unDoMove(stateBeforeMove);
+        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", FENUtils.getFEN(board));
+    }
+
+    @Test
+    @DisplayName("Test unDoMove (capture)")
+    void testUnDoMoveCapture() {
+        Board board = FENUtils.boardFromFEN("rn1qkbnr/pppppppp/8/3b4/5N2/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1");
+        Move move = new Move(board, board.pieceSearch("f4"), "d5");
+        State stateBeforeMove = board.doMove(move);
+        board.unDoMove(stateBeforeMove);
+        assertEquals("rn1qkbnr/pppppppp/8/3b4/5N2/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1", FENUtils.getFEN(board));
+    }
+
+    @Test
+    @DisplayName("Test unDoMove (promotion)")
+    void testUnDoMovePromotion() {
+        Board board = FENUtils.boardFromFEN("3K1n2/2P5/4N3/8/1B2k3/8/8/8 w - - 0 1");
+        Move move = new Move(board, board.pieceSearch("c7"), "c8");
+        move.setPromotionType(PieceType.QUEEN);
+        State stateBeforeMove = board.doMove(move);
+        board.unDoMove(stateBeforeMove);
+        assertEquals("3K1n2/2P5/4N3/8/1B2k3/8/8/8 w - - 0 1", FENUtils.getFEN(board));
+    }
+
+    @Test
+    @DisplayName("Test unDoMove (castle)")
+    void testUnDoMoveCastle() {
+        Board board = FENUtils.boardFromFEN("5n2/2P5/4N3/8/1B2k3/8/8/4K2R w K - 0 1");
+        Move move = new Move(board, board.pieceSearch("e1"), "h1");
+        move.setCastle(true);
+        State stateBeforeMove = board.doMove(move);
+        board.unDoMove(stateBeforeMove);
+        assertEquals("5n2/2P5/4N3/8/1B2k3/8/8/4K2R w K - 0 1", FENUtils.getFEN(board));
+    }
+
+    @Test
+    @DisplayName("Test unDoMove (en passant)")
+    void testUnDoMoveEnPassant() {
+        Board board = FENUtils.boardFromFEN("rnbqkbnr/ppppp1pp/8/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 1");
+        Move move =  new Move(board, board.pieceSearch("e5"), "f6");
+        move.setEnPassant(true);
+        State stateBeforeMove = board.doMove(move);
+        board.unDoMove(stateBeforeMove);
+        assertEquals("rnbqkbnr/ppppp1pp/8/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 1", FENUtils.getFEN(board));
+    }
 }

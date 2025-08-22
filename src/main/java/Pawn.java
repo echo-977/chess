@@ -221,6 +221,14 @@ public class Pawn extends Piece{
         return new Pawn(getColour(), file, rank, getMoved(), getEnPassantable());
     }
 
+    /**
+     * Simple setter for the moved boolean.
+     * @param moved value moved will be set to.
+     */
+    public void setMoved(boolean moved) {
+        this.moved = moved;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (super.equals(object)) {

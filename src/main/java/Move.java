@@ -1,6 +1,7 @@
 public class Move {
     private final Piece piece;
     private final String destination;
+    private final String source;
     private boolean isCheck;
     private boolean isCapture;
     private boolean isCheckmate;
@@ -12,12 +13,13 @@ public class Move {
     private final Board board;
 
     /**
-     * Simple constructor
-     * @param piece the piece that will do the move
-     * @param destination square the piece moves to
+     * Simple constructor.
+     * @param piece the piece that will do the move.
+     * @param destination square the piece moves to.
      */
     public Move(Board board, Piece piece, String destination) {
         this.piece = piece;
+        this.source = piece.getSquare();
         this.destination = destination;
         this.board = board;
         if (board.pieceSearch(destination) != null) {
@@ -33,49 +35,49 @@ public class Move {
     }
 
     /**
-     * Simple setter for the isCheck boolean
-     * @param check state isCheck boolean is set to
+     * Simple setter for the isCheck boolean.
+     * @param check state isCheck boolean is set to.
      */
     public void setCheck(boolean check) {
         isCheck = check;
     }
 
     /**
-     * Simple setter for the isCapture boolean
-     * @param capture state isCapture boolean is set to
+     * Simple setter for the isCapture boolean.
+     * @param capture state isCapture boolean is set to.
      */
     public void setCapture(boolean capture) {
         isCapture = capture;
     }
 
     /**
-     * Simple setter for the isCheckmate boolean
-     * @param checkmate state isCheckmate is set to
+     * Simple setter for the isCheckmate boolean.
+     * @param checkmate state isCheckmate is set to.
      */
     public void setCheckmate(boolean checkmate) {
         isCheckmate = checkmate;
     }
 
     /**
-     * Simple setter for the fileDisambiguation boolean
-     * @param isRequired state fileDisambiguation boolean is set to
+     * Simple setter for the fileDisambiguation boolean.
+     * @param isRequired state fileDisambiguation boolean is set to.
      */
     public void setFileDisambiguation(boolean isRequired) {
         fileDisambiguation = isRequired;
     }
 
     /**
-     * Simple setter for the rankDisambiguation boolean
-     * @param isRequired state rankDisambiguation boolean is set to
+     * Simple setter for the rankDisambiguation boolean.
+     * @param isRequired state rankDisambiguation boolean is set to.
      */
     public void setRankDisambiguation(boolean isRequired) {
         rankDisambiguation = isRequired;
     }
 
     /**
-     * Simple setter for the isCastle boolean
+     * Simple setter for the isCastle boolean.
      * Checks again whether the move is a check since the rook movement wouldn't have been accounted for.
-     * @param castle state isCastle is set to
+     * @param castle state isCastle is set to.
      */
     public void setCastle(boolean castle) {
         isCastle = castle;
@@ -85,8 +87,8 @@ public class Move {
     }
 
     /**
-     * Simple setter for promotionType
-     * @param promotionType the type of promotion
+     * Simple setter for promotionType.
+     * @param promotionType the type of promotion.
      */
     public void setPromotionType(PieceType promotionType) {
         this.promotionType = promotionType;
@@ -94,8 +96,8 @@ public class Move {
     }
 
     /**
-     * Simple setter for isEnPassant
-     * @param enPassant state isEnPassant is set to
+     * Simple setter for isEnPassant.
+     * @param enPassant state isEnPassant is set to.
      */
     public void setEnPassant(boolean enPassant) {
         isEnPassant = enPassant;
@@ -105,80 +107,88 @@ public class Move {
     }
 
     /**
-     * Simpler getter for the piece
-     * @return the piece
+     * Simpler getter for the piece.
+     * @return the piece.
      */
     public Piece getPiece() {
         return piece;
     }
 
     /**
-     * Simpler getter for the destination square
-     * @return the destination
+     * Simple getter for source.
+     * @return source.
+     */
+    public String getSource() {
+        return source;
+    }
+
+    /**
+     * Simpler getter for the destination square.
+     * @return the destination.
      */
     public String getDestination() {
         return destination;
     }
 
     /**
-     * Simple getter for isCheck
-     * @return whether the move is a check
+     * Simple getter for isCheck.
+     * @return whether the move is a check.
      */
     public boolean isCheck() {
         return isCheck;
     }
 
     /**
-     * Simple getter for isCapture
-     * @return whether the move is a capture
+     * Simple getter for isCapture.
+     * @return whether the move is a capture.
      */
     public boolean isCapture() {
         return isCapture;
     }
 
     /**
-     * Simple getter for isCheckmate
-     * @return whether the move is checkmate
+     * Simple getter for isCheckmate.
+     * @return whether the move is checkmate.
      */
     public boolean isCheckmate() {
         return isCheckmate;
     }
 
     /**
-     * Simple getter for fileDisambiguation
-     * @return whether fileDisambiguation is needed
+     * Simple getter for fileDisambiguation.
+     * @return whether fileDisambiguation is needed.
      */
     public boolean isFileDisambiguation() {
         return fileDisambiguation;
     }
 
     /**
-     * Simple getter for rankDisambiguation
-     * @return whether fileDisambiguation is needed
+     * Simple getter for rankDisambiguation.
+     * @return whether fileDisambiguation is needed.
      */
     public boolean isRankDisambiguation() {
         return rankDisambiguation;
     }
 
     /**
-     * Simple getter for isCastle
-     * @return whether the move is a castle
+     * Simple getter for isCastle.
+     * @return whether the move is a castle.
      */
     public boolean isCastle() {
         return isCastle;
     }
 
     /**
-     * Simple getter for promotionType
-     * @return the promotionType
+     * Simple getter for promotionType.
+     * @return the promotionType.
      */
     public PieceType getPromotionType() {
         return promotionType;
     }
 
     /**
-     * Simple getter for isEnPassant
-     * @return whether the move is an en passant capture
+     * Simple getter for isEnPassant.
+     * @return whether the move is an en passant capture.
      */
     public boolean isEnPassant() {
         return isEnPassant;
@@ -350,7 +360,6 @@ public class Move {
         copy.setPromotionType(getPromotionType());
         return copy;
     }
-
 
     @Override
     public boolean equals(Object object) {

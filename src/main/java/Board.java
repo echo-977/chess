@@ -119,9 +119,8 @@ public class Board {
 
     /**
      * Plays out a given move on the board.
-     *
      * @param move the move to be played.
-     * @return a boolean flag for if the move was completed successfully.
+     * @return the state of the board before the move.
      */
     public State doMove(Move move) {
         Piece capturedPiece = null;
@@ -168,7 +167,6 @@ public class Board {
     /**
      * Handles the logic that is specific to a capture.
      * Removes the captured piece from the relevant pieces array.
-     *
      * @param move the move being played.
      * @return boolean flag for if the capture logic was completed successfully.
      */
@@ -191,7 +189,6 @@ public class Board {
 
     /**
      * Finds the square of the piece being captured.
-     *
      * @param move the move of the capture.
      * @return the square of the captured piece.
      */
@@ -215,7 +212,6 @@ public class Board {
     /**
      * Handles the logic that is specific to castling.
      * Moves the rook to the correct square.
-     *
      * @param move the move being played.
      */
     public void handleCastleMove(Move move) {
@@ -472,5 +468,78 @@ public class Board {
             }
         }
         return FENConstants.NONE;
+    }
+
+    /**
+     * Simple setter for halfmove clock.
+     * @param halfMoveClock the value the halfMoveClock will be set to.
+     */
+    public void setHalfMoveClock(int halfMoveClock) {
+        this.halfMoveClock = halfMoveClock;
+    }
+
+    /**
+     * Simple setter for moveCount.
+     * @param moveCount the value moveCount will be set to.
+     */
+    public void setMoveCount(int moveCount) {
+        this.moveCount = moveCount;
+    }
+
+    /**
+     * Returns the board to the state before a move.
+     * @param state the state the board is to be returned to.
+     */
+    public void unDoMove(State state) {
+        Piece movePiece = state.move().getPiece();
+        if (state.capturedPiece() != null) {
+            Piece[] opponentPieces;
+            if (state.capturedPiece().getColour() == PieceColour.WHITE) {
+                opponentPieces = getWhitePieces();
+            } else {
+                opponentPieces = getBlackPieces();
+            }
+            for (int i = 0; i < ChessConstants.NUM_PIECES/2; i++) { //add captured piece back to relevant piece array
+                if (opponentPieces[i] == null) {
+                    opponentPieces[i] = state.capturedPiece();
+                }
+            }
+        }
+        if (state.move().getPromotionType() != null) {
+            Piece[] pieces;
+            if (movePiece.getColour() == PieceColour.WHITE) {
+                pieces = getWhitePieces();
+            } else {
+                pieces = getBlackPieces();
+            }
+            for (int i = 0; i < ChessConstants.NUM_PIECES/2; i++) {
+                if (pieces[i] != null && state.move().getDestination().equals(pieces[i].getSquare())) {
+                    Piece oldPiece = state.move().getPiece();
+                    pieces[i] = new Pawn(oldPiece.getColour(), oldPiece.getFile(), oldPiece.getRank(), true, false);
+                }
+            }
+        }
+        if (state.move().isCastle()) {
+            if (state.move().getDestination().charAt(0) == 'g') { //kingside
+                Rook rook =  ((Rook) pieceSearch("f" + movePiece.getRank()));
+                rook.move("h" + movePiece.getRank());
+                rook.setMoved(false);
+
+            }
+            else if (state.move().getDestination().charAt(0) == 'c') { //queenside
+                Rook rook =  ((Rook) pieceSearch("d" + movePiece.getRank()));
+                rook.move("a" + movePiece.getRank());
+                rook.setMoved(false);
+            }
+        }
+        movePiece.move(state.move().getSource());
+        if (!(movePiece.getType() != PieceType.PAWN || (state.move().getSource().charAt(1) - '0' != 2 || state.move().getSource().charAt(1) - '0' != 7))) {
+            ((Pawn) movePiece).setMoved(false);
+        }
+        setHalfMoveClock(state.halfMoveClock());
+        setMoveCount(state.moveCount());
+        setCastlingRights(state.castlingRights());
+        setEnPassantFlag(state.enPassantSquare());
+        turn = turn.opponentColour();
     }
 }
