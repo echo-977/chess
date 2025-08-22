@@ -391,4 +391,24 @@ public class Board {
             ((Rook) pieceSearch("a8")).setMoved(false);
         }
     }
+
+    /**
+     * Updates the en passantable flag of the pawn that can currently be taken by en passant.
+     * @param enPassantTarget the en passant target square.
+     */
+    public void setEnPassantFlag(String enPassantTarget) {
+        if (enPassantTarget.equals(FENConstants.NONE)) {
+            return;
+        }
+        char enPassantTargetFile = enPassantTarget.charAt(0);
+        int enPassantTargetRank = enPassantTarget.charAt(1) - '0';
+        int direction;
+        if (enPassantTargetRank == 3) { //it must be white if target square is the third rank
+            direction = ChessDirections.UP;
+        } else {
+            direction = ChessDirections.DOWN;
+        }
+        String square = enPassantTargetFile + String.valueOf(enPassantTargetRank + direction);
+        ((Pawn) pieceSearch(square)).setEnPassantable(true);
+    }
 }

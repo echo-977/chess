@@ -22,7 +22,6 @@ public class FENUtils {
         Piece[] pieces = new Piece[ChessConstants.NUM_PIECES];
         int pieceCounter = 0;
         boolean moved;
-        boolean enPassantable;
         for (int i = 0; i < ChessConstants.NUM_SQUARES; i++) {
             skip--;
             if (skip > 0) { //used for numbers in FEN string representing sequential empty squares
@@ -57,14 +56,7 @@ public class FENUtils {
                     } else {
                         moved = !(rank == 2 && colour == PieceColour.WHITE);
                     }
-                    if (fen[FENConstants.EN_PASSANT_FIELD].equals(FENConstants.NONE)) {
-                        enPassantable = false;
-                    } else if (colour == PieceColour.WHITE) {
-                        enPassantable = (file == fen[FENConstants.EN_PASSANT_FIELD].charAt(0) && rank + ChessDirections.DOWN == Integer.parseInt(fen[FENConstants.EN_PASSANT_FIELD].substring(1, 2)));
-                    } else {
-                        enPassantable = (file == fen[FENConstants.EN_PASSANT_FIELD].charAt(0) && rank + ChessDirections.UP == Integer.parseInt(fen[FENConstants.EN_PASSANT_FIELD].substring(1, 2)));
-                    }
-                    pieces[pieceCounter] = new Pawn(colour, file, rank, moved, enPassantable);
+                    pieces[pieceCounter] = new Pawn(colour, file, rank, moved, false);
                     break;
                 case FENConstants.KING_CHAR:
                     pieces[pieceCounter] = new King(colour, file, rank, true, false);
@@ -93,6 +85,7 @@ public class FENUtils {
         }
         Board board = new Board(whitePieces, blackPieces, turn, moveCount, halfMoveClock, new boolean[64], new boolean[64]);
         board.setCastlingRights(parseCastlingRights(fen[FENConstants.CASTLING_FIELD]));
+        board.setEnPassantFlag(fen[FENConstants.EN_PASSANT_FIELD]);
         board.updateThreatMap(PieceColour.WHITE);
         board.updateThreatMap(PieceColour.BLACK);
         return board;
