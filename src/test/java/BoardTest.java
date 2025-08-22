@@ -55,7 +55,7 @@ class BoardTest {
         Move move = new Move(board, piece, "g6");
         move.setEnPassant(true);
         Piece capturedPiece = board.pieceSearch(board.getCaptureDestination(move));
-        assertTrue(board.doMove(move));
+        board.doMove(move);
         for (Piece blackPiece : board.getBlackPieces()) {
             if (blackPiece != null) {
                 assertNotSame(blackPiece, capturedPiece);
@@ -66,7 +66,7 @@ class BoardTest {
         move = new Move(board, piece, "g5");
         move.setCapture(true);
         capturedPiece = board.pieceSearch(board.getCaptureDestination(move));
-        assertTrue(board.doMove(move));
+        board.doMove(move);
         for  (Piece blackPiece : board.getBlackPieces()) {
             if (blackPiece != null) {
                 assertNotSame(blackPiece, capturedPiece);
@@ -77,7 +77,7 @@ class BoardTest {
         move = new Move(board, piece, "g2");
         move.setCapture(true);
         capturedPiece = board.pieceSearch(board.getCaptureDestination(move));
-        assertTrue(board.doMove(move));
+        board.doMove(move);
         for  (Piece whitePiece : board.getWhitePieces()) {
             if (whitePiece != null) {
                 assertNotSame(whitePiece, capturedPiece);
@@ -125,26 +125,26 @@ class BoardTest {
         Piece piece = board.getWhitePieces()[0];
         Move move = new Move(board, piece, "d8");
         move.setPromotionType(PieceType.ROOK);
-        assertTrue(board.doMove(move));
+        board.doMove(move);
         Piece promotion = board.pieceSearch("d8");
         assertEquals(PieceType.ROOK, promotion.getType());
         board = FENUtils.boardFromFEN("4n3/3P4/8/8/8/8/4p3/3N4 w - - 0 1");
         move = new Move(board, piece, "e8");
         move.setPromotionType(PieceType.BISHOP);
-        assertTrue(board.doMove(move));
+        board.doMove(move);
         promotion = board.pieceSearch("e8");
         assertEquals(PieceType.BISHOP, promotion.getType());
         board = FENUtils.boardFromFEN("4n3/3P4/8/8/8/8/4p3/3N4 w - - 0 1");
         piece = board.getBlackPieces()[1];
         move = new Move(board, piece, "e1");
         move.setPromotionType(PieceType.QUEEN);
-        assertTrue(board.handlePromotion(move));
+        board.handlePromotion(move);
         promotion = board.pieceSearch("e1");
         assertEquals(PieceType.QUEEN, promotion.getType());
         board = FENUtils.boardFromFEN("4n3/3P4/8/8/8/8/4p3/3N4 w - - 0 1");
         move = new Move(board, piece, "d1");
         move.setPromotionType(PieceType.KNIGHT);
-        assertTrue(board.doMove(move));
+        board.doMove(move);
         promotion = board.pieceSearch("d1");
         assertEquals(PieceType.KNIGHT, promotion.getType());
         assertEquals(PieceColour.BLACK, promotion.getColour());
@@ -181,5 +181,32 @@ class BoardTest {
     void testClone() {
         Board board2 = board.copy();
         assertEquals(board, board2);
+    }
+
+    @Test
+    @DisplayName("Test getCastlingRights")
+    void testGetCastlingRights() {
+        Board board = FENUtils.boardFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        int castlingRights = (FENConstants.WHITE_KINGSIDE_CASTLE_MASK | FENConstants.WHITE_QUEENSIDE_CASTLE_MASK |
+                FENConstants.BLACK_KINGSIDE_CASTLE_MASK |  FENConstants.BLACK_QUEENSIDE_CASTLE_MASK);
+        assertEquals(castlingRights, board.getCastlingRights());
+        board = FENUtils.boardFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w Kkq - 0 1");
+        castlingRights = (FENConstants.WHITE_KINGSIDE_CASTLE_MASK |
+                FENConstants.BLACK_KINGSIDE_CASTLE_MASK |  FENConstants.BLACK_QUEENSIDE_CASTLE_MASK);
+        assertEquals(castlingRights, board.getCastlingRights());
+        board = FENUtils.boardFromFEN("4k2r/8/8/5R2/8/8/8/8 w k - 0 1");
+        castlingRights = FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
+        assertEquals(castlingRights, board.getCastlingRights());
+    }
+
+    @Test
+    @DisplayName("Test getEnPassantTarget")
+    void testGetEnPassantTarget() {
+        Board board = FENUtils.boardFromFEN("rn1qkb1r/pp3p1p/5n2/2pPp3/6p1/2B2P2/PPP1P1PP/RN1QKB1R w KQkq c6 0 10");
+        assertEquals("c6", board.getEnPassantTarget());
+        board = FENUtils.boardFromFEN("rnbqkbnr/pppp1p1p/8/4pPp1/8/8/PPPPP1PP/RNBQKBNR w KQkq g6 0 2");
+        assertEquals("g6", board.getEnPassantTarget());
+        board = FENUtils.boardFromFEN("rnbqkbnr/p1pppppp/8/8/1pP5/8/PP1PPPPP/RNBQKBNR b KQkq c3 0 3");
+        assertEquals("c3", board.getEnPassantTarget());
     }
 }

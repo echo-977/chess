@@ -56,6 +56,7 @@ public class King extends DirectionalPiece{
         }
         return moves;
     }
+
     /**
      * Check if a given move is legal (without considering other pieces).
      * @param move the move to be validated.

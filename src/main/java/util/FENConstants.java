@@ -27,6 +27,7 @@ public class FENConstants {
     public static final int WHITE_QUEENSIDE_CASTLE_MASK = 2;
     public static final int BLACK_KINGSIDE_CASTLE_MASK = 4;
     public static final int BLACK_QUEENSIDE_CASTLE_MASK = 8;
+    public static final int NO_CASTLE_MASK = 0;
 
     public static final char WHITE_PAWN = 'P';
     public static final char WHITE_QUEEN = 'Q';
