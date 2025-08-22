@@ -368,4 +368,27 @@ public class Board {
                 && other.moveCount == this.moveCount && other.halfMoveClock == this.halfMoveClock &&
                 Arrays.equals(other.whiteThreatMap, this.whiteThreatMap) && Arrays.equals(other.blackThreatMap, this.blackThreatMap);
     }
+
+    /**
+     * Updates the moved booleans for relevant pieces to see if they can castle.
+     * @param rights 4 bit mask for each castling right.
+     */
+    public void setCastlingRights(int rights) {
+        if ((rights & FENConstants.WHITE_KINGSIDE_CASTLE_MASK) != 0) { //set white kingside castle
+            ((King) pieceSearch("e1")).setMoved(false);
+            ((Rook) pieceSearch("h1")).setMoved(false);
+        }
+        if ((rights & FENConstants.WHITE_QUEENSIDE_CASTLE_MASK) != 0) { //set white queenside castle
+            ((King) pieceSearch("e1")).setMoved(false);
+            ((Rook) pieceSearch("a1")).setMoved(false);
+        }
+        if ((rights & FENConstants.BLACK_KINGSIDE_CASTLE_MASK) != 0) { //set black kingside castle
+            ((King) pieceSearch("e8")).setMoved(false);
+            ((Rook) pieceSearch("h8")).setMoved(false);
+        }
+        if ((rights & FENConstants.BLACK_QUEENSIDE_CASTLE_MASK) != 0) { //set black queenside castle
+            ((King) pieceSearch("e8")).setMoved(false);
+            ((Rook) pieceSearch("a8")).setMoved(false);
+        }
+    }
 }

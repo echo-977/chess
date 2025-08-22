@@ -67,25 +67,10 @@ public class FENUtils {
                     pieces[pieceCounter] = new Pawn(colour, file, rank, moved, enPassantable);
                     break;
                 case FENConstants.KING_CHAR:
-                    if (fen[FENConstants.CASTLING_FIELD].equals(fen[FENConstants.CASTLING_FIELD].toLowerCase()) && colour == PieceColour.WHITE) {
-                        moved = true;
-                    } else
-                        moved = fen[FENConstants.CASTLING_FIELD].equals(fen[FENConstants.CASTLING_FIELD].toUpperCase()) && colour == PieceColour.BLACK;
-                    pieces[pieceCounter] = new King(colour, file, rank, moved, false);
+                    pieces[pieceCounter] = new King(colour, file, rank, true, false);
                     break;
                 case FENConstants.ROOK_CHAR:
-                    if (colour == PieceColour.WHITE) {
-                        if (currentSquare.equals("a1") && fen[FENConstants.CASTLING_FIELD].contains(FENConstants.WHITE_QUEENSIDE_CASTLE)) {
-                            moved = false;
-                        } else
-                            moved = !(currentSquare.equals("h1") && fen[FENConstants.CASTLING_FIELD].contains(FENConstants.WHITE_KINGSIDE_CASTLE));
-                    } else {
-                        if (currentSquare.equals("a8") && fen[FENConstants.CASTLING_FIELD].contains(FENConstants.BLACK_QUEENSIDE_CASTLE)) {
-                            moved = false;
-                        } else
-                            moved = !(currentSquare.equals("h8") && fen[FENConstants.CASTLING_FIELD].contains(FENConstants.BLACK_KINGSIDE_CASTLE));
-                    }
-                    pieces[pieceCounter] = new Rook(colour, file, rank, moved);
+                    pieces[pieceCounter] = new Rook(colour, file, rank, true);
                     break;
             }
             pieceCounter++;
@@ -107,6 +92,7 @@ public class FENUtils {
             }
         }
         Board board = new Board(whitePieces, blackPieces, turn, moveCount, halfMoveClock, new boolean[64], new boolean[64]);
+        board.setCastlingRights(parseCastlingRights(fen[FENConstants.CASTLING_FIELD]));
         board.updateThreatMap(PieceColour.WHITE);
         board.updateThreatMap(PieceColour.BLACK);
         return board;
@@ -179,13 +165,13 @@ public class FENUtils {
             if (board.pieceSearch("e1").getType() == PieceType.KING && (!((King) board.pieceSearch("e1")).getMoved())) {  //potential for castling
                 if (board.pieceSearch("h1") != null) {
                     if (board.pieceSearch("h1").getType() == PieceType.ROOK && (!((Rook) board.pieceSearch("h1")).getMoved())) {
-                        fen.append(FENConstants.WHITE_KINGSIDE_CASTLE);
+                        fen.append(FENConstants.WHITE_KINGSIDE_CASTLE_CHAR);
                         anyCastling = true;
                     }
                 }
                 if (board.pieceSearch("a1") != null) {
                     if (board.pieceSearch("a1").getType() == PieceType.ROOK && (!((Rook) board.pieceSearch("a1")).getMoved())) {
-                        fen.append(FENConstants.WHITE_QUEENSIDE_CASTLE);
+                        fen.append(FENConstants.WHITE_QUEENSIDE_CASTLE_CHAR);
                         anyCastling = true;
                     }
                 }
@@ -195,13 +181,13 @@ public class FENUtils {
             if (board.pieceSearch("e8").getType() == PieceType.KING && (!((King) board.pieceSearch("e8")).getMoved())) {  //potential for castling
                 if (board.pieceSearch("h8") != null) {
                     if (board.pieceSearch("h8").getType() == PieceType.ROOK && (!((Rook) board.pieceSearch("h8")).getMoved())) {
-                        fen.append(FENConstants.BLACK_KINGSIDE_CASTLE);
+                        fen.append(FENConstants.BLACK_KINGSIDE_CASTLE_CHAR);
                         anyCastling = true;
                     }
                 }
                 if (board.pieceSearch("a8") != null) {
                     if (board.pieceSearch("a8").getType() == PieceType.ROOK && (!((Rook) board.pieceSearch("a8")).getMoved())) {
-                        fen.append(FENConstants.BLACK_QUEENSIDE_CASTLE);
+                        fen.append(FENConstants.BLACK_QUEENSIDE_CASTLE_CHAR);
                         anyCastling = true;
                     }
                 }
@@ -231,5 +217,18 @@ public class FENUtils {
         fen.append(board.getHalfMoveClock()).append(FENConstants.SPACE);
         fen.append(board.getMoveCount());
         return fen.toString();
+    }
+
+    /**
+     * Converts the castling rights field of a FEN string to the bitwise mask used to set them.
+     * @param castlingField the castling rights field of a FEN string.
+     * @return 4 bit mask where each bit refers to a different castling condition
+     */
+    public static int parseCastlingRights(String castlingField) {
+        int whiteKingsideCastle = castlingField.contains(FENConstants.WHITE_KINGSIDE_CASTLE_CHAR) ? FENConstants.WHITE_KINGSIDE_CASTLE_MASK : 0;
+        int whiteQueensideCastle = castlingField.contains(FENConstants.WHITE_QUEENSIDE_CASTLE_CHAR) ? FENConstants.WHITE_QUEENSIDE_CASTLE_MASK : 0;
+        int blackKingsideCastle = castlingField.contains(FENConstants.BLACK_KINGSIDE_CASTLE_CHAR) ? FENConstants.BLACK_KINGSIDE_CASTLE_MASK : 0;
+        int blackQueensideCastle = castlingField.contains(FENConstants.BLACK_QUEENSIDE_CASTLE_CHAR) ? FENConstants.BLACK_QUEENSIDE_CASTLE_MASK : 0;
+        return (whiteKingsideCastle | whiteQueensideCastle | blackKingsideCastle | blackQueensideCastle);
     }
 }

@@ -1,5 +1,3 @@
-import java.util.Objects;
-
 public class King extends DirectionalPiece{
     private boolean check;
     private boolean moved;
@@ -247,6 +245,14 @@ public class King extends DirectionalPiece{
             return other.moved == this.moved && other.check == this.check;
         }
         return false;
+    }
+
+    /**
+     * Simple setter for the moved boolean.
+     * @param moved the boolean value moved will be set to.
+     */
+    public void setMoved(boolean moved) {
+        this.moved = moved;
     }
 }
 

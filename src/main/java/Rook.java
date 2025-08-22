@@ -1,8 +1,3 @@
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class Rook extends LinearPiece{
     private boolean moved;
 
@@ -118,5 +113,13 @@ public class Rook extends LinearPiece{
             return other.moved == this.moved;
         }
         return false;
+    }
+
+    /**
+     * Simple setter for the moved boolean.
+     * @param moved the boolean value moved will be set to.
+     */
+    public void setMoved(boolean moved) {
+        this.moved = moved;
     }
 }

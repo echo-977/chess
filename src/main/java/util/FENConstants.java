@@ -19,10 +19,14 @@ public class FENConstants {
     public static final char ROOK_CHAR = 'r';
     public static final char BISHOP_CHAR = 'b';
 
-    public static final String WHITE_KINGSIDE_CASTLE = "K";
-    public static final String WHITE_QUEENSIDE_CASTLE = "Q";
-    public static final String BLACK_KINGSIDE_CASTLE = "k";
-    public static final String BLACK_QUEENSIDE_CASTLE = "q";
+    public static final String WHITE_KINGSIDE_CASTLE_CHAR = "K";
+    public static final String WHITE_QUEENSIDE_CASTLE_CHAR = "Q";
+    public static final String BLACK_KINGSIDE_CASTLE_CHAR = "k";
+    public static final String BLACK_QUEENSIDE_CASTLE_CHAR = "q";
+    public static final int WHITE_KINGSIDE_CASTLE_MASK = 1;
+    public static final int WHITE_QUEENSIDE_CASTLE_MASK = 2;
+    public static final int BLACK_KINGSIDE_CASTLE_MASK = 4;
+    public static final int BLACK_QUEENSIDE_CASTLE_MASK = 8;
 
     public static final char WHITE_PAWN = 'P';
     public static final char WHITE_QUEEN = 'Q';
