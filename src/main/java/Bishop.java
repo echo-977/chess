@@ -38,8 +38,8 @@ public class Bishop extends LinearPiece{
         if (!super.isLegalMove(move)) {
             return false;
         }
-        char moveFile = move.charAt(0);
-        int moveRank = move.charAt(1) - '0';
+        char moveFile = SquareMapUtils.getFile(move);
+        int moveRank = SquareMapUtils.getRank(move);
         char file = getFile();
         int rank = getRank();
         return Math.abs(rank - moveRank) == Math.abs(file - moveFile);
@@ -55,8 +55,8 @@ public class Bishop extends LinearPiece{
      */
     @Override
     public boolean canCaptureSquare(Board board, String targetSquare) {
-        char targetFile = targetSquare.charAt(0);
-        int targetRank = targetSquare.charAt(1) - '0';
+        char targetFile = SquareMapUtils.getFile(targetSquare);
+        int targetRank = SquareMapUtils.getRank(targetSquare);
         if (!isLegalMove(targetSquare)) {
             return false;
         }
@@ -81,8 +81,8 @@ public class Bishop extends LinearPiece{
      */
     @Override
     public Piece copyToSquare(String square) {
-        char file = square.charAt(0);
-        int rank = square.charAt(1) - '0';
+        char file = SquareMapUtils.getFile(square);
+        int rank = SquareMapUtils.getRank(square);
         return new Bishop(getColour(), file, rank);
     }
 }

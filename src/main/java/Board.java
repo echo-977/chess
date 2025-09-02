@@ -205,8 +205,8 @@ public class Board {
             } else {
                 targetDirection = ChessDirections.UP;
             }
-            char file = move.getDestination().charAt(0);
-            int rank = move.getDestination().charAt(1) - '0';
+            char file = SquareMapUtils.getFile(move.getDestination());
+            int rank = SquareMapUtils.getRank(move.getDestination());
             int captureRank = rank + targetDirection;
             captureDestination = file + String.valueOf(captureRank);
         }
@@ -220,8 +220,8 @@ public class Board {
      */
     public void handleCastleMove(Move move) {
         String destination = move.getDestination();
-        char file = destination.charAt(0);
-        int rank = destination.charAt(1) - '0';
+        char file = SquareMapUtils.getFile(destination);
+        int rank = SquareMapUtils.getRank(destination);
         String rookSquare;
         Rook rook;
         if (file == 'g') {
@@ -242,8 +242,8 @@ public class Board {
      */
     public void handlePromotion(Move move) {
         PieceColour colour = move.getPiece().getColour();
-        char file = move.getDestination().charAt(0);
-        int rank = move.getDestination().charAt(1) - '0';
+        char file = SquareMapUtils.getFile(move.getDestination());
+        int rank = SquareMapUtils.getRank(move.getDestination());
         Piece promotedPiece = switch (move.getPromotionType()) {
             case QUEEN -> new Queen(colour, file, rank);
             case ROOK -> new Rook(colour, file, rank, true);
@@ -407,8 +407,8 @@ public class Board {
         if (enPassantTarget.equals(FENConstants.NONE)) {
             return;
         }
-        char enPassantTargetFile = enPassantTarget.charAt(0);
-        int enPassantTargetRank = enPassantTarget.charAt(1) - '0';
+        char enPassantTargetFile = SquareMapUtils.getFile(enPassantTarget);
+        int enPassantTargetRank = SquareMapUtils.getRank(enPassantTarget);
         int direction;
         if (enPassantTargetRank == 3) { //it must be white if target square is the third rank
             direction = ChessDirections.UP;

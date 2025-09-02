@@ -69,8 +69,8 @@ public class King extends DirectionalPiece{
         }
         char file = getFile();
         int rank = getRank();
-        char moveFile = move.charAt(0);
-        int moveRank = move.charAt(1) - '0';
+        char moveFile = SquareMapUtils.getFile(move);
+        int moveRank = SquareMapUtils.getRank(move);
         return Math.abs(moveRank - rank) <= 1 && Math.abs(moveFile - file) <= 1;
     }
 
@@ -95,8 +95,8 @@ public class King extends DirectionalPiece{
      */
     @Override
     public boolean canCaptureSquare(Board board, String targetSquare) {
-        char targetFile = targetSquare.charAt(0);
-        int targetRank = targetSquare.charAt(1) - '0';
+        char targetFile = SquareMapUtils.getFile(targetSquare);
+        int targetRank = SquareMapUtils.getRank(targetSquare);
         char file = getFile();
         int rank = getRank();
         return (Math.abs(targetFile - file) <= 1 && Math.abs(targetRank - rank) <= 1);
@@ -133,8 +133,8 @@ public class King extends DirectionalPiece{
      */
     @Override
     public Piece copyToSquare(String square) {
-        char file = square.charAt(0);
-        int rank = square.charAt(1) - '0';
+        char file = SquareMapUtils.getFile(square);
+        int rank = SquareMapUtils.getRank(square);
         return new King(getColour(), file, rank, getMoved(), isCheck());
     }
 
@@ -192,7 +192,7 @@ public class King extends DirectionalPiece{
      */
     public void castleMove(Board board, String square) {
         super.move(square);
-        char file = square.charAt(0);
+        char file = SquareMapUtils.getFile(square);
         if (file == 'g') {
             board.pieceSearch("h" + getRank()).move("f" + getRank());
         } else if (file == 'c') {
