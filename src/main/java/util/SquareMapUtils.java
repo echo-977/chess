@@ -17,8 +17,26 @@ public class SquareMapUtils {
      * @return the index of the square.
      */
     public static int mapSquareToInt(String square) {
-        char file =  square.charAt(0);
-        int rank = square.charAt(1) - '0';
+        char file =  getFile(square);
+        int rank = getRank(square);
         return (8 - rank) * 8 + ((int) file - 'a');
+    }
+
+    /**
+     * Get the file of a given square.
+     * @param square the square.
+     * @return the file of the square.
+     */
+    public static char getFile(String square) {
+        return square.charAt(0);
+    }
+
+    /**
+     * Get the rank of the given square.
+     * @param square the square.
+     * @return the rank of the square.
+     */
+    public static int getRank(String square) {
+        return square.charAt(1) - '0';
     }
 }

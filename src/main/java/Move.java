@@ -26,7 +26,7 @@ public class Move {
             isCapture = true;
         }
         if (piece.getType() == PieceType.KING) {
-            char destinationFile = destination.charAt(0);
+            char destinationFile = SquareMapUtils.getFile(destination);
             if (Math.abs(piece.getFile() - destinationFile) == 2) {
                 isCastle = true;
             }
@@ -213,7 +213,7 @@ public class Move {
         } //discovered checks
         Board boardAfterMove = board.copy();
         Piece pieceOnNewBoard = boardAfterMove.pieceSearch(piece.getSquare());
-        char destinationFile = destination.charAt(0);
+        char destinationFile = SquareMapUtils.getFile(destination);
         if (pieceOnNewBoard instanceof King king && Math.abs(destinationFile - pieceOnNewBoard.getFile()) == 2) {
             king.castleMove(boardAfterMove, destination);
         }

@@ -135,8 +135,8 @@ public abstract class Piece{
      * @param square the square the piece is moved to.
      */
     public void move(String square) {
-        file = square.charAt(0);
-        rank = square.charAt(1) - '0';
+        file = SquareMapUtils.getFile(square);
+        rank = SquareMapUtils.getRank(square);
     }
 
     /**
@@ -149,11 +149,11 @@ public abstract class Piece{
         if (move.equals(getSquare())) {
             return false;
         }
-        char file = move.charAt(0);
+        char file = SquareMapUtils.getFile(move);
         if (file < 'a' || file > 'h') {
             return false;
         }
-        int rank = move.charAt(1) - '0';
+        int rank = SquareMapUtils.getRank(move);
         return !(rank < 1 || rank > 8);
     }
 

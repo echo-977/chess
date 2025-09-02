@@ -38,8 +38,8 @@ public class FENUtils {
                 colour = PieceColour.BLACK;
             }
             currentSquare = SquareMapUtils.mapIntToSquare(i);
-            char file = currentSquare.charAt(0);
-            int rank = Integer.parseInt(currentSquare.substring(1, 2));
+            char file = SquareMapUtils.getFile(currentSquare);
+            int rank = SquareMapUtils.getRank(currentSquare);
             switch (Character.toLowerCase(fen[FENConstants.PIECE_FIELD].charAt(current))) {
                 case FENConstants.QUEEN_CHAR:
                     pieces[pieceCounter] = new Queen(colour, file, rank);

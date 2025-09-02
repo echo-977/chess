@@ -42,8 +42,8 @@ public class Knight extends DirectionalPiece{
         }
         char file = getFile();
         int rank = getRank();
-        char moveFile = move.charAt(0);
-        int moveRank = move.charAt(1) - '0';
+        char moveFile = SquareMapUtils.getFile(move);
+        int moveRank = SquareMapUtils.getRank(move);
         if (Math.abs(moveRank - rank) == 1 && Math.abs(moveFile - file) == 2) {
             return true;
         } else {
@@ -70,8 +70,8 @@ public class Knight extends DirectionalPiece{
      */
     @Override
     public Piece copyToSquare(String square) {
-        char file = square.charAt(0);
-        int rank = square.charAt(1) - '0';
+        char file = SquareMapUtils.getFile(square);
+        int rank = SquareMapUtils.getRank(square);
         return new Knight(getColour(), file, rank);
     }
 }

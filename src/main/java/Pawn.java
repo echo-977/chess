@@ -82,7 +82,7 @@ public class Pawn extends Piece{
      * @return updated value of movesIndex
      */
     public int addMove(Board board, Move[] moves, int movesIndex, String destination) {
-        int rank = destination.charAt(1) - '0';
+        int rank = SquareMapUtils.getRank(destination);
         Move move;
         if ((getColour() == PieceColour.WHITE && rank == 8) || (getColour() == PieceColour.BLACK && rank == 1)) {
             for (PieceType type : PieceType.values()) {
@@ -131,8 +131,8 @@ public class Pawn extends Piece{
         }
         char file = getFile();
         int rank = getRank();
-        char moveFile = move.charAt(0);
-        int moveRank = move.charAt(1) - '0';
+        char moveFile = SquareMapUtils.getFile(move);
+        int moveRank = SquareMapUtils.getRank(move);
         if (Math.abs(moveRank - rank) == 1 && moveFile == file) {
             return true;
         }
@@ -149,7 +149,7 @@ public class Pawn extends Piece{
     public void move(String move) {
         if (!moved) {
             moved = true;
-            int moveRank = move.charAt(1) - '0';
+            int moveRank = SquareMapUtils.getRank(move);
             if (Math.abs(moveRank - getRank()) == 2) {
                 enPassantable = true;
             }
@@ -173,8 +173,8 @@ public class Pawn extends Piece{
         }
         char file = getFile();
         int rank = getRank();
-        char targetFile = targetSquare.charAt(0);
-        int targetRank = targetSquare.charAt(1) - '0';
+        char targetFile = SquareMapUtils.getFile(targetSquare);
+        int targetRank = SquareMapUtils.getRank(targetSquare);
         int direction;
         if (getColour() == PieceColour.WHITE) {
             direction = ChessDirections.UP;
@@ -216,8 +216,8 @@ public class Pawn extends Piece{
      */
     @Override
     public Piece copyToSquare(String square) {
-        char file = square.charAt(0);
-        int rank = square.charAt(1) - '0';
+        char file = SquareMapUtils.getFile(square);
+        int rank = SquareMapUtils.getRank(square);
         return new Pawn(getColour(), file, rank, getMoved(), getEnPassantable());
     }
 
