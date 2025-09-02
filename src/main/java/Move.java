@@ -317,29 +317,36 @@ public class Move {
      * @return null if the move is illegal, otherwise the move object.
      */
     public static Move createIfLegal(Board board, Piece piece, String destination) {
-        Board boardAfterMove = board.copy();
-        Piece pieceCopy = boardAfterMove.pieceSearch(piece.getSquare());
-        Move moveCopy = new Move(boardAfterMove, pieceCopy, destination);
-        if (pieceCopy.getType() == PieceType.PAWN) {
+        Move potentialMove = new Move(board, piece, destination);
+        if (piece.getType() == PieceType.PAWN) {
             Piece enPassantTarget = board.pieceSearch(destination.charAt(0) + String.valueOf(piece.getRank()));
             if (enPassantTarget != null && piece.getColour() != enPassantTarget.getColour() && enPassantTarget.getType() == PieceType.PAWN && ((Pawn) enPassantTarget).getEnPassantable()) {
-                moveCopy.isEnPassant = true;
-                moveCopy.isCapture = true;
+                potentialMove.isEnPassant = true;
+                potentialMove.isCapture = true;
             }
         }
-        boardAfterMove.doMove(moveCopy);
+        State stateBeforeMove = board.doMove(potentialMove);
         PieceColour colour = piece.getColour();
-        PieceColour enemyColour = colour.opponentColour();
-        King king = boardAfterMove.findKing(colour);
+        King king = board.findKing(colour);
         if (king == null) { //only occurs in test positions in which case there is no check to worry about
-            return new Move(board, piece, destination);
+            board.unDoMove(stateBeforeMove);
+            return potentialMove;
         }
-        boolean[] threatMap = boardAfterMove.getThreatMap(enemyColour);
+        boolean[] threatMap = board.getThreatMap(colour.opponentColour());
         String kingSquare = king.getSquare();
         if (threatMap[SquareMapUtils.mapSquareToInt(kingSquare)]) { //king is in check so move is invalid
+            board.unDoMove(stateBeforeMove);
             return null;
         } else {
-            return new Move(board, piece, destination);
+            boolean isCheck;
+            if (piece.getType() == PieceType.KING) {
+                isCheck = false; //king can never give check
+            } else {
+                isCheck = board.getThreatMap(colour)[SquareMapUtils.mapSquareToInt(board.findKing(colour.opponentColour()).getSquare())];
+            }
+            board.unDoMove(stateBeforeMove);
+            potentialMove.setCheck(isCheck);
+            return potentialMove;
         }
     }
 
@@ -378,6 +385,6 @@ public class Move {
 
     @Override
     public String toString() {
-        return piece + destination;
+        return source + destination;
     }
 }

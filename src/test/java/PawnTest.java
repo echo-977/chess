@@ -28,10 +28,13 @@ class PawnTest {
     @Test
     @DisplayName("Test generateMoves (pawn pushes only)")
     void testGenerateMoves() {
-        Board board = FENUtils.boardFromFEN("8/8/8/3p4/8/8/8/P7 w - - 0 1");
-        Move[] piece1MovesExpected = {new Move(board, piece1, "a2"), new Move(board, piece1, "a3"),
+        Board board = FENUtils.boardFromFEN("8/3p4/8/8/8/8/P7/8 w - - 0 1");
+        Piece piece1 = board.getWhitePieces()[0];
+        Piece piece2 = board.getBlackPieces()[0];
+        System.out.println(FENUtils.getFEN(board));
+        Move[] piece1MovesExpected = {new Move(board, piece1, "a3"), new Move(board, piece1, "a4"),
                 null, null, null, null, null, null, null, null, null, null};
-        Move[] piece2MovesExpected = {new Move(board, piece2, "d4"), new Move(board, piece2, "d3"),
+        Move[] piece2MovesExpected = {new Move(board, piece2, "d6"), new Move(board, piece2, "d5"),
                 null, null, null, null, null, null, null, null, null, null};
         Move[] piece1MovesActual = piece1.generateMoves(board);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
@@ -58,8 +61,8 @@ class PawnTest {
     @DisplayName("Test generateMoves (captures)")
     void testGenerateMovesCaptures() {
         Board board = FENUtils.boardFromFEN("rn1qkb1r/p1pp2pp/1p3p2/1b1npNB1/2PP4/5N2/PP2PPPP/R2QKB1R b KQkq - 7 10");
-        piece1 = (Pawn) board.getWhitePieces()[2];
-        piece2 = (Pawn) board.getBlackPieces()[12];
+        Pawn piece1 = (Pawn) board.getWhitePieces()[2];
+        Pawn piece2 = (Pawn) board.getBlackPieces()[12];
         Move move1 = new Move(board, piece1, "b5");
         move1.setCapture(true);
         Move move2 = new Move(board, piece1, "d5");

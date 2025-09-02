@@ -122,12 +122,14 @@ public class Board {
      * @param move the move to be played.
      * @return the state of the board before the move.
      */
-    public State doMove(Move move) {
+    public State doMove(Move move){
         Piece capturedPiece = null;
-        String enPassantTarget = getEnPassantTarget();
+        String  enPassantSquare = getEnPassantTarget();
         int castlingRights = getCastlingRights();
         int halfMoveClock = getHalfMoveClock();
         int moveCount = getMoveCount();
+        boolean[] threatMapWhite = whiteThreatMap;
+        boolean[] threatMapBlack = blackThreatMap;
         Piece[] pieces;
         if (turn == PieceColour.WHITE) {
             pieces = blackPieces;
@@ -161,7 +163,7 @@ public class Board {
         turn = turn.opponentColour();
         whiteThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.WHITE);
         blackThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.BLACK);
-        return new State(move, capturedPiece, enPassantTarget, castlingRights, halfMoveClock, moveCount);
+        return new State(move, capturedPiece, enPassantSquare, castlingRights, halfMoveClock, moveCount, threatMapWhite, threatMapBlack);
     }
 
     /**
@@ -182,8 +184,10 @@ public class Board {
         for (int i = 0; i < (ChessConstants.NUM_PIECES / 2); i++) {
             if (pieces[i] == capturedPiece) {
                 pieces[i] = null;
+                break;
             }
         }
+        
         return capturedPiece;
     }
 
@@ -252,12 +256,14 @@ public class Board {
             for (int i = 0; i < ChessConstants.NUM_PIECES / 2; i++) {
                 if (whitePieces[i] == promotingPiece) {
                     whitePieces[i] = promotedPiece;
+                    break;
                 }
             }
         } else {
             for (int i = 0; i < ChessConstants.NUM_PIECES / 2; i++) {
                 if (blackPieces[i] == promotingPiece) {
                     blackPieces[i] = promotedPiece;
+                    break;
                 }
             }
         }
@@ -277,11 +283,14 @@ public class Board {
         } else {
             pieces = blackPieces;
         }
-        for (Piece piece : pieces) {
-            if (piece == null) {
+        Move[][] allMoves = new Move[pieces.length][];
+        for (int i = 0; i < ChessConstants.NUM_PIECES/2; i++) {
+            if (pieces[i] == null) {
+                allMoves[i] = new Move[0];
                 continue;
             }
-            for (Move move : piece.generateMoves(this)) {
+            allMoves[i] = pieces[i].generateMoves(this);
+            for (Move move : allMoves[i]) {
                 if (move != null) {
                     moveCount++;
                 }
@@ -289,11 +298,11 @@ public class Board {
         }
         Move[] moves = new Move[moveCount];
         moveCount = 0;
-        for (Piece piece : pieces) {
-            if (piece == null) {
+        for (int i = 0; i < ChessConstants.NUM_PIECES/2 ; i++) {
+            if (pieces[i] == null || allMoves[i] == null) {
                 continue;
             }
-            for (Move move : piece.generateMoves(this)) {
+            for (Move move : allMoves[i]) {
                 if (move != null) {
                     moves[moveCount] = move;
                     moveCount++;
@@ -502,6 +511,7 @@ public class Board {
             for (int i = 0; i < ChessConstants.NUM_PIECES/2; i++) { //add captured piece back to relevant piece array
                 if (opponentPieces[i] == null) {
                     opponentPieces[i] = state.capturedPiece();
+                    break;
                 }
             }
         }
@@ -514,8 +524,8 @@ public class Board {
             }
             for (int i = 0; i < ChessConstants.NUM_PIECES/2; i++) {
                 if (pieces[i] != null && state.move().getDestination().equals(pieces[i].getSquare())) {
-                    Piece oldPiece = state.move().getPiece();
-                    pieces[i] = new Pawn(oldPiece.getColour(), oldPiece.getFile(), oldPiece.getRank(), true, false);
+                    pieces[i] = movePiece;
+                    break;
                 }
             }
         }
@@ -532,14 +542,19 @@ public class Board {
                 rook.setMoved(false);
             }
         }
-        movePiece.move(state.move().getSource());
-        if (!(movePiece.getType() != PieceType.PAWN || (state.move().getSource().charAt(1) - '0' != 2 || state.move().getSource().charAt(1) - '0' != 7))) {
+        if (state.move().getPromotionType() == null) {
+            movePiece.move(state.move().getSource());
+        }
+        if (!(movePiece.getType() != PieceType.PAWN || !(state.move().getSource().charAt(1) - '0' == 2 || state.move().getSource().charAt(1) - '0' == 7))) {
             ((Pawn) movePiece).setMoved(false);
+            ((Pawn) movePiece).setEnPassantable(false);
         }
         setHalfMoveClock(state.halfMoveClock());
         setMoveCount(state.moveCount());
         setCastlingRights(state.castlingRights());
         setEnPassantFlag(state.enPassantSquare());
         turn = turn.opponentColour();
+        whiteThreatMap = state.whiteThreatMap();
+        blackThreatMap = state.blackThreatMap();
     }
 }

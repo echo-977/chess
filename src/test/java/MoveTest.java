@@ -101,7 +101,7 @@ class MoveTest {
     @Test
     @DisplayName("Test illegalMoveDetection (blocking check)")
     void testIllegalMoveDetection2() {
-        Board board = FENUtils.boardFromFEN("8/8/R4k2/2b5/8/8/8/8 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/R4k2/2b5/8/3K4/8/8 w - - 0 1");
         Piece piece = board.getBlackPieces()[1];
         Move[] expectedMoves = new Move[ChessConstants.MAX_BISHOP_MOVES];
         expectedMoves[0] = new Move(board, piece, "b6");

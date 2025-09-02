@@ -217,16 +217,16 @@ public class King extends DirectionalPiece{
         String candidateMove;
         Piece piece;
         int movesIndex = 0;
+        boolean[] threatMap;
+        if (getColour() == PieceColour.WHITE) {
+            threatMap = board.getThreatMap(PieceColour.BLACK);
+        } else {
+            threatMap = board.getThreatMap(PieceColour.WHITE);
+        }
         for (int i = 0; i < 8; i++) {
             checkFile = (char) (file + directions[i][0]);
             checkRank = rank + directions[i][1];
             candidateMove = checkFile + String.valueOf(checkRank);
-            boolean[] threatMap;
-            if (getColour() == PieceColour.WHITE) {
-                threatMap = board.getThreatMap(PieceColour.BLACK);
-            } else {
-                threatMap = board.getThreatMap(PieceColour.WHITE);
-            }
             if (isLegalMove(candidateMove) && !threatMap[SquareMapUtils.mapSquareToInt(candidateMove)]) {
                 piece = board.pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture

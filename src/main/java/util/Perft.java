@@ -1,4 +1,10 @@
 public class Perft {
+    /**
+     * Returns the total number of possible positions that can arise at a given depth.
+     * @param board the board to find the positions on.
+     * @param depth the depth in ply (half-moves) to go to.
+     * @return number of possible positions after depth ply.
+     */
     public static long Perft(Board board, int depth) {
         if (depth == 0) {
             return 1;
@@ -7,13 +13,15 @@ public class Perft {
         Move[] moves = board.generateMoves(board.getTurn());
         for (Move move : moves) {
             if (move != null) {
+                State stateBeforeMove = board.doMove(move);
                 try {
-                    Board boardCopy = board.copy();
-                    Move moveCopy = move.clone(boardCopy);
-                    boardCopy.doMove(moveCopy);
-                    nodes += Perft(boardCopy, depth - 1);
+                    nodes += Perft(board, depth - 1);
+                    board.unDoMove(stateBeforeMove);
                 } catch (Exception e) {
+                    board.unDoMove(stateBeforeMove);
                     System.out.println("Error with move: " + move);
+                    System.out.println("On board: " + FENUtils.getFEN(board));
+                    board.doMove(move);
                     throw e;
                 }
             }
@@ -21,6 +29,13 @@ public class Perft {
         return nodes;
     }
 
+    /**
+     * Returns the total number of possible positions that can arise at a given depth.
+     * Also prints out how many positions there are for each move which is used for debugging.
+     * @param board the board to find the positions on.
+     * @param depth the depth in ply (half-moves) to go to.
+     * @return number of possible positions after depth ply.
+     */
     public static long PerftDivide(Board board, int depth) {
         if (depth == 0) {
             return 1;
@@ -30,16 +45,17 @@ public class Perft {
         Move[] moves = board.generateMoves(board.getTurn());
         for (Move move : moves) {
             if (move != null) {
-                Board boardCopy = board.copy();
-                Move moveCopy = move.clone(boardCopy);
-                boardCopy.doMove(moveCopy);
+                State stateBeforeMove = board.doMove(move);
                 try {
-                    count = Perft(boardCopy, depth - 1);
+                    count = Perft(board, depth - 1);
+                    board.unDoMove(stateBeforeMove);
                     System.out.println(move + ": " + count);
                     nodes += count;
                 } catch (Exception e) {
-                    System.out.println(FENUtils.getFEN(boardCopy));
-                    System.out.println(moveCopy);
+                    board.unDoMove(stateBeforeMove);
+                    System.out.println("Error when doing move: " + move);
+                    System.out.println("On board: " + FENUtils.getFEN(board));
+                    board.doMove(move);
                     throw e;
                 }
             }
@@ -47,6 +63,15 @@ public class Perft {
         return nodes;
     }
 
+    /**
+     * Returns the total number of possible positions that can arise at a given depth.
+     * Allocates each possible CPU processor moves to carry out independently for parallelism.
+     * Can also print out how many positions there are for each move which is used for debugging.
+     * @param board the board to find the positions on.
+     * @param depth the depth in ply (half-moves) to go to.
+     * @param doDivide boolean for if move printing debugging will be done.
+     * @return number of possible positions after depth ply.
+     */
     public static long ThreadedPerft(Board board, int depth, boolean doDivide) {
         if (depth <= 2) {
             if (doDivide) {
@@ -87,7 +112,6 @@ public class Perft {
                         } else {
                             nodes += Perft(boardCopy, depth - 1);
                         }
-
                     }
                 }
                 results[threadNum] = nodes;

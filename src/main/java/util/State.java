@@ -4,5 +4,7 @@ public record State(
         String enPassantSquare,
         int castlingRights,
         int halfMoveClock,
-        int moveCount
+        int moveCount,
+        boolean[] whiteThreatMap,
+        boolean[] blackThreatMap
 ) {}
