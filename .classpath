@@ -5,6 +5,16 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/java/model"/>
 	<classpathentry kind="src" path="src/main/java/util"/>
+	<classpathentry kind="src" path="src/main/java/board"/>
+	<classpathentry kind="src" path="src/main/java/engine"/>
+	<classpathentry kind="src" path="src/main/java/notation"/>
+	<classpathentry kind="src" path="src/main/java/pieces"/>
+	<classpathentry kind="src" path="src/test/java/board"/>
+	<classpathentry kind="src" path="src/test/java/engine"/>
+	<classpathentry kind="src" path="src/test/java/model"/>
+	<classpathentry kind="src" path="src/test/java/notation"/>
+	<classpathentry kind="src" path="src/test/java/pieces"/>
+	<classpathentry kind="src" path="src/test/java/util"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/junit-platform-console-standalone-1.6.1"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

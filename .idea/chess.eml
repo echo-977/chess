@@ -2,6 +2,12 @@
 <component inheritJdk="true">
 	<contentEntry url="file://$MODULE_DIR$">
 		<testFolder url="file://$MODULE_DIR$/src/test/java"/>
+		<testFolder url="file://$MODULE_DIR$/src/test/java/board"/>
+		<testFolder url="file://$MODULE_DIR$/src/test/java/engine"/>
+		<testFolder url="file://$MODULE_DIR$/src/test/java/model"/>
+		<testFolder url="file://$MODULE_DIR$/src/test/java/notation"/>
+		<testFolder url="file://$MODULE_DIR$/src/test/java/pieces"/>
+		<testFolder url="file://$MODULE_DIR$/src/test/java/util"/>
 	</contentEntry>
 	<levels>
 		<level name="junit-platform-console-standalone-1.6.1" value="project"/>
