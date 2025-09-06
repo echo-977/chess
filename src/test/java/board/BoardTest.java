@@ -33,15 +33,15 @@ class BoardTest {
     @DisplayName("Test getCaptureDestination")
     void testGetCaptureDestination() {
         Board board = FENUtils.boardFromFEN("8/8/2b5/5Pp1/8/8/6R1/8 w - g6 0 1");
-        Piece piece = board.getWhitePieces()[0];
+        Piece piece = board.pieceSearch("f5");
         Move move = new Move(board, piece, "g6");
         move.setEnPassant(true);
         assertEquals("g5", board.getCaptureDestination(move));
-        piece = board.getWhitePieces()[1];
+        piece = board.pieceSearch("g2");
         move = new Move(board, piece, "g5");
         move.setCapture(true);
         assertEquals("g5", board.getCaptureDestination(move));
-        piece = board.getBlackPieces()[0];
+        piece = board.pieceSearch("c6");
         move = new Move(board, piece, "g2");
         move.setCapture(true);
         assertEquals("g2", board.getCaptureDestination(move));
@@ -51,38 +51,29 @@ class BoardTest {
     @DisplayName("Test handleCaptureMove")
     void testHandleCaptureMove() {
         Board board = FENUtils.boardFromFEN("8/8/2b5/5Pp1/8/8/6R1/8 w - g6 0 1");
-        Piece piece = board.getWhitePieces()[0];
+        Piece piece = board.pieceSearch("f5");
         Move move = new Move(board, piece, "g6");
         move.setEnPassant(true);
         Piece capturedPiece = board.pieceSearch(board.getCaptureDestination(move));
-        board.doMove(move);
-        for (Piece blackPiece : board.getBlackPieces()) {
-            if (blackPiece != null) {
-                assertNotSame(blackPiece, capturedPiece);
-            }
-        }
+        State beforeMove = board.doMove(move);
+        assertEquals(capturedPiece, beforeMove.capturedPiece());
+        assertEquals(piece, board.pieceSearch(move.getDestination()));
         board = FENUtils.boardFromFEN("8/8/2b5/5Pp1/8/8/6R1/8 w - g6 0 1");
-        piece = board.getWhitePieces()[1];
+        piece = board.pieceSearch("g2");
         move = new Move(board, piece, "g5");
         move.setCapture(true);
         capturedPiece = board.pieceSearch(board.getCaptureDestination(move));
-        board.doMove(move);
-        for  (Piece blackPiece : board.getBlackPieces()) {
-            if (blackPiece != null) {
-                assertNotSame(blackPiece, capturedPiece);
-            }
-        }
+        beforeMove = board.doMove(move);
+        assertEquals(capturedPiece, beforeMove.capturedPiece());
+        assertEquals(piece, board.pieceSearch(move.getDestination()));
         board = FENUtils.boardFromFEN("8/8/2b5/5Pp1/8/8/6R1/8 w - g6 0 1");
-        piece = board.getBlackPieces()[0];
+        piece = board.pieceSearch("c6");
         move = new Move(board, piece, "g2");
         move.setCapture(true);
         capturedPiece = board.pieceSearch(board.getCaptureDestination(move));
-        board.doMove(move);
-        for  (Piece whitePiece : board.getWhitePieces()) {
-            if (whitePiece != null) {
-                assertNotSame(whitePiece, capturedPiece);
-            }
-        }
+        beforeMove = board.doMove(move);
+        assertEquals(capturedPiece, beforeMove.capturedPiece());
+        assertEquals(piece, board.pieceSearch(move.getDestination()));
     }
 
     @Test
@@ -122,7 +113,7 @@ class BoardTest {
     @DisplayName("Test handlePromotion")
     void testHandlePromotion() {
         Board board = FENUtils.boardFromFEN("4n3/3P4/8/8/8/8/4p3/3N4 w - - 0 1");
-        Piece piece = board.getWhitePieces()[0];
+        Piece piece = board.pieceSearch("d7");
         Move move = new Move(board, piece, "d8");
         move.setPromotionType(PieceType.ROOK);
         board.doMove(move);
@@ -135,7 +126,7 @@ class BoardTest {
         promotion = board.pieceSearch("e8");
         assertEquals(PieceType.BISHOP, promotion.getType());
         board = FENUtils.boardFromFEN("4n3/3P4/8/8/8/8/4p3/3N4 w - - 0 1");
-        piece = board.getBlackPieces()[1];
+        piece = board.pieceSearch("e2");
         move = new Move(board, piece, "e1");
         move.setPromotionType(PieceType.QUEEN);
         board.handlePromotion(move);
@@ -154,13 +145,13 @@ class BoardTest {
     @DisplayName("Test doMove")
     void testDoMove() {
         Board board = FENUtils.boardFromFEN("8/8/5r2/8/8/3Q4/8/8 w - - 0 1");
-        Piece piece = board.getWhitePieces()[0];
+        Piece piece = board.pieceSearch("d3");
         Move move = new Move(board, piece, "g6");
         board.doMove(move);
         assertEquals("g6", piece.getSquare());
         assertEquals(1, board.getHalfMoveClock());
         assertEquals(1, board.getMoveCount());
-        move = new Move(board, board.getBlackPieces()[0], "g6");
+        move = new Move(board, board.pieceSearch("f6"), "g6");
         board.doMove(move);
         assertEquals(0, board.getHalfMoveClock());
         assertEquals(2, board.getMoveCount());
@@ -170,7 +161,7 @@ class BoardTest {
     @DisplayName("Test promotionCheck")
     void testPromotionCheck() {
         Board board = FENUtils.boardFromFEN("8/3P4/5k2/8/8/8/8/8 w - - 0 1");
-        Piece piece = board.getWhitePieces()[0];
+        Piece piece = board.pieceSearch("d7");
         Move move = new Move(board, piece, "d8");
         move.setPromotionType(PieceType.BISHOP);
         assertTrue(move.isCheck());

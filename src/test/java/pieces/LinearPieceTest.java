@@ -68,8 +68,7 @@ class LinearPieceTest {
     @DisplayName("Test recursiveCaptureCheck")
     void testRecursiveCaptureCheck() {
         Board board = FENUtils.boardFromFEN("8/8/8/3q2P1/8/8/8/8 w - - 0 1");
-        LinearPiece piece = (LinearPiece) board.getBlackPieces()[0];
-        String targetSquare;
+        LinearPiece piece = (LinearPiece) board.pieceSearch("d5");
         //targetSquare = "h5";
         assertFalse(piece.recursiveCaptureCheck(board, 'g', 5, ChessDirections.LEFT, ChessDirections.NONE));
         //targetSquare = "g5";

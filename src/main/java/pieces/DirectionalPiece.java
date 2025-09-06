@@ -29,8 +29,8 @@ public abstract class DirectionalPiece extends Piece {
         Piece piece;
         int movesIndex = 0;
         for (int i = 0; i < 8; i++) {
-            checkFile = (char) (file + directions[i][0]);
-            checkRank = rank + directions[i][1];
+            checkFile = (char) (file + directions[i][ChessConstants.FILE_DIRECTION_INDEX]);
+            checkRank = rank + directions[i][ChessConstants.RANK_DIRECTION_INDEX];
             candidateMove = checkFile + String.valueOf(checkRank);
             if (isLegalMove(candidateMove)) {
                 piece = board.pieceSearch(candidateMove);

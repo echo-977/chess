@@ -29,8 +29,8 @@ class KingTest {
     @DisplayName("Test generateMoves without other pieces")
     void testGenerateMoves() {
         Board board = FENUtils.boardFromFEN("8/8/5k2/8/2K5/8/8/8 w - - 0 1");
-        piece1 = (King) board.getWhitePieces()[0];
-        piece2 = (King) board.getBlackPieces()[0];
+        piece1 = (King) board.pieceSearch("c4");
+        piece2 = (King) board.pieceSearch("f6");
         Move[] piece1MovesExpected = {new Move(board, piece1, "c5"), new Move(board, piece1, "d5"),
                 new Move(board, piece1, "d4"), new Move(board, piece1, "d3"),
                 new Move(board, piece1, "c3"), new Move(board, piece1, "b3"),
@@ -49,8 +49,8 @@ class KingTest {
     @DisplayName("Test generateMoves with other pieces")
     void testGenerateMovesWithOtherPieces() {
         Board board = FENUtils.boardFromFEN("8/6p1/4PkR1/3r4/2K2p2/2P5/8/8 b - - 0 1");
-        piece1 = (King) board.getWhitePieces()[2];
-        piece2 = (King) board.getBlackPieces()[1];
+        piece1 = (King) board.pieceSearch("c4");
+        piece2 = (King) board.pieceSearch("f6");
         Move move1 = new Move(board, piece1, "d5");
         move1.setCapture(true);
         Move[] piece1MovesExpected = {move1, new Move(board, piece1, "b3"),
@@ -124,7 +124,7 @@ class KingTest {
     void testFindNextIndex() {
         Board board = FENUtils.boardFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         Move[] moves = new Move[8];
-        moves[0] = new Move(board, board.getWhitePieces()[0], "a1");
+        moves[0] = new Move(board, board.pieceSearch("a2"), "a3");
         King king = board.findKing(PieceColour.WHITE);
         assertEquals(1, king.findNextIndex(moves));
     }

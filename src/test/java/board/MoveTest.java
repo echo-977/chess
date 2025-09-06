@@ -39,9 +39,10 @@ class MoveTest {
     @Test
     @DisplayName("Test moveConstructor")
     void testMove() {
-        Board board = FENUtils.boardFromFEN("8/8/8/3r4/8/8/8/4K3 w - - 0 1");
-        Piece piece = board.getBlackPieces()[0];
-        Move move = new Move(board, piece, "e5");
+        Board board = FENUtils.boardFromFEN("8/5k2/8/3r4/8/8/8/4K3 w - - 0 1");
+        Piece piece = board.pieceSearch("d5");
+        Move move = Move.createIfLegal(board, piece, "e5");
+        assertNotNull(move);
         assertTrue(move.isCheck());
     }
 
@@ -65,17 +66,21 @@ class MoveTest {
     @DisplayName("Test discoveredCheckDetection")
     void testDiscoveredCheckDetection() {
         Board board = FENUtils.boardFromFEN("8/2r5/2n5/5k2/8/2KR4/2B5/8 w - - 0 1");
-        Piece piece = board.getWhitePieces()[1];
-        Move move = new Move(board, piece, "d4");
+        Piece piece = board.pieceSearch("d3");
+        Move move = Move.createIfLegal(board, piece, "d4");
+        assertNotNull(move);
         assertTrue(move.isCheck());
-        piece = board.getBlackPieces()[1];
-        move = new Move(board, piece, "e5");
+        piece = board.pieceSearch("c6");
+        move = Move.createIfLegal(board, piece, "e5");
+        assertNotNull(move);
         assertTrue(move.isCheck());
-        piece = board.getWhitePieces()[1];
-        move = new Move(board, piece, "f3");
+        piece = board.pieceSearch("d3");
+        move = Move.createIfLegal(board, piece, "f3");
+        assertNotNull(move);
         assertTrue(move.isCheck());
-        piece = board.getWhitePieces()[2];
-        move = new Move(board, piece, "b1");
+        piece = board.pieceSearch("c2");
+        move = Move.createIfLegal(board, piece, "b1");
+        assertNotNull(move);
         assertFalse(move.isCheck());
     }
 
@@ -93,7 +98,7 @@ class MoveTest {
     @DisplayName("Test illegalMoveDetection (pin)")
     void testIllegalMoveDetection() {
         Board board = FENUtils.boardFromFEN("8/8/R2b1k2/8/8/8/8/8 w - - 0 1");
-        Piece piece = board.getBlackPieces()[0];
+        Piece piece = board.pieceSearch("d6");
         Move[] expectedMoves = new Move[ChessConstants.MAX_BISHOP_MOVES];
         assertArrayEquals(expectedMoves, piece.generateMoves(board));
     }
@@ -102,7 +107,7 @@ class MoveTest {
     @DisplayName("Test illegalMoveDetection (blocking check)")
     void testIllegalMoveDetection2() {
         Board board = FENUtils.boardFromFEN("8/8/R4k2/2b5/8/3K4/8/8 w - - 0 1");
-        Piece piece = board.getBlackPieces()[1];
+        Piece piece = board.pieceSearch("c5");
         Move[] expectedMoves = new Move[ChessConstants.MAX_BISHOP_MOVES];
         expectedMoves[0] = new Move(board, piece, "b6");
         expectedMoves[1] = new Move(board, piece, "d6");

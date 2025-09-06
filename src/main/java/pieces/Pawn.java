@@ -45,29 +45,34 @@ public class Pawn extends Piece{
                 break; //if single push is blocked then double push is blocked
             }
         }
-        Piece piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT)+ String.valueOf(getRank() + moveDirection));
-        if (piece != null && piece.getColour() != getColour()) {
-            movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
-        }
-        piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
-        if (piece != null && piece.getColour() != getColour()) {
-            movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
-        }
-        piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank()));
+        Piece piece;
         int index;
-        if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
-            index = movesIndex;
-            movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
-            if (movesIndex == index + 1) { //en passant move was added so we need to set it as such
-                moves[movesIndex - 1].setEnPassant(true);
+        if (file > 'a') { //pawns on the a-file cannot capture to the left
+            piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT)+ String.valueOf(getRank() + moveDirection));
+            if (piece != null && piece.getColour() != getColour()) {
+                movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
+            }
+            piece = board.pieceSearch((char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank()));
+            if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
+                index = movesIndex;
+                movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection));
+                if (movesIndex == index + 1) { //en passant move was added so we need to set it as such
+                    moves[movesIndex - 1].setEnPassant(true);
+                }
             }
         }
-        piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank()));
-        if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
-            index = movesIndex;
-            movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
-            if (movesIndex == index + 1) { //en passant move was added so we need to set it as such
-                moves[movesIndex - 1].setEnPassant(true);
+        if (file < 'h') { //pawns on the h-file cannot capture to the right
+            piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
+            if (piece != null && piece.getColour() != getColour()) {
+                movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
+            }
+            piece = board.pieceSearch((char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank()));
+            if (piece != null && piece.getColour() != getColour() && piece.getType() == PieceType.PAWN && ((Pawn) piece).getEnPassantable()) {
+                index = movesIndex;
+                movesIndex = addMove(board, moves, movesIndex, (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection));
+                if (movesIndex == index + 1) { //en passant move was added so we need to set it as such
+                    moves[movesIndex - 1].setEnPassant(true);
+                }
             }
         }
         return moves;

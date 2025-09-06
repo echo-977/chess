@@ -31,7 +31,7 @@ public class Move {
                 isCastle = true;
             }
         }
-        isCheck = causesCheck(board, piece, destination);
+        //isCheck = causesCheck(board, piece, destination);
     }
 
     /**
@@ -222,20 +222,10 @@ public class Move {
         } else {
             pieceOnNewBoard.move(destination);
         }
-        if (piece.getColour() == PieceColour.WHITE) {
-            for (Piece updatedBoardPiece : boardAfterMove.getWhitePieces()) {
-                if (updatedBoardPiece != null &&
-                        updatedBoardPiece.canCaptureSquare(boardAfterMove, enemyKing.getSquare())) {
-                    return true;
-                }
-            }
-        }
-        else {
-            for (Piece updatedBoardPiece : boardAfterMove.getBlackPieces()) {
-                if (updatedBoardPiece != null &&
-                        updatedBoardPiece.canCaptureSquare(boardAfterMove, enemyKing.getSquare())) {
-                    return true;
-                }
+        for (Piece updatedBoardPiece : boardAfterMove.getPieces()) {
+            if (updatedBoardPiece != null && updatedBoardPiece.getColour() != enemyKingColour &&
+                    updatedBoardPiece.canCaptureSquare(boardAfterMove, enemyKing.getSquare())) {
+                return true;
             }
         }
         return false;
@@ -378,7 +368,7 @@ public class Move {
         if (!(object instanceof Move other)) {
             return false;
         }
-        return other.piece == this.piece && other.destination.equals(this.destination) &&
+        return other.piece.equals(this.piece) && other.destination.equals(this.destination) &&
                 other.promotionType == this.promotionType && other.isEnPassant == this.isEnPassant &&
                 other.isCapture == this.isCapture;
     }

@@ -1,8 +1,7 @@
 import java.util.Arrays;
 
 public class Board {
-    private final Piece[] whitePieces;
-    private final Piece[] blackPieces;
+    private final Piece[] pieces;
     private PieceColour turn;
     private int moveCount;
     private int halfMoveClock;
@@ -12,18 +11,16 @@ public class Board {
     /**
      * Constructs a board based on all the boards attributes.
      *
-     * @param whitePieces    array of all the white pieces on the board.
-     * @param blackPieces    array of all the black pieces on the board.
+     * @param pieces         length 64 array of all the pieces on the board.
      * @param turn           the current colour whose turn it is.
      * @param moveCount      the current move.
      * @param halfMoveClock  number of half moves since a capture or pawn move.
      * @param whiteThreatMap boolean array of all squares white threatens.
      * @param blackThreatMap boolean array of all squares black threatens.
      */
-    public Board(Piece[] whitePieces, Piece[] blackPieces, PieceColour turn, int moveCount, int halfMoveClock,
+    public Board(Piece[] pieces, PieceColour turn, int moveCount, int halfMoveClock,
                  boolean[] whiteThreatMap, boolean[] blackThreatMap) {
-        this.whitePieces = whitePieces;
-        this.blackPieces = blackPieces;
+        this.pieces = pieces;
         this.turn = turn;
         this.moveCount = moveCount;
         this.halfMoveClock = halfMoveClock;
@@ -38,35 +35,16 @@ public class Board {
      * @return the piece if there is a piece on the square, otherwise null
      */
     public Piece pieceSearch(String square) {
-        for (Piece piece : whitePieces) {
-            if (piece != null && piece.getSquare().equals(square)) {
-                return piece;
-            }
-        }
-        for (Piece piece : blackPieces) {
-            if (piece != null && piece.getSquare().equals(square)) {
-                return piece;
-            }
-        }
-        return null;
+        return pieces[SquareMapUtils.mapSquareToInt(square)];
     }
 
     /**
-     * Simple getter for the white pieces
+     * Simple getter for the pieces
      *
      * @return piece array of all the white pieces
      */
-    public Piece[] getWhitePieces() {
-        return whitePieces;
-    }
-
-    /**
-     * Simple getter for the black pieces
-     *
-     * @return piece array of all the black pieces
-     */
-    public Piece[] getBlackPieces() {
-        return blackPieces;
+    public Piece[] getPieces() {
+        return pieces;
     }
 
     /**
@@ -103,15 +81,9 @@ public class Board {
      * @return king of the given colour.
      */
     public King findKing(PieceColour colour) {
-        Piece[] pieces = new Piece[0];
-        if (colour == PieceColour.WHITE) {
-            pieces = whitePieces;
-        } else if (colour == PieceColour.BLACK) {
-            pieces = blackPieces;
-        }
-        for (Piece piece : pieces) {
-            if (piece != null && piece.getType() == PieceType.KING) {
-                return (King) piece;
+        for (int index = 0; index < ChessConstants.NUM_SQUARES; index++) {
+            if (pieces[index] != null && pieces[index].getType() == PieceType.KING && pieces[index].getColour() == colour) {
+                return (King) pieces[index];
             }
         }
         return null;
@@ -130,12 +102,6 @@ public class Board {
         int moveCount = getMoveCount();
         boolean[] threatMapWhite = whiteThreatMap;
         boolean[] threatMapBlack = blackThreatMap;
-        Piece[] pieces;
-        if (turn == PieceColour.WHITE) {
-            pieces = blackPieces;
-        } else {
-            pieces = whitePieces;
-        }
         for (Piece piece : pieces) {
             if (piece != null && piece.getType() == PieceType.PAWN) {
                 ((Pawn) piece).setEnPassantable(false);
@@ -151,6 +117,8 @@ public class Board {
             handlePromotion(move);
         } else {
             move.getPiece().move(move.getDestination());
+            pieces[SquareMapUtils.mapSquareToInt(move.getDestination())] = move.getPiece();
+            pieces[SquareMapUtils.mapSquareToInt(move.getSource())] = null;
         }
         if (!(move.getPiece().getType() == PieceType.PAWN || move.isCapture())) {
             this.halfMoveClock++;
@@ -175,19 +143,7 @@ public class Board {
     public Piece handleCaptureMove(Move move) {
         String captureDestination = getCaptureDestination(move);
         Piece capturedPiece = pieceSearch(captureDestination);
-        Piece[] pieces;
-        if (move.getPiece().getColour() == PieceColour.WHITE) {
-            pieces = blackPieces;
-        } else {
-            pieces = whitePieces;
-        }
-        for (int i = 0; i < (ChessConstants.NUM_PIECES / 2); i++) {
-            if (pieces[i] == capturedPiece) {
-                pieces[i] = null;
-                break;
-            }
-        }
-        
+        pieces[SquareMapUtils.mapSquareToInt(captureDestination)] = null;
         return capturedPiece;
     }
 
@@ -227,11 +183,15 @@ public class Board {
         if (file == 'g') {
             rookSquare = "h" + rank;
             rook = (Rook) pieceSearch(rookSquare);
+            pieces[SquareMapUtils.mapSquareToInt(rookSquare)] = null;
             rook.move("f" + rank);
+            pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = rook;
         } else if (file == 'c') {
             rookSquare = "a" + rank;
             rook = (Rook) pieceSearch(rookSquare);
+            pieces[SquareMapUtils.mapSquareToInt(rookSquare)] = null;
             rook.move("d" + rank);
+            pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = rook;
         }
     }
 
@@ -251,22 +211,8 @@ public class Board {
             case KNIGHT -> new Knight(colour, file, rank);
             default -> null;
         };
-        Piece promotingPiece = pieceSearch(move.getPiece().getSquare());
-        if (colour == PieceColour.WHITE) {
-            for (int i = 0; i < ChessConstants.NUM_PIECES / 2; i++) {
-                if (whitePieces[i] == promotingPiece) {
-                    whitePieces[i] = promotedPiece;
-                    break;
-                }
-            }
-        } else {
-            for (int i = 0; i < ChessConstants.NUM_PIECES / 2; i++) {
-                if (blackPieces[i] == promotingPiece) {
-                    blackPieces[i] = promotedPiece;
-                    break;
-                }
-            }
-        }
+        pieces[SquareMapUtils.mapSquareToInt(move.getDestination())] = promotedPiece; //put promoted piece on board
+        pieces[SquareMapUtils.mapSquareToInt(move.getSource())] = null; //take the pawn off the board
     }
 
     /**
@@ -277,20 +223,14 @@ public class Board {
      */
     public Move[] generateMoves(PieceColour colour) {
         int moveCount = 0;
-        Piece[] pieces;
-        if (colour == PieceColour.WHITE) {
-            pieces = whitePieces;
-        } else {
-            pieces = blackPieces;
-        }
-        Move[][] allMoves = new Move[pieces.length][];
-        for (int i = 0; i < ChessConstants.NUM_PIECES/2; i++) {
-            if (pieces[i] == null) {
-                allMoves[i] = new Move[0];
+        Move[][] allMoves = new Move[ChessConstants.NUM_SQUARES][];
+        for (int squareIndex = 0; squareIndex < ChessConstants.NUM_SQUARES; squareIndex++) {
+            if (pieces[squareIndex] == null || pieces[squareIndex].getColour() != colour) {
+                allMoves[squareIndex] = new Move[0];
                 continue;
             }
-            allMoves[i] = pieces[i].generateMoves(this);
-            for (Move move : allMoves[i]) {
+            allMoves[squareIndex] = pieces[squareIndex].generateMoves(this);
+            for (Move move : allMoves[squareIndex]) {
                 if (move != null) {
                     moveCount++;
                 }
@@ -298,11 +238,11 @@ public class Board {
         }
         Move[] moves = new Move[moveCount];
         moveCount = 0;
-        for (int i = 0; i < ChessConstants.NUM_PIECES/2 ; i++) {
-            if (pieces[i] == null || allMoves[i] == null) {
+        for (int squareIndex = 0; squareIndex < ChessConstants.NUM_SQUARES ; squareIndex++) {
+            if (pieces[squareIndex] == null || pieces[squareIndex].getColour() != colour) {
                 continue;
             }
-            for (Move move : allMoves[i]) {
+            for (Move move : allMoves[squareIndex]) {
                 if (move != null) {
                     moves[moveCount] = move;
                     moveCount++;
@@ -346,17 +286,13 @@ public class Board {
      * @return a functionally identical board.
      */
     public Board copy() {
-        Piece[] clonedWhitePieces = new Piece[ChessConstants.NUM_PIECES / 2];
-        Piece[] clonedBlackPieces = new Piece[ChessConstants.NUM_PIECES / 2];
-        for (int i = 0; i < ChessConstants.NUM_PIECES / 2; i++) {
-            if (whitePieces[i] != null) {
-                clonedWhitePieces[i] = whitePieces[i].copyToSquare(whitePieces[i].getSquare());
-            }
-            if (blackPieces[i] != null) {
-                clonedBlackPieces[i] = blackPieces[i].copyToSquare(blackPieces[i].getSquare());
+        Piece[] clonedPieces = new Piece[ChessConstants.NUM_SQUARES];
+        for (int squareIndex = 0; squareIndex < ChessConstants.NUM_SQUARES; squareIndex++) {
+            if (pieces[squareIndex] != null) {
+                clonedPieces[squareIndex] = pieces[squareIndex].copyToSquare(pieces[squareIndex].getSquare());
             }
         }
-        return new Board(clonedWhitePieces, clonedBlackPieces, turn, moveCount, halfMoveClock, whiteThreatMap.clone(), blackThreatMap.clone());
+        return new Board(clonedPieces, turn, moveCount, halfMoveClock, whiteThreatMap.clone(), blackThreatMap.clone());
     }
 
     @Override
@@ -369,9 +305,10 @@ public class Board {
         if (!(object instanceof Board other)) {
             return false;
         }
-        return Arrays.equals(other.whitePieces, this.whitePieces) && Arrays.equals(other.blackPieces, this.blackPieces) && other.turn == this.turn
+        return Arrays.equals(other.pieces, this.pieces) && other.turn == this.turn
                 && other.moveCount == this.moveCount && other.halfMoveClock == this.halfMoveClock &&
-                Arrays.equals(other.whiteThreatMap, this.whiteThreatMap) && Arrays.equals(other.blackThreatMap, this.blackThreatMap);
+                Arrays.equals(other.whiteThreatMap, this.whiteThreatMap) &&
+                Arrays.equals(other.blackThreatMap, this.blackThreatMap);
     }
 
     /**
@@ -460,20 +397,18 @@ public class Board {
      * @return the current en passant target square according to FEN notation.
      */
     public String getEnPassantTarget() {
-        for (Piece piece : whitePieces) {
+        for (Piece piece : pieces) {
             if (piece == null || piece.getType() != PieceType.PAWN) {
                 continue;
             }
             if (((Pawn) piece).getEnPassantable()) {
-                return piece.getFile() + String.valueOf(piece.getRank() + ChessDirections.DOWN);
-            }
-        }
-        for (Piece piece : blackPieces) {
-            if (piece == null || piece.getType() != PieceType.PAWN) {
-                continue;
-            }
-            if (((Pawn) piece).getEnPassantable()) {
-                return piece.getFile() + String.valueOf(piece.getRank() + ChessDirections.UP);
+                int direction;
+                if (piece.getColour() == PieceColour.WHITE) {
+                    direction = ChessDirections.DOWN;
+                } else {
+                    direction = ChessDirections.UP;
+                }
+                return piece.getFile() + String.valueOf(piece.getRank() + direction);
             }
         }
         return FENConstants.NONE;
@@ -501,54 +436,23 @@ public class Board {
      */
     public void unDoMove(State state) {
         Piece movePiece = state.move().getPiece();
-        if (state.capturedPiece() != null) {
-            Piece[] opponentPieces;
-            if (state.capturedPiece().getColour() == PieceColour.WHITE) {
-                opponentPieces = getWhitePieces();
-            } else {
-                opponentPieces = getBlackPieces();
-            }
-            for (int i = 0; i < ChessConstants.NUM_PIECES/2; i++) { //add captured piece back to relevant piece array
-                if (opponentPieces[i] == null) {
-                    opponentPieces[i] = state.capturedPiece();
-                    break;
-                }
-            }
-        }
-        if (state.move().getPromotionType() != null) {
-            Piece[] pieces;
-            if (movePiece.getColour() == PieceColour.WHITE) {
-                pieces = getWhitePieces();
-            } else {
-                pieces = getBlackPieces();
-            }
-            for (int i = 0; i < ChessConstants.NUM_PIECES/2; i++) {
-                if (pieces[i] != null && state.move().getDestination().equals(pieces[i].getSquare())) {
-                    pieces[i] = movePiece;
-                    break;
-                }
-            }
-        }
-        if (state.move().isCastle()) {
-            if (state.move().getDestination().charAt(0) == 'g') { //kingside
-                Rook rook =  ((Rook) pieceSearch("f" + movePiece.getRank()));
-                rook.move("h" + movePiece.getRank());
-                rook.setMoved(false);
-
-            }
-            else if (state.move().getDestination().charAt(0) == 'c') { //queenside
-                Rook rook =  ((Rook) pieceSearch("d" + movePiece.getRank()));
-                rook.move("a" + movePiece.getRank());
-                rook.setMoved(false);
-            }
-        }
+        pieces[SquareMapUtils.mapSquareToInt(state.move().getDestination())] = null;
         if (state.move().getPromotionType() == null) {
             movePiece.move(state.move().getSource());
+            if (movePiece.getType() == PieceType.PAWN &&
+                    (SquareMapUtils.getRank(state.move().getSource()) == 2 || SquareMapUtils.getRank(state.move().getSource()) == 7)) {
+                ((Pawn) movePiece).setMoved(false);
+                ((Pawn) movePiece).setEnPassantable(false);
+            }
         }
-        if (!(movePiece.getType() != PieceType.PAWN || !(state.move().getSource().charAt(1) - '0' == 2 || state.move().getSource().charAt(1) - '0' == 7))) {
-            ((Pawn) movePiece).setMoved(false);
-            ((Pawn) movePiece).setEnPassantable(false);
+        if (state.capturedPiece() != null) {
+            pieces[SquareMapUtils.mapSquareToInt(state.capturedPiece().getSquare())] = state.capturedPiece();
         }
+        if (state.move().isCastle()) {
+            unDoCastle(state);
+        }
+
+        pieces[SquareMapUtils.mapSquareToInt(state.move().getSource())] = state.move().getPiece();
         setHalfMoveClock(state.halfMoveClock());
         setMoveCount(state.moveCount());
         setCastlingRights(state.castlingRights());
@@ -556,5 +460,29 @@ public class Board {
         turn = turn.opponentColour();
         whiteThreatMap = state.whiteThreatMap();
         blackThreatMap = state.blackThreatMap();
+    }
+
+    /**
+     * Undoes the rook movement that occurs during castling.
+     * @param state the state of the board before the move was called.
+     */
+    private void unDoCastle(State state) {
+        King movePiece = (King) state.move().getPiece();
+        movePiece.setMoved(false);
+        if (state.move().getDestination().charAt(0) == 'g') { //kingside
+            Rook rook =  ((Rook) pieceSearch("f" + movePiece.getRank()));
+            pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = null;
+            rook.move("h" + movePiece.getRank());
+            rook.setMoved(false);
+            pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = rook;
+
+        }
+        else if (state.move().getDestination().charAt(0) == 'c') { //queenside
+            Rook rook =  ((Rook) pieceSearch("d" + movePiece.getRank()));
+            pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = null;
+            rook.move("a" + movePiece.getRank());
+            rook.setMoved(false);
+            pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = rook;
+        }
     }
 }

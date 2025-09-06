@@ -2,7 +2,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class DirectionalPieceTest {
@@ -10,39 +9,24 @@ class DirectionalPieceTest {
 
     @BeforeEach
     public void init() {
-        piece = new DirectionalPiece(PieceType.KING, PieceColour.WHITE, 'b', 1) {
-            @Override
-            public Move[] generateMoves(Board board) {
-                return new Move[0]; //minimal implementation here to allow testing of concrete methods
-            }
-
-            @Override
-            public boolean canCaptureSquare(Board board, String move) {
-                return false; //minimal implementation here to allow testing of concrete methods
-            }
-
-            @Override
-            public Piece copyToSquare(String square) {
-                return null;
-            }
-        };
+        piece = new Knight(PieceColour.WHITE, 'b', 1);
     }
 
     @Test
     @DisplayName("Test directionalMoveSearch")
     public void testDirectionalMoveSearch() {
-        Board board = FENUtils.boardFromFEN("8/8/8/8/8/8/8/1K6 w - - 0 1");
+        Board board = FENUtils.boardFromFEN("8/8/2K2k2/8/8/8/8/1N6 w - - 0 1");
         Move[] moves = new Move[8];
         int[][] directions = {
-                {ChessDirections.NONE, ChessDirections.UP}, {ChessDirections.RIGHT, ChessDirections.UP},
-                {ChessDirections.RIGHT, ChessDirections.NONE}, {ChessDirections.RIGHT, ChessDirections.DOWN},
-                {ChessDirections.NONE, ChessDirections.DOWN},  {ChessDirections.LEFT, ChessDirections.DOWN},
-                {ChessDirections.LEFT, ChessDirections.NONE}, {ChessDirections.LEFT, ChessDirections.UP}
+                {ChessDirections.RIGHT, 2 * ChessDirections.UP}, {2 * ChessDirections.RIGHT, ChessDirections.UP},
+                {2 * ChessDirections.RIGHT, ChessDirections.DOWN}, {ChessDirections.RIGHT, 2 * ChessDirections.DOWN},
+                {ChessDirections.LEFT, 2 * ChessDirections.DOWN}, {2 * ChessDirections.LEFT, ChessDirections.DOWN},
+                {2 * ChessDirections.LEFT, ChessDirections.UP}, {ChessDirections.LEFT, 2 * ChessDirections.UP}
         };
+
         piece.directionalMoveSearch(board, moves, directions);
-        Move[] expectedMoves = {new Move(board, piece, "b2"), new Move(board, piece, "c2"),
-                new Move(board, piece, "c1"), new Move(board, piece, "a1"),
-                new Move(board, piece, "a2"), null, null, null};
+        Move[] expectedMoves = {new Move(board, piece, "c3"), new Move(board, piece, "d2"),
+                new Move(board, piece, "a3"), null , null, null, null, null};
         assertArrayEquals(expectedMoves, moves);
     }
 }
