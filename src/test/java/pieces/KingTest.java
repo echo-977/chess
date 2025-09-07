@@ -12,8 +12,8 @@ class KingTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new King(PieceColour.WHITE, 'a', 1, false, false);
-        piece2 = new King(PieceColour.WHITE, 'd', 5, true, true);
+        piece1 = new King(PieceColour.WHITE, 'a', 1, false);
+        piece2 = new King(PieceColour.WHITE, 'd', 5, true);
     }
 
     @Test
@@ -82,26 +82,11 @@ class KingTest {
     }
 
     @Test
-    @DisplayName("Test getMoved")
-    void testGetMoved() {
-        assertFalse(piece1.getMoved());
-        assertTrue(piece2.getMoved());
-    }
-
-    @Test
-    @DisplayName("Test move")
-    void testMove() {
-        piece1.move("a2");
-        assertTrue(piece1.getMoved());
-    }
-
-    @Test
     @DisplayName("Test copyToSquare")
     void testCopyToSquare() {
         King test = (King) piece1.copyToSquare("d8");
         assertEquals("d8", test.getSquare());
         assertEquals(piece1.getColour(), test.getColour());
-        assertEquals(piece1.getMoved(), test.getMoved());
         assertEquals(piece1.isCheck(), test.isCheck());
     }
 
@@ -138,13 +123,13 @@ class KingTest {
                 new Move(board, whiteKing, "f2"), new Move(board, whiteKing, "f1"),
                 new Move(board, whiteKing, "d2"), new Move(board, whiteKing, "g1"),
                 null, null, null};
-        expectedMovesWhite[3].setCastle(true);
+        expectedMovesWhite[4].setCastleMask(FENConstants.WHITE_KINGSIDE_CASTLE_MASK);
         assertArrayEquals(expectedMovesWhite, whiteKing.generateMoves(board));
         King blackKing = board.findKing(PieceColour.BLACK);
         Move[] expectedMovesBlack = {new Move(board, blackKing, "e7"),
                 new Move(board, blackKing, "d7"), new Move(board, blackKing, "d8"),
                 new Move(board, blackKing, "c8"), null, null,null, null};
-        expectedMovesBlack[0].setCastle(true);
+        expectedMovesBlack[3].setCastleMask(FENConstants.BLACK_QUEENSIDE_CASTLE_MASK);
         assertArrayEquals(expectedMovesBlack, blackKing.generateMoves(board));
     }
 

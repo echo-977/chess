@@ -1,5 +1,4 @@
 public class Rook extends LinearPiece{
-    private boolean moved;
 
     /**
      * Constructs a rook with the specified name, color, rank, and file.
@@ -8,11 +7,9 @@ public class Rook extends LinearPiece{
      * @param colour the colour of the piece ("White" or "Black")
      * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
-     * @param moved  boolean for if the rook has moved (used in castling logic)
      */
-    public Rook(PieceColour colour, char file, int rank, boolean moved) {
+    public Rook(PieceColour colour, char file, int rank) {
         super(PieceType.ROOK, colour, file, rank);
-        this.moved = moved;
     }
 
     /**
@@ -47,18 +44,6 @@ public class Rook extends LinearPiece{
     }
 
     /**
-     * Overrides the move method in the piece class to update the moved flag.
-     * @param move the square to move the piece to.
-     */
-    @Override
-    public void move(String move) {
-        if (!moved) {
-            moved = true;
-        }
-        super.move(move);
-    }
-
-    /**
      * Check if the rook can capture a given square.
      * Used for detection of checks.
      * @param board the board the capture is searched for on.
@@ -87,14 +72,6 @@ public class Rook extends LinearPiece{
     }
 
     /**
-     * Simple getter for the boolean moved
-     * @return the moved boolean
-     */
-    public boolean getMoved() {
-        return moved;
-    }
-    
-    /**
      * Creates a copy of the rook at a given square.
      * @param square the square the piece copy will be at.
      * @return a rook object at the given square with the same properties.
@@ -103,23 +80,6 @@ public class Rook extends LinearPiece{
     public Piece copyToSquare(String square) {
         char file = SquareMapUtils.getFile(square);
         int rank = SquareMapUtils.getRank(square);
-        return new Rook(getColour(), file, rank, getMoved());
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (super.equals(object)) {
-            Rook other = (Rook) object;
-            return other.moved == this.moved;
-        }
-        return false;
-    }
-
-    /**
-     * Simple setter for the moved boolean.
-     * @param moved the boolean value moved will be set to.
-     */
-    public void setMoved(boolean moved) {
-        this.moved = moved;
+        return new Rook(getColour(), file, rank);
     }
 }

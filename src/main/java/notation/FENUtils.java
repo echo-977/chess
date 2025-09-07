@@ -56,20 +56,20 @@ public class FENUtils {
                     } else {
                         moved = !(rank == 2 && colour == PieceColour.WHITE);
                     }
-                    pieces[squareIndex] = new Pawn(colour, file, rank, moved, false);
+                    pieces[squareIndex] = new Pawn(colour, file, rank, moved);
                     break;
                 case FENConstants.KING_CHAR:
-                    pieces[squareIndex] = new King(colour, file, rank, true, false);
+                    pieces[squareIndex] = new King(colour, file, rank,false);
                     break;
                 case FENConstants.ROOK_CHAR:
-                    pieces[squareIndex] = new Rook(colour, file, rank, true);
+                    pieces[squareIndex] = new Rook(colour, file, rank);
                     break;
             }
             current++;
         }
         Board board = new Board(pieces, turn, moveCount, halfMoveClock, new boolean[64], new boolean[64]);
         board.setCastlingRights(parseCastlingRights(fen[FENConstants.CASTLING_FIELD]));
-        board.setEnPassantFlag(fen[FENConstants.EN_PASSANT_FIELD]);
+        board.setEnPassantTarget(fen[FENConstants.EN_PASSANT_FIELD]);
         board.updateThreatMap(PieceColour.WHITE);
         board.updateThreatMap(PieceColour.BLACK);
         return board;
@@ -127,37 +127,22 @@ public class FENUtils {
         }
         fen.append(FENConstants.SPACE);
         boolean anyCastling = false;
-        if (board.pieceSearch("e1") != null) {
-            if (board.pieceSearch("e1").getType() == PieceType.KING && (!((King) board.pieceSearch("e1")).getMoved())) {  //potential for castling
-                if (board.pieceSearch("h1") != null) {
-                    if (board.pieceSearch("h1").getType() == PieceType.ROOK && (!((Rook) board.pieceSearch("h1")).getMoved())) {
-                        fen.append(FENConstants.WHITE_KINGSIDE_CASTLE_CHAR);
-                        anyCastling = true;
-                    }
-                }
-                if (board.pieceSearch("a1") != null) {
-                    if (board.pieceSearch("a1").getType() == PieceType.ROOK && (!((Rook) board.pieceSearch("a1")).getMoved())) {
-                        fen.append(FENConstants.WHITE_QUEENSIDE_CASTLE_CHAR);
-                        anyCastling = true;
-                    }
-                }
-            }
+        int castlingRights = board.getCastlingRights();
+        if ((castlingRights & FENConstants.WHITE_KINGSIDE_CASTLE_MASK) != FENConstants.NO_CASTLING_MASK) {
+            fen.append(FENConstants.WHITE_KINGSIDE_CASTLE_CHAR);
+            anyCastling = true;
         }
-        if (board.pieceSearch("e8") != null) {
-            if (board.pieceSearch("e8").getType() == PieceType.KING && (!((King) board.pieceSearch("e8")).getMoved())) {  //potential for castling
-                if (board.pieceSearch("h8") != null) {
-                    if (board.pieceSearch("h8").getType() == PieceType.ROOK && (!((Rook) board.pieceSearch("h8")).getMoved())) {
-                        fen.append(FENConstants.BLACK_KINGSIDE_CASTLE_CHAR);
-                        anyCastling = true;
-                    }
-                }
-                if (board.pieceSearch("a8") != null) {
-                    if (board.pieceSearch("a8").getType() == PieceType.ROOK && (!((Rook) board.pieceSearch("a8")).getMoved())) {
-                        fen.append(FENConstants.BLACK_QUEENSIDE_CASTLE_CHAR);
-                        anyCastling = true;
-                    }
-                }
-            }
+        if ((castlingRights & FENConstants.WHITE_QUEENSIDE_CASTLE_MASK) != FENConstants.NO_CASTLING_MASK) {
+            fen.append(FENConstants.WHITE_QUEENSIDE_CASTLE_CHAR);
+            anyCastling = true;
+        }
+        if ((castlingRights & FENConstants.BLACK_KINGSIDE_CASTLE_MASK) != FENConstants.NO_CASTLING_MASK) {
+            fen.append(FENConstants.BLACK_KINGSIDE_CASTLE_CHAR);
+            anyCastling = true;
+        }
+        if ((castlingRights & FENConstants.BLACK_QUEENSIDE_CASTLE_MASK) != FENConstants.NO_CASTLING_MASK) {
+            fen.append(FENConstants.BLACK_QUEENSIDE_CASTLE_CHAR);
+            anyCastling = true;
         }
         if (!anyCastling) {
             fen.append(FENConstants.NONE);
@@ -174,10 +159,10 @@ public class FENUtils {
      * @return 4 bit mask where each bit refers to a different castling condition
      */
     public static int parseCastlingRights(String castlingField) {
-        int whiteKingsideCastle = castlingField.contains(FENConstants.WHITE_KINGSIDE_CASTLE_CHAR) ? FENConstants.WHITE_KINGSIDE_CASTLE_MASK : FENConstants.NO_CASTLE_MASK;
-        int whiteQueensideCastle = castlingField.contains(FENConstants.WHITE_QUEENSIDE_CASTLE_CHAR) ? FENConstants.WHITE_QUEENSIDE_CASTLE_MASK : FENConstants.NO_CASTLE_MASK;
-        int blackKingsideCastle = castlingField.contains(FENConstants.BLACK_KINGSIDE_CASTLE_CHAR) ? FENConstants.BLACK_KINGSIDE_CASTLE_MASK : FENConstants.NO_CASTLE_MASK;
-        int blackQueensideCastle = castlingField.contains(FENConstants.BLACK_QUEENSIDE_CASTLE_CHAR) ? FENConstants.BLACK_QUEENSIDE_CASTLE_MASK : FENConstants.NO_CASTLE_MASK;
+        int whiteKingsideCastle = castlingField.contains(FENConstants.WHITE_KINGSIDE_CASTLE_CHAR) ? FENConstants.WHITE_KINGSIDE_CASTLE_MASK : FENConstants.NO_CASTLING_MASK;
+        int whiteQueensideCastle = castlingField.contains(FENConstants.WHITE_QUEENSIDE_CASTLE_CHAR) ? FENConstants.WHITE_QUEENSIDE_CASTLE_MASK : FENConstants.NO_CASTLING_MASK;
+        int blackKingsideCastle = castlingField.contains(FENConstants.BLACK_KINGSIDE_CASTLE_CHAR) ? FENConstants.BLACK_KINGSIDE_CASTLE_MASK : FENConstants.NO_CASTLING_MASK;
+        int blackQueensideCastle = castlingField.contains(FENConstants.BLACK_QUEENSIDE_CASTLE_CHAR) ? FENConstants.BLACK_QUEENSIDE_CASTLE_MASK : FENConstants.NO_CASTLING_MASK;
         return (whiteKingsideCastle | whiteQueensideCastle | blackKingsideCastle | blackQueensideCastle);
     }
 }

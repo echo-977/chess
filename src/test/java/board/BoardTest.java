@@ -82,29 +82,33 @@ class BoardTest {
         Board board = FENUtils.boardFromFEN("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1");
         King whiteKing = board.findKing(PieceColour.WHITE);
         Move move = new Move(board, whiteKing, "g1");
-        move.setCastle(true);
+        move.setCastleMask(FENConstants.WHITE_KINGSIDE_CASTLE_MASK);
         board.doMove(move);
+        assertEquals(FENConstants.NO_CASTLING_MASK, (board.getCastlingRights() & FENConstants.WHITE_KINGSIDE_CASTLE_MASK));
         Piece piece = board.pieceSearch("f1");
         assertEquals(PieceType.ROOK, piece.getType());
         board = FENUtils.boardFromFEN("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1");
         whiteKing = board.findKing(PieceColour.WHITE);
         move = new Move(board, whiteKing, "c1");
-        move.setCastle(true);
+        move.setCastleMask(FENConstants.WHITE_QUEENSIDE_CASTLE_MASK);
         board.doMove(move);
+        assertEquals(FENConstants.NO_CASTLING_MASK, (board.getCastlingRights() & FENConstants.WHITE_QUEENSIDE_CASTLE_MASK));
         piece = board.pieceSearch("d1");
         assertEquals(PieceType.ROOK, piece.getType());
         King blackKing = board.findKing(PieceColour.BLACK);
         board = FENUtils.boardFromFEN("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1");
         move = new Move(board, blackKing, "g8");
-        move.setCastle(true);
+        move.setCastleMask(FENConstants.BLACK_KINGSIDE_CASTLE_MASK);
         board.doMove(move);
+        assertEquals(FENConstants.NO_CASTLING_MASK, (board.getCastlingRights() & FENConstants.BLACK_KINGSIDE_CASTLE_MASK));
         piece = board.pieceSearch("f8");
         assertEquals(PieceType.ROOK, piece.getType());
         board = FENUtils.boardFromFEN("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1");
         blackKing = board.findKing(PieceColour.BLACK);
         move = new Move(board, blackKing, "c8");
-        move.setCastle(true);
+        move.setCastleMask(FENConstants.BLACK_QUEENSIDE_CASTLE_MASK);
         board.doMove(move);
+        assertEquals(FENConstants.NO_CASTLING_MASK, (board.getCastlingRights() & FENConstants.BLACK_QUEENSIDE_CASTLE_MASK));
         piece = board.pieceSearch("d8");
         assertEquals(PieceType.ROOK, piece.getType());
     }
@@ -236,8 +240,8 @@ class BoardTest {
     @DisplayName("Test unDoMove (castle)")
     void testUnDoMoveCastle() {
         Board board = FENUtils.boardFromFEN("5n2/2P5/4N3/8/1B2k3/8/8/4K2R w K - 0 1");
-        Move move = new Move(board, board.pieceSearch("e1"), "h1");
-        move.setCastle(true);
+        Move move = new Move(board, board.pieceSearch("e1"), "g1");
+        move.setCastleMask(FENConstants.WHITE_KINGSIDE_CASTLE_MASK);
         State stateBeforeMove = board.doMove(move);
         board.unDoMove(stateBeforeMove);
         assertEquals("5n2/2P5/4N3/8/1B2k3/8/8/4K2R w K - 0 1", FENUtils.getFEN(board));

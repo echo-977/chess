@@ -10,8 +10,8 @@ class PawnTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Pawn(PieceColour.WHITE, 'a', 1, false, false);
-        piece2 = new Pawn(PieceColour.BLACK, 'd', 5, false, false);
+        piece1 = new Pawn(PieceColour.WHITE, 'a', 1, false);
+        piece2 = new Pawn(PieceColour.BLACK, 'd', 5, false);
     }
 
     @Test
@@ -153,16 +153,6 @@ class PawnTest {
     }
 
     @Test
-    @DisplayName("Test enPassantable")
-    void testEnPassantable() {
-        assertFalse(piece1.getEnPassantable());
-        piece1.move("a3");
-        assertTrue(piece1.getEnPassantable());
-        piece1.move("a4");
-        assertFalse(piece1.getEnPassantable());
-    }
-
-    @Test
     @DisplayName("Test canCaptureSquare")
     void testCanCaptureSquare() {
         Board board = FENUtils.boardFromFEN("8/8/8/3p4/8/8/8/PK6 w - - 0 1");
@@ -183,6 +173,5 @@ class PawnTest {
         assertEquals("d8", test.getSquare());
         assertEquals(piece1.getColour(), test.getColour());
         assertEquals(piece1.getMoved(), test.getMoved());
-        assertEquals(piece1.getEnPassantable(), test.getEnPassantable());
     }
 }

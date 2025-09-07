@@ -7,6 +7,8 @@ public class Board {
     private int halfMoveClock;
     private boolean[] whiteThreatMap;
     private boolean[] blackThreatMap;
+    private int castlingRights;
+    private String enPassantTarget;
 
     /**
      * Constructs a board based on all the boards attributes.
@@ -96,22 +98,30 @@ public class Board {
      */
     public State doMove(Move move){
         Piece capturedPiece = null;
+        Piece movePiece = move.getPiece();
+        PieceType movePieceType = movePiece.getType();
         String  enPassantSquare = getEnPassantTarget();
         int castlingRights = getCastlingRights();
         int halfMoveClock = getHalfMoveClock();
         int moveCount = getMoveCount();
         boolean[] threatMapWhite = whiteThreatMap;
         boolean[] threatMapBlack = blackThreatMap;
-        for (Piece piece : pieces) {
-            if (piece != null && piece.getType() == PieceType.PAWN) {
-                ((Pawn) piece).setEnPassantable(false);
-            }
+        if (movePieceType == PieceType.PAWN &&
+                Math.abs(movePiece.getRank() - SquareMapUtils.getRank(move.getDestination())) == 2) {
+            int direction = (turn == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
+            String enPassantTarget = movePiece.getFile() + String.valueOf(movePiece.getRank() + direction);
+            setEnPassantTarget(enPassantTarget);
+        } else {
+            setEnPassantTarget(FENConstants.NONE);
         }
         if (move.isCapture()) {
             capturedPiece = handleCaptureMove(move);
         }
-        if (move.isCastle()) {
+        if (move.getCastleMask() != FENConstants.NO_CASTLING_MASK) {
             handleCastleMove(move);
+        }
+        if (movePieceType == PieceType.KING | movePieceType == PieceType.ROOK) {
+            removeCastlingRights(move);
         }
         if (move.getPromotionType() != null) {
             handlePromotion(move);
@@ -131,18 +141,60 @@ public class Board {
         turn = turn.opponentColour();
         whiteThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.WHITE);
         blackThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.BLACK);
-        return new State(move, capturedPiece, enPassantSquare, castlingRights, halfMoveClock, moveCount, threatMapWhite, threatMapBlack);
+        return new State(move, capturedPiece, enPassantSquare, castlingRights, halfMoveClock, moveCount,
+                threatMapWhite, threatMapBlack);
+    }
+
+    /**
+     * Handle the removal of castling rights if the move uses a king or rook.
+     * @param move the move that causes castling rights to need removal.
+     */
+    private void removeCastlingRights(Move move) {
+        Piece movePiece = move.getPiece();
+        PieceType movePieceType = movePiece.getType();
+        if (movePieceType == PieceType.KING) {
+            if (movePiece.getColour() == PieceColour.WHITE) {
+                castlingRights &= ~FENConstants.WHITE_KINGSIDE_CASTLE_MASK;
+                castlingRights &= ~FENConstants.WHITE_QUEENSIDE_CASTLE_MASK;
+            } else {
+                castlingRights &= ~FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
+                castlingRights &= ~FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
+            }
+        } else if (movePieceType == PieceType.ROOK) {
+            if (movePiece.getFile() == 'h') {
+                if (movePiece.getColour() == PieceColour.WHITE) {
+                    castlingRights &= ~FENConstants.WHITE_KINGSIDE_CASTLE_MASK;
+                } else {
+                    castlingRights &= ~FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
+                }
+            } else if (movePiece.getFile() == 'a') {
+                if (movePiece.getColour() == PieceColour.WHITE) {
+                    castlingRights &= ~FENConstants.WHITE_QUEENSIDE_CASTLE_MASK;
+                } else {
+                    castlingRights &= ~FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
+                }
+            }
+        }
     }
 
     /**
      * Handles the logic that is specific to a capture.
      * Removes the captured piece from the relevant pieces array.
+     * If the captured piece is a rook it removes the relevant castling right.
      * @param move the move being played.
      * @return boolean flag for if the capture logic was completed successfully.
      */
     public Piece handleCaptureMove(Move move) {
         String captureDestination = getCaptureDestination(move);
         Piece capturedPiece = pieceSearch(captureDestination);
+        if (capturedPiece.getType() == PieceType.ROOK) {
+            switch(capturedPiece.getSquare()) {
+                case "a1" -> castlingRights &= ~FENConstants.WHITE_QUEENSIDE_CASTLE_MASK;
+                case "h1" -> castlingRights &= ~FENConstants.WHITE_KINGSIDE_CASTLE_MASK;
+                case "a8" -> castlingRights &= ~FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
+                case "h8" -> castlingRights &= ~FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
+            }
+        }
         pieces[SquareMapUtils.mapSquareToInt(captureDestination)] = null;
         return capturedPiece;
     }
@@ -206,7 +258,7 @@ public class Board {
         int rank = SquareMapUtils.getRank(move.getDestination());
         Piece promotedPiece = switch (move.getPromotionType()) {
             case QUEEN -> new Queen(colour, file, rank);
-            case ROOK -> new Rook(colour, file, rank, true);
+            case ROOK -> new Rook(colour, file, rank);
             case BISHOP -> new Bishop(colour, file, rank);
             case KNIGHT -> new Knight(colour, file, rank);
             default -> null;
@@ -292,7 +344,10 @@ public class Board {
                 clonedPieces[squareIndex] = pieces[squareIndex].copyToSquare(pieces[squareIndex].getSquare());
             }
         }
-        return new Board(clonedPieces, turn, moveCount, halfMoveClock, whiteThreatMap.clone(), blackThreatMap.clone());
+        Board board = new Board(clonedPieces, turn, moveCount, halfMoveClock, whiteThreatMap.clone(), blackThreatMap.clone());
+        board.setCastlingRights(castlingRights);
+        board.setEnPassantTarget(enPassantTarget);
+        return board;
     }
 
     @Override
@@ -312,106 +367,38 @@ public class Board {
     }
 
     /**
-     * Updates the moved booleans for relevant pieces to see if they can castle.
+     * Saves the given castling rights to the board.
      *
      * @param rights 4 bit mask for each castling right.
      */
     public void setCastlingRights(int rights) {
-        if ((rights & FENConstants.WHITE_KINGSIDE_CASTLE_MASK) != FENConstants.NO_CASTLE_MASK) {
-            ((King) pieceSearch("e1")).setMoved(false);
-            ((Rook) pieceSearch("h1")).setMoved(false);
-        }
-        if ((rights & FENConstants.WHITE_QUEENSIDE_CASTLE_MASK) != FENConstants.NO_CASTLE_MASK) {
-            ((King) pieceSearch("e1")).setMoved(false);
-            ((Rook) pieceSearch("a1")).setMoved(false);
-        }
-        if ((rights & FENConstants.BLACK_KINGSIDE_CASTLE_MASK) != FENConstants.NO_CASTLE_MASK) {
-            ((King) pieceSearch("e8")).setMoved(false);
-            ((Rook) pieceSearch("h8")).setMoved(false);
-        }
-        if ((rights & FENConstants.BLACK_QUEENSIDE_CASTLE_MASK) != FENConstants.NO_CASTLE_MASK) {
-            ((King) pieceSearch("e8")).setMoved(false);
-            ((Rook) pieceSearch("a8")).setMoved(false);
-        }
+        castlingRights = rights;
     }
 
     /**
-     * Updates the en passantable flag of the pawn that can currently be taken by en passant.
+     * Saves the given en passant target to the board.
      *
      * @param enPassantTarget the en passant target square.
      */
-    public void setEnPassantFlag(String enPassantTarget) {
-        if (enPassantTarget.equals(FENConstants.NONE)) {
-            return;
-        }
-        char enPassantTargetFile = SquareMapUtils.getFile(enPassantTarget);
-        int enPassantTargetRank = SquareMapUtils.getRank(enPassantTarget);
-        int direction;
-        if (enPassantTargetRank == 3) { //it must be white if target square is the third rank
-            direction = ChessDirections.UP;
-        } else {
-            direction = ChessDirections.DOWN;
-        }
-        String square = enPassantTargetFile + String.valueOf(enPassantTargetRank + direction);
-        ((Pawn) pieceSearch(square)).setEnPassantable(true);
+    public void setEnPassantTarget(String enPassantTarget) {
+        this.enPassantTarget = enPassantTarget;
     }
 
     /**
-     * Calculates whether a given side can castle on king and or queenside.
-     *
-     * @param colour the colour the castling rights are for.
-     * @return Returns a 2 bit mask of the castling rights for a given colour.
-     */
-    public int getColourCastlingRights(PieceColour colour) {
-        King king = findKing(colour);
-        if (king == null) {
-            return FENConstants.NO_CASTLE_MASK; //if there is no king there is no castling (only occurs in testing positions)
-        }
-        int kingsideCastle = FENConstants.NO_CASTLE_MASK;
-        int queensideCastle = FENConstants.NO_CASTLE_MASK;
-        if (!king.getMoved()) {
-            int rank = king.getRank();
-            Piece piece = pieceSearch("a" + rank);
-            if (piece instanceof Rook rook && !rook.getMoved()) {
-                queensideCastle = (colour == PieceColour.WHITE ? FENConstants.WHITE_QUEENSIDE_CASTLE_MASK : FENConstants.BLACK_QUEENSIDE_CASTLE_MASK);
-            }
-            piece = pieceSearch("h" + rank);
-            if (piece instanceof Rook rook && !rook.getMoved()) {
-                kingsideCastle = (colour == PieceColour.WHITE ? FENConstants.WHITE_KINGSIDE_CASTLE_MASK : FENConstants.BLACK_KINGSIDE_CASTLE_MASK);
-            }
-        }
-        return (kingsideCastle | queensideCastle);
-    }
-
-    /**
-     * Gets the whole boards castling rights.
+     * Simple getter for the castling rights.
      *
      * @return 4 bit mask of the board's castling rights.
      */
     public int getCastlingRights() {
-        return (getColourCastlingRights(PieceColour.WHITE) | getColourCastlingRights(PieceColour.BLACK));
+        return castlingRights;
     }
 
     /**
-     * Calculates the en passant target square in the position.
+     * Simple getter for the en passant target square.
      * @return the current en passant target square according to FEN notation.
      */
     public String getEnPassantTarget() {
-        for (Piece piece : pieces) {
-            if (piece == null || piece.getType() != PieceType.PAWN) {
-                continue;
-            }
-            if (((Pawn) piece).getEnPassantable()) {
-                int direction;
-                if (piece.getColour() == PieceColour.WHITE) {
-                    direction = ChessDirections.DOWN;
-                } else {
-                    direction = ChessDirections.UP;
-                }
-                return piece.getFile() + String.valueOf(piece.getRank() + direction);
-            }
-        }
-        return FENConstants.NONE;
+        return enPassantTarget;
     }
 
     /**
@@ -440,23 +427,22 @@ public class Board {
         if (state.move().getPromotionType() == null) {
             movePiece.move(state.move().getSource());
             if (movePiece.getType() == PieceType.PAWN &&
-                    (SquareMapUtils.getRank(state.move().getSource()) == 2 || SquareMapUtils.getRank(state.move().getSource()) == 7)) {
+                    (SquareMapUtils.getRank(state.move().getSource()) == 2 ||
+                            SquareMapUtils.getRank(state.move().getSource()) == 7)) {
                 ((Pawn) movePiece).setMoved(false);
-                ((Pawn) movePiece).setEnPassantable(false);
             }
         }
         if (state.capturedPiece() != null) {
             pieces[SquareMapUtils.mapSquareToInt(state.capturedPiece().getSquare())] = state.capturedPiece();
         }
-        if (state.move().isCastle()) {
+        if (state.move().getCastleMask() != FENConstants.NO_CASTLING_MASK) {
             unDoCastle(state);
         }
-
         pieces[SquareMapUtils.mapSquareToInt(state.move().getSource())] = state.move().getPiece();
         setHalfMoveClock(state.halfMoveClock());
         setMoveCount(state.moveCount());
         setCastlingRights(state.castlingRights());
-        setEnPassantFlag(state.enPassantSquare());
+        setEnPassantTarget(state.enPassantSquare());
         turn = turn.opponentColour();
         whiteThreatMap = state.whiteThreatMap();
         blackThreatMap = state.blackThreatMap();
@@ -467,21 +453,20 @@ public class Board {
      * @param state the state of the board before the move was called.
      */
     private void unDoCastle(State state) {
-        King movePiece = (King) state.move().getPiece();
-        movePiece.setMoved(false);
-        if (state.move().getDestination().charAt(0) == 'g') { //kingside
+        Piece movePiece = state.move().getPiece();
+        int castleMask = state.move().getCastleMask();
+        if ((castleMask & (FENConstants.WHITE_KINGSIDE_CASTLE_MASK | FENConstants.BLACK_KINGSIDE_CASTLE_MASK))
+                != FENConstants.NO_CASTLING_MASK) {
             Rook rook =  ((Rook) pieceSearch("f" + movePiece.getRank()));
             pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = null;
             rook.move("h" + movePiece.getRank());
-            rook.setMoved(false);
             pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = rook;
-
         }
-        else if (state.move().getDestination().charAt(0) == 'c') { //queenside
+        else if ((castleMask & (FENConstants.WHITE_QUEENSIDE_CASTLE_MASK | FENConstants.BLACK_QUEENSIDE_CASTLE_MASK))
+                != FENConstants.NO_CASTLING_MASK) {
             Rook rook =  ((Rook) pieceSearch("d" + movePiece.getRank()));
             pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = null;
             rook.move("a" + movePiece.getRank());
-            rook.setMoved(false);
             pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = rook;
         }
     }

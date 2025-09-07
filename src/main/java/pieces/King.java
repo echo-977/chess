@@ -1,6 +1,5 @@
 public class King extends DirectionalPiece{
     private boolean check;
-    private boolean moved;
 
     /**
      * Constructs a king with the specified name, color, rank, and file.
@@ -9,12 +8,10 @@ public class King extends DirectionalPiece{
      * @param colour the colour of the piece ("White" or "Black")
      * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
      * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
-     * @param moved  whether the king has moved yet
      * @param check  whether the king is in check
      */
-    public King(PieceColour colour, char file, int rank, boolean moved, boolean check) {
+    public King(PieceColour colour, char file, int rank, boolean check) {
         super(PieceType.KING, colour, file, rank);
-        this.moved = moved;
         this.check = check;
     }
 
@@ -33,24 +30,37 @@ public class King extends DirectionalPiece{
                 {ChessDirections.LEFT, ChessDirections.NONE}, {ChessDirections.LEFT, ChessDirections.UP}
         };
         directionalMoveSearch(board, moves, directions);
-        PieceColour enemyColour = getColour().opponentColour();
-        if (!moved && !board.getThreatMap(enemyColour)[SquareMapUtils.mapSquareToInt(getSquare())]) {
-            int nextIndex;
-            int rank = getRank();
-            Piece piece = board.pieceSearch("a" + rank);
-            if (piece instanceof Rook rook) {
-                if (!rook.getMoved() && canCastleSearch(board, 'c') && board.pieceSearch("b" + rank) == null) {
-                    nextIndex = findNextIndex(moves);
-                    moves[nextIndex] = Move.createIfLegal(board, this, "c" + rank);
-                    moves[nextIndex].setCastle(true);
+        PieceColour colour = getColour();
+        PieceColour enemyColour = colour.opponentColour();
+        int castlingRights = board.getCastlingRights();
+        int nextIndex;
+        int rank = getRank();
+        int kingsideCastleMask;
+        int queensideCastleMask;
+        if (colour == PieceColour.WHITE) {
+            kingsideCastleMask = FENConstants.WHITE_KINGSIDE_CASTLE_MASK;
+            queensideCastleMask = FENConstants.WHITE_QUEENSIDE_CASTLE_MASK;
+        } else {
+            kingsideCastleMask = FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
+            queensideCastleMask = FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
+        }
+        if ((castlingRights & kingsideCastleMask) != 0 &&
+                !board.getThreatMap(enemyColour)[SquareMapUtils.mapSquareToInt(getSquare())]) {
+            if (canCastleSearch(board, 'g')) {
+                nextIndex = findNextIndex(moves);
+                moves[nextIndex] = Move.createIfLegal(board, this, "g" + rank);
+                if (moves[nextIndex] != null) {
+                    moves[nextIndex].setCastleMask(kingsideCastleMask);
                 }
             }
-            piece = board.pieceSearch("h" + rank);
-            if (piece instanceof Rook rook) {
-                if (!rook.getMoved() && canCastleSearch(board, 'g')) {
-                    nextIndex = findNextIndex(moves);
-                    moves[nextIndex] = Move.createIfLegal(board, this, "g" + rank);
-                    moves[nextIndex].setCastle(true);
+        }
+        if ((castlingRights & queensideCastleMask) != 0 &&
+                !board.getThreatMap(enemyColour)[SquareMapUtils.mapSquareToInt(getSquare())]) {
+            if (canCastleSearch(board, 'c') && board.pieceSearch("b" + rank) == null) {
+                nextIndex = findNextIndex(moves);
+                moves[nextIndex] = Move.createIfLegal(board, this, "c" + rank);
+                if (moves[nextIndex] != null) {
+                    moves[nextIndex].setCastleMask(queensideCastleMask);
                 }
             }
         }
@@ -75,18 +85,6 @@ public class King extends DirectionalPiece{
     }
 
     /**
-     * Overrides the move method in the piece class to update the moved flag.
-     * @param move the square to move the piece to.
-     */
-    @Override
-    public void move(String move) {
-        if (!moved) {
-            moved = true;
-        }
-        super.move(move);
-    }
-
-    /**
      * Check if the king can capture a given square.
      * Used for detection of checks.
      * @param board the board the capture is searched for on.
@@ -101,14 +99,6 @@ public class King extends DirectionalPiece{
         int rank = getRank();
         return (Math.abs(targetFile - file) <= 1 && Math.abs(targetRank - rank) <= 1);
 
-    }
-
-    /**
-     * Simple getter for the boolean moved
-     * @return the moved boolean
-     */
-    public boolean getMoved() {
-        return moved;
     }
 
     /**
@@ -135,7 +125,7 @@ public class King extends DirectionalPiece{
     public Piece copyToSquare(String square) {
         char file = SquareMapUtils.getFile(square);
         int rank = SquareMapUtils.getRank(square);
-        return new King(getColour(), file, rank, getMoved(), isCheck());
+        return new King(getColour(), file, rank, isCheck());
     }
 
     /**
@@ -243,17 +233,10 @@ public class King extends DirectionalPiece{
     public boolean equals(Object object) {
         if (super.equals(object)) {
             King other = (King) object;
-            return other.moved == this.moved && other.check == this.check;
+            return other.check == this.check;
+        } else {
+            return false;
         }
-        return false;
-    }
-
-    /**
-     * Simple setter for the moved boolean.
-     * @param moved the boolean value moved will be set to.
-     */
-    public void setMoved(boolean moved) {
-        this.moved = moved;
     }
 }
 

@@ -5,7 +5,7 @@ public class Move {
     private boolean isCheck;
     private boolean isCapture;
     private boolean isCheckmate;
-    private boolean isCastle;
+    private int castleMask;
     private boolean fileDisambiguation;
     private boolean rankDisambiguation;
     private boolean isEnPassant;
@@ -22,16 +22,30 @@ public class Move {
         this.source = piece.getSquare();
         this.destination = destination;
         this.board = board;
+        int kingsideCastleMask, queensideCastleMask;
+        if (piece.getColour() == PieceColour.WHITE) {
+            kingsideCastleMask = FENConstants.WHITE_KINGSIDE_CASTLE_MASK;
+            queensideCastleMask = FENConstants.WHITE_QUEENSIDE_CASTLE_MASK;
+        } else {
+            kingsideCastleMask = FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
+            queensideCastleMask = FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
+        }
+        if (piece.getType() == PieceType.KING) {
+            if (piece.getFile() + ChessDirections.RIGHT * 2 == SquareMapUtils.getFile(destination)) {
+                castleMask = kingsideCastleMask;
+            } else if (piece.getFile() + ChessDirections.LEFT * 2 == SquareMapUtils.getFile(destination)) {
+                castleMask = queensideCastleMask;
+            } else {
+                castleMask = FENConstants.NO_CASTLING_MASK;
+            }
+        }
         if (board.pieceSearch(destination) != null) {
             isCapture = true;
         }
-        if (piece.getType() == PieceType.KING) {
-            char destinationFile = SquareMapUtils.getFile(destination);
-            if (Math.abs(piece.getFile() - destinationFile) == 2) {
-                isCastle = true;
-            }
+        if (piece.getType() == PieceType.PAWN && destination.equals(board.getEnPassantTarget())) {
+            isEnPassant = true;
+            isCapture = true;
         }
-        //isCheck = causesCheck(board, piece, destination);
     }
 
     /**
@@ -75,13 +89,13 @@ public class Move {
     }
 
     /**
-     * Simple setter for the isCastle boolean.
+     * Simple setter for the castleMask flag.
      * Checks again whether the move is a check since the rook movement wouldn't have been accounted for.
-     * @param castle state isCastle is set to.
+     * @param castleMask single bit value for the type of castling occurring in the move.
      */
-    public void setCastle(boolean castle) {
-        isCastle = castle;
-        if (castle) {
+    public void setCastleMask(int castleMask) {
+        this.castleMask = castleMask;
+        if (castleMask != FENConstants.NO_CASTLING_MASK) {
             isCheck = causesCheck(board, piece, destination);
         }
     }
@@ -171,11 +185,11 @@ public class Move {
     }
 
     /**
-     * Simple getter for isCastle.
-     * @return whether the move is a castle.
+     * Simple getter for the castle mask flag.
+     * @return the relevant flag for castling.
      */
-    public boolean isCastle() {
-        return isCastle;
+    public int getCastleMask() {
+        return castleMask;
     }
 
     /**
@@ -239,10 +253,12 @@ public class Move {
         StringBuilder move =  new StringBuilder();
         switch (piece.getType()) {
             case KING:
-                if (isCastle) {
-                    if (destination.charAt(0) == 'g') {
+                if (castleMask != FENConstants.NO_CASTLING_MASK) {
+                    if ((castleMask & (FENConstants.WHITE_KINGSIDE_CASTLE_MASK |
+                            FENConstants.BLACK_KINGSIDE_CASTLE_MASK)) != 0) {
                         move.append("O-O");
-                    } else if (destination.charAt(0) == 'c') {
+                    } else if ((castleMask & (FENConstants.WHITE_QUEENSIDE_CASTLE_MASK |
+                            FENConstants.BLACK_QUEENSIDE_CASTLE_MASK)) != 0) {
                         move.append("O-O-O");
                     }
                     return move.toString();
@@ -308,13 +324,6 @@ public class Move {
      */
     public static Move createIfLegal(Board board, Piece piece, String destination) {
         Move potentialMove = new Move(board, piece, destination);
-        if (piece.getType() == PieceType.PAWN) {
-            Piece enPassantTarget = board.pieceSearch(destination.charAt(0) + String.valueOf(piece.getRank()));
-            if (enPassantTarget != null && piece.getColour() != enPassantTarget.getColour() && enPassantTarget.getType() == PieceType.PAWN && ((Pawn) enPassantTarget).getEnPassantable()) {
-                potentialMove.isEnPassant = true;
-                potentialMove.isCapture = true;
-            }
-        }
         State stateBeforeMove = board.doMove(potentialMove);
         PieceColour colour = piece.getColour();
         King king = board.findKing(colour);
@@ -350,7 +359,7 @@ public class Move {
         copy.setCapture(isCapture());
         copy.setCheck(isCheck());
         copy.setCheckmate(isCheckmate());
-        copy.setCastle(isCastle());
+        copy.setCastleMask(getCastleMask());
         copy.setFileDisambiguation(isFileDisambiguation());
         copy.setRankDisambiguation(isRankDisambiguation());
         copy.setEnPassant(isEnPassant());

@@ -10,8 +10,8 @@ class RookTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Rook(PieceColour.WHITE, 'a', 1, false);
-        piece2 = new Rook(PieceColour.BLACK, 'c', 5, false);
+        piece1 = new Rook(PieceColour.WHITE, 'a', 1);
+        piece2 = new Rook(PieceColour.BLACK, 'c', 5);
     }
 
     @Test
@@ -21,14 +21,6 @@ class RookTest {
         assertTrue(piece2.isLegalMove("h5"));
         assertFalse(piece1.isLegalMove("b6"));
         assertFalse(piece2.isLegalMove("f8"));
-    }
-
-    @Test
-    @DisplayName("Test move")
-    void testMove() {
-        assertFalse(piece1.getMoved());
-        piece1.move("a7");
-        assertTrue(piece1.getMoved());
     }
 
     @Test
@@ -105,6 +97,5 @@ class RookTest {
         Rook test = (Rook) piece1.copyToSquare("d8");
         assertEquals("d8", test.getSquare());
         assertEquals(piece1.getColour(), test.getColour());
-        assertEquals(piece1.getMoved(), test.getMoved());
     }
 }

@@ -26,15 +26,14 @@ class MoveTest {
     move.setFileDisambiguation(true);
     assertEquals("Nb5c7",  move.getAlgebraicNotation());
     board = FENUtils.boardFromFEN("8/8/8/8/8/8/8/4K3 w - - 0 1");
-    piece = new King(PieceColour.WHITE, 'e', 1, false, false);
+    piece = new King(PieceColour.WHITE, 'e', 1, false);
     move = new Move(board, piece, "c1");
-    move.setCastle(true);
+    move.setCastleMask(FENConstants.WHITE_QUEENSIDE_CASTLE_MASK);
     assertEquals("O-O-O",  move.getAlgebraicNotation());
     move = new Move(board, piece, "g1");
-    move.setCastle(true);
+    move.setCastleMask(FENConstants.WHITE_KINGSIDE_CASTLE_MASK);
     assertEquals("O-O",  move.getAlgebraicNotation());
     }
-
 
     @Test
     @DisplayName("Test moveConstructor")
@@ -52,14 +51,14 @@ class MoveTest {
         Board board = FENUtils.boardFromFEN("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
         King whiteKing = board.findKing(PieceColour.WHITE);
         Move move = new Move(board, whiteKing, "g1");
-        assertTrue(move.isCastle());
+        assertEquals(FENConstants.WHITE_KINGSIDE_CASTLE_MASK, move.getCastleMask());
         move = new Move(board, whiteKing, "c1");
-        assertTrue(move.isCastle());
+        assertEquals(FENConstants.WHITE_QUEENSIDE_CASTLE_MASK, move.getCastleMask());
         King blackKing = board.findKing(PieceColour.BLACK);
         move = new Move(board, blackKing, "g8");
-        assertTrue(move.isCastle());
+        assertEquals(FENConstants.BLACK_KINGSIDE_CASTLE_MASK, move.getCastleMask());
         move = new Move(board, blackKing, "c8");
-        assertTrue(move.isCastle());
+        assertEquals(FENConstants.BLACK_QUEENSIDE_CASTLE_MASK, move.getCastleMask());
     }
 
     @Test
@@ -90,7 +89,7 @@ class MoveTest {
         Board board = FENUtils.boardFromFEN("8/8/8/8/8/5k2/8/4K2R w K - 0 1");
         King whiteKing = board.findKing(PieceColour.WHITE);
         Move move = new Move(board, whiteKing, "g1");
-        move.setCastle(true);
+        move.setCastleMask(FENConstants.WHITE_KINGSIDE_CASTLE_MASK);
         assertTrue(move.isCheck());
     }
 
