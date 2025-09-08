@@ -17,14 +17,14 @@ public abstract class LinearPiece extends Piece {
      * Searches out in a given direction from the piece, checking if it is valid to move to that square.
      * Used in the move generation methods for rook, bishop and queen
      *
-     * @param board the board the piece is moving on
-     * @param moves the current string of moves generated (legal moves are added to this)
-     * @param movesIndex the index of the moves array
+     * @param position      the position we are searching for moves in.
+     * @param moves         the current string of moves generated (legal moves are added to this)
+     * @param movesIndex    the index of the moves array
      * @param fileDirection direction to go in for the file (e.g. -1, 0, 1)
      * @param rankDirection direction to go in for the rank (e.g. -1, 0, 1)
      * @return new index for the next available space in the moves array
      */
-    public int linearMoveSearch(Board board, Move[] moves, int movesIndex, int fileDirection, int rankDirection) {
+    public int linearMoveSearch(Position position, Move[] moves, int movesIndex, int fileDirection, int rankDirection) {
         char file = getFile();
         int rank = getRank();
         String candidateMove;
@@ -34,14 +34,14 @@ public abstract class LinearPiece extends Piece {
             rank += rankDirection;
             candidateMove = file + String.valueOf(rank);
             if (isLegalMove(candidateMove)) {
-                piece = board.pieceSearch(candidateMove);
+                piece = position.getBoard().pieceSearch(candidateMove);
                 if (piece == null) { //no piece so the move is legal
-                    moves[movesIndex] = Move.createIfLegal(board, this, candidateMove);
+                    moves[movesIndex] = Move.createIfLegal(position, candidateMove, this);
                     if (moves[movesIndex] != null) {
                         movesIndex++;
                     }
                 } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    moves[movesIndex] = Move.createIfLegal(board, this, candidateMove);
+                    moves[movesIndex] = Move.createIfLegal(position, candidateMove, this);
                     if (moves[movesIndex] != null) {
                         movesIndex++;
                     }

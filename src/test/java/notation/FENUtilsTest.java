@@ -9,8 +9,9 @@ public class FENUtilsTest {
     @Test
     @DisplayName("Test making board with initial position")
     void testBoardFromFENDefaultFEN() {
-        Board board = FENUtils.boardFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-
+        Position position = FENUtils.positionFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        Board board = position.getBoard();
+        GameState gameState = position.getGameState();
         Rook aRook = (Rook) board.pieceSearch("a8");
         assertEquals("a8", aRook.getSquare());
         assertEquals("b8", board.pieceSearch("b8").getSquare());
@@ -51,19 +52,21 @@ public class FENUtilsTest {
         assertEquals("g1", board.pieceSearch("g1").getSquare());
         hRook = (Rook) board.pieceSearch("h1");
         assertEquals("h1", hRook.getSquare());
-        assertEquals(PieceColour.WHITE, board.getTurn());
-        assertEquals(1, board.getMoveCount());
-        assertEquals(0, board.getHalfMoveClock());
+        assertEquals(PieceColour.WHITE, gameState.getTurn());
+        assertEquals(1, gameState.getMoveCount());
+        assertEquals(0, gameState.getHalfMoveClock());
         int castlingRights = FENConstants.WHITE_KINGSIDE_CASTLE_MASK | FENConstants.WHITE_QUEENSIDE_CASTLE_MASK |
                 FENConstants.BLACK_KINGSIDE_CASTLE_MASK | FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
-        assertEquals(castlingRights, board.getCastlingRights());
-        assertEquals(FENConstants.NONE, board.getEnPassantTarget());
+        assertEquals(castlingRights, gameState.getCastlingRights());
+        assertEquals(FENConstants.NONE, gameState.getEnPassantTarget());
     }
 
     @Test
     @DisplayName("Test making board with en passant")
     void testBoardFromFENWithEnPassant() {
-        Board board = FENUtils.boardFromFEN("r3kb1r/p2p3p/bpn5/2pnPPpq/3P1B2/2N2N2/PPPQP1BP/1R3RK1 w k g6 0 13");
+        Position position = FENUtils.positionFromFEN("r3kb1r/p2p3p/bpn5/2pnPPpq/3P1B2/2N2N2/PPPQP1BP/1R3RK1 w k g6 0 13");
+        Board board = position.getBoard();
+        GameState gameState = position.getGameState();
         Rook aRook = (Rook) board.pieceSearch("a8");
         assertEquals("a8", aRook.getSquare());
         assertEquals(PieceType.ROOK, aRook.getType());
@@ -161,18 +164,20 @@ public class FENUtilsTest {
         assertEquals("g1", king.getSquare());
         assertFalse(king.isCheck());
         assertEquals(PieceType.KING, king.getType());
-        assertEquals(0, board.getHalfMoveClock());
-        assertEquals(13, board.getMoveCount());
-        assertEquals(PieceColour.WHITE, board.getTurn());
+        assertEquals(0, gameState.getHalfMoveClock());
+        assertEquals(13, gameState.getMoveCount());
+        assertEquals(PieceColour.WHITE, gameState.getTurn());
         int castlingRights = FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
-        assertEquals(castlingRights, board.getCastlingRights());
-        assertEquals("g6", board.getEnPassantTarget());
+        assertEquals(castlingRights, gameState.getCastlingRights());
+        assertEquals("g6", gameState.getEnPassantTarget());
     }
 
     @Test
     @DisplayName("Test making board with random middlegame")
     void testBoardFromFENWithRandomMiddlegame() {
-        Board board = FENUtils.boardFromFEN("r1bq1rk1/ppp2ppp/2n2n2/3pp3/1b1P4/2P1PN2/PP1NBPPP/R1BQ1RK1 b - - 0 9");
+        Position position = FENUtils.positionFromFEN("r1bq1rk1/ppp2ppp/2n2n2/3pp3/1b1P4/2P1PN2/PP1NBPPP/R1BQ1RK1 b - - 0 9");
+        Board board = position.getBoard();
+        GameState gameState = position.getGameState();
         Rook rook = (Rook) board.pieceSearch("a8");
         assertEquals("a8", rook.getSquare());
         assertEquals(PieceType.ROOK, rook.getType());
@@ -276,42 +281,42 @@ public class FENUtilsTest {
         king = (King) board.pieceSearch("g1");
         assertEquals("g1", king.getSquare());
         assertEquals(PieceType.KING, king.getType());
-        assertEquals(PieceColour.BLACK, board.getTurn());
-        assertEquals(0, board.getHalfMoveClock());
-        assertEquals(9, board.getMoveCount());
+        assertEquals(PieceColour.BLACK, gameState.getTurn());
+        assertEquals(0, gameState.getHalfMoveClock());
+        assertEquals(9, gameState.getMoveCount());
         int castlingRights = FENConstants.NO_CASTLING_MASK;
-        assertEquals(castlingRights, board.getCastlingRights());
-        assertEquals(FENConstants.NONE, board.getEnPassantTarget());
+        assertEquals(castlingRights, gameState.getCastlingRights());
+        assertEquals(FENConstants.NONE, gameState.getEnPassantTarget());
     }
 
     @Test
     @DisplayName("Test getFEN (starting position)")
     void testGetFEN() {
-        Board board = FENUtils.boardFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", FENUtils.getFEN(board));
+        Position position = FENUtils.positionFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", FENUtils.getFEN(position));
     }
 
     @Test
     @DisplayName("Test getFEN (test position 1)")
     void testGetFENWithPos1() {
         String fen = "r1bq1rk1/ppp2ppp/2n2n2/3pp3/1b1P4/2P1PN2/PP1NBPPP/R1BQ1RK1 b - - 0 9";
-        Board board = FENUtils.boardFromFEN(fen);
-        assertEquals(fen, FENUtils.getFEN(board));
+        Position position = FENUtils.positionFromFEN(fen);
+        assertEquals(fen, FENUtils.getFEN(position));
     }
 
     @Test
     @DisplayName("Test getFEN (test position 2)")
     void testGetFENWithPos2() {
         String fen = "r3kb1r/p2p3p/bpn5/2pnPPpq/3P1B2/2N2N2/PPPQP1BP/1R3RK1 w k g6 0 13";
-        Board board = FENUtils.boardFromFEN(fen);
-        assertEquals(fen, FENUtils.getFEN(board));
+        Position position = FENUtils.positionFromFEN(fen);
+        assertEquals(fen, FENUtils.getFEN(position));
     }
 
     @Test
     @DisplayName("Test getFEN (test position 3)")
     void testGetFenWithPos3() {
         String fen = "rnbqkbnr/pp1ppppp/2p5/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq d3 0 3";
-        Board board = FENUtils.boardFromFEN(fen);
-        assertEquals(fen, FENUtils.getFEN(board));
+        Position position = FENUtils.positionFromFEN(fen);
+        assertEquals(fen, FENUtils.getFEN(position));
     }
 }

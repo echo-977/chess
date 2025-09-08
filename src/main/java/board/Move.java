@@ -10,18 +10,20 @@ public class Move {
     private boolean rankDisambiguation;
     private boolean isEnPassant;
     private PieceType promotionType;
-    private final Board board;
+    private final Position position;
 
     /**
      * Simple constructor.
-     * @param piece the piece that will do the move.
+     *
+     * @param position    the position the move is played in.
+     * @param piece       the piece that will do the move.
      * @param destination square the piece moves to.
      */
-    public Move(Board board, Piece piece, String destination) {
+    public Move(Position position, Piece piece, String destination) {
         this.piece = piece;
         this.source = piece.getSquare();
         this.destination = destination;
-        this.board = board;
+        this.position = position;
         int kingsideCastleMask, queensideCastleMask;
         if (piece.getColour() == PieceColour.WHITE) {
             kingsideCastleMask = FENConstants.WHITE_KINGSIDE_CASTLE_MASK;
@@ -39,10 +41,10 @@ public class Move {
                 castleMask = FENConstants.NO_CASTLING_MASK;
             }
         }
-        if (board.pieceSearch(destination) != null) {
+        if (position.getBoard().pieceSearch(destination) != null) {
             isCapture = true;
         }
-        if (piece.getType() == PieceType.PAWN && destination.equals(board.getEnPassantTarget())) {
+        if (piece.getType() == PieceType.PAWN && destination.equals(position.getGameState().getEnPassantTarget())) {
             isEnPassant = true;
             isCapture = true;
         }
@@ -96,7 +98,7 @@ public class Move {
     public void setCastleMask(int castleMask) {
         this.castleMask = castleMask;
         if (castleMask != FENConstants.NO_CASTLING_MASK) {
-            isCheck = causesCheck(board, piece, destination);
+            isCheck = causesCheck(position.getBoard(), piece, destination);
         }
     }
 
@@ -106,7 +108,7 @@ public class Move {
      */
     public void setPromotionType(PieceType promotionType) {
         this.promotionType = promotionType;
-        isCheck = causesCheck(board, piece, destination);
+        isCheck = causesCheck(position.getBoard(), piece, destination);
     }
 
     /**
@@ -317,45 +319,42 @@ public class Move {
     /**
      * Static factory method to filter out illegal moves (moves that leave the king in check).
      * In the event that the move is illegal a null object is returned, otherwise the move is returned.
-     * @param board the board the move will be on.
-     * @param piece the piece that is being moved.
+     *
+     * @param position    the position the move is played in.
      * @param destination the square the piece is moved to.
+     * @param piece       the piece that is being moved.
      * @return null if the move is illegal, otherwise the move object.
      */
-    public static Move createIfLegal(Board board, Piece piece, String destination) {
-        Move potentialMove = new Move(board, piece, destination);
-        State stateBeforeMove = board.doMove(potentialMove);
+    public static Move createIfLegal(Position position, String destination, Piece piece) {
+        Move potentialMove = new Move(position, piece, destination);
+        Board board = position.getBoard();
+        State stateBeforeMove = position.doMove(potentialMove);
         PieceColour colour = piece.getColour();
         King king = board.findKing(colour);
         if (king == null) { //only occurs in test positions in which case there is no check to worry about
-            board.unDoMove(stateBeforeMove);
+            position.unDoMove(stateBeforeMove);
             return potentialMove;
         }
         boolean[] threatMap = board.getThreatMap(colour.opponentColour());
         String kingSquare = king.getSquare();
         if (threatMap[SquareMapUtils.mapSquareToInt(kingSquare)]) { //king is in check so move is invalid
-            board.unDoMove(stateBeforeMove);
+            position.unDoMove(stateBeforeMove);
             return null;
         } else {
-            boolean isCheck;
-            if (piece.getType() == PieceType.KING) {
-                isCheck = false; //king can never give check
-            } else {
-                isCheck = board.getThreatMap(colour)[SquareMapUtils.mapSquareToInt(board.findKing(colour.opponentColour()).getSquare())];
-            }
-            board.unDoMove(stateBeforeMove);
-            potentialMove.setCheck(isCheck);
+            potentialMove.isCheck = board.getThreatMap(colour)[SquareMapUtils.mapSquareToInt(board.findKing(colour.opponentColour()).getSquare())];
+            position.unDoMove(stateBeforeMove);
             return potentialMove;
         }
     }
 
     /**
      * Method to produce an exact copy of the move on a given board.
-     * @param board the board we generate the move clone on.
+     *
+     * @param position the position the move is for.
      * @return a move that has identical properties just on the given board.
      */
-    public Move clone(Board board) {
-        Move copy = new Move(board, board.pieceSearch(getPiece().getSquare()), getDestination());
+    public Move clone(Position position) {
+        Move copy = new Move(position, position.getBoard().pieceSearch(getPiece().getSquare()), getDestination());
         copy.setCapture(isCapture());
         copy.setCheck(isCheck());
         copy.setCheckmate(isCheckmate());

@@ -14,21 +14,21 @@ public class Queen extends LinearPiece{
 
     /**
      * Generates all the legal moves the queen can do.
-     * @param board the board that we are searching for moves on.
+     * @param position the position that we are searching for moves on.
      * @return an array of all the squares the queen can move to as strings.
      */
     @Override
-    public Move[] generateMoves(Board board) {
+    public Move[] generateMoves(Position position) {
         Move[] moves = new Move[ChessConstants.MAX_QUEEN_MOVES];
         int movesIndex = 0;
-        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP);
-        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP);
-        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.NONE);
-        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.DOWN);
-        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.NONE, ChessDirections.DOWN);
-        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.DOWN);
-        movesIndex = linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.NONE);
-        linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.NONE);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.DOWN);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.NONE, ChessDirections.DOWN);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT, ChessDirections.DOWN);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT, ChessDirections.NONE);
+        linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP);
         return moves;
     }
 

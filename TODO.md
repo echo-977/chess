@@ -5,8 +5,7 @@
 //TODO write evaluation function
 //TODO change threat map updates to only consider effected squares
 //TODO move to bitboard based system
-//TODO decompose board to only contain piece related things; 
-    add a gamestate class for things like castling;
-    and a position class containing an instance of each
 //TODO remove any useage of causesCheck in Move class and replace with a doMove unDoMove strategy
 //TODO move the generateMoves method in the board/position class to be done by an external moveGenerator class
+//TODO change move class to only contain source and destination, 
+    any flags can be computed when the move is played to reduce computation

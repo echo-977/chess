@@ -11,7 +11,7 @@ class LinearPieceTest {
     public void init() {
         piece = new LinearPiece(PieceType.QUEEN, PieceColour.WHITE, 'd', 4) {
             @Override
-            public Move[] generateMoves(Board board) {
+            public Move[] generateMoves(Position position) {
                 return new Move[8]; //minimal implementation here to allow testing of concrete methods
             }
 
@@ -30,36 +30,36 @@ class LinearPieceTest {
     @Test
     @DisplayName("Test linearMoveSearch without other piece")
     void testLinearMoveSearchNoOtherPieces() {
-        Board board = FENUtils.boardFromFEN("8/8/8/8/3Q4/8/8/8 w - - 0 1");
+        Position position = FENUtils.positionFromFEN("8/8/8/8/3Q4/8/8/8 w - - 0 1");
         Move[] moves = new Move[7];
         int movesIndex = 0;
-        piece.linearMoveSearch(board, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP); //up
-        Move[] expectedMoves = {new Move(board, piece, "d5"), new Move(board, piece, "d6"),
-                new Move(board, piece, "d7"), new Move(board, piece, "d8"), null, null, null};
+        piece.linearMoveSearch(position, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP); //up
+        Move[] expectedMoves = {new Move(position, piece, "d5"), new Move(position, piece, "d6"),
+                new Move(position, piece, "d7"), new Move(position, piece, "d8"), null, null, null};
         assertArrayEquals(expectedMoves, moves);
     }
 
     @Test
     @DisplayName("Test linearMoveSearch with other piece")
     void testLinearMoveSearchOtherPieces() {
-        Board board = FENUtils.boardFromFEN("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
+        Position position = FENUtils.positionFromFEN("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
         Move[] moves = new Move[7];
         int movesIndex = 0;
-        piece.linearMoveSearch(board, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP); //up left
-        Move[] expectedMoves = {new Move(board, piece, "c5"), null, null, null, null, null, null};
+        piece.linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP); //up left
+        Move[] expectedMoves = {new Move(position, piece, "c5"), null, null, null, null, null, null};
         assertArrayEquals(expectedMoves, moves);
     }
 
     @Test
     @DisplayName("Test linearMoveSearch with capture")
     void testLinearMoveSearchCapture() {
-        Board board = FENUtils.boardFromFEN("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
+        Position position = FENUtils.positionFromFEN("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
         Move[] moves = new Move[7];
         int movesIndex = 0;
-        piece.linearMoveSearch(board, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP); //up left
-        Move move1 = new Move(board, piece, "f6");
+        piece.linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP); //up left
+        Move move1 = new Move(position, piece, "f6");
         move1.setCapture(true);
-        Move[] expectedMoves = {new Move(board, piece, "e5"), move1, null, null, null,
+        Move[] expectedMoves = {new Move(position, piece, "e5"), move1, null, null, null,
                 null, null};
         assertArrayEquals(expectedMoves, moves);
     }
@@ -67,7 +67,7 @@ class LinearPieceTest {
     @Test
     @DisplayName("Test recursiveCaptureCheck")
     void testRecursiveCaptureCheck() {
-        Board board = FENUtils.boardFromFEN("8/8/8/3q2P1/8/8/8/8 w - - 0 1");
+        Board board = FENUtils.positionFromFEN("8/8/8/3q2P1/8/8/8/8 w - - 0 1").getBoard();
         LinearPiece piece = (LinearPiece) board.pieceSearch("d5");
         //targetSquare = "h5";
         assertFalse(piece.recursiveCaptureCheck(board, 'g', 5, ChessDirections.LEFT, ChessDirections.NONE));

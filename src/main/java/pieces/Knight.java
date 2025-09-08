@@ -14,11 +14,11 @@ public class Knight extends DirectionalPiece{
 
     /**
      * Generates all the legal moves the knight can do.
-     * @param board the board that we are searching for moves on.
+     * @param position the position that we are searching for moves on.
      * @return an array of all the squares the knight can move to as strings.
      */
     @Override
-    public Move[] generateMoves(Board board) {
+    public Move[] generateMoves(Position position) {
         Move[] moves = new Move[ChessConstants.MAX_KNIGHT_MOVES];
         int[][] directions = {
                 {ChessDirections.RIGHT, 2 * ChessDirections.UP}, {2 * ChessDirections.RIGHT, ChessDirections.UP},
@@ -26,7 +26,7 @@ public class Knight extends DirectionalPiece{
                 {ChessDirections.LEFT, 2 * ChessDirections.DOWN}, {2 * ChessDirections.LEFT, ChessDirections.DOWN},
                 {2 * ChessDirections.LEFT, ChessDirections.UP}, {ChessDirections.LEFT, 2 * ChessDirections.UP}
         };
-        directionalMoveSearch(board, moves, directions);
+        directionalMoveSearch(position, moves, directions);
         return moves;
     }
 

@@ -2,10 +2,10 @@ public class FENUtils {
     /**
      * Constructs a board from a given FEN string.
      *
-     * @param FEN  FEN string for the position.
+     * @param FEN FEN string for the position.
      * @return the board representing the FEN position.
      */
-    public static Board boardFromFEN(String FEN) {
+    public static Position positionFromFEN(String FEN) {
         String[] fen = FEN.split(FENConstants.SPACE);
         int moveCount = Integer.parseInt(fen[FENConstants.FULLMOVE_CLOCK_FIELD]);
         int halfMoveClock = Integer.parseInt(fen[FENConstants.HALFMOVE_CLOCK_FIELD]);
@@ -67,12 +67,13 @@ public class FENUtils {
             }
             current++;
         }
-        Board board = new Board(pieces, turn, moveCount, halfMoveClock, new boolean[64], new boolean[64]);
-        board.setCastlingRights(parseCastlingRights(fen[FENConstants.CASTLING_FIELD]));
-        board.setEnPassantTarget(fen[FENConstants.EN_PASSANT_FIELD]);
+        Board board = new Board(pieces, new boolean[64], new boolean[64]);
+        GameState gameState = new GameState(turn, moveCount, halfMoveClock);
+        gameState.setCastlingRights(parseCastlingRights(fen[FENConstants.CASTLING_FIELD]));
+        gameState.setEnPassantTarget(fen[FENConstants.EN_PASSANT_FIELD]);
         board.updateThreatMap(PieceColour.WHITE);
         board.updateThreatMap(PieceColour.BLACK);
-        return board;
+        return new Position(board, gameState);
     }
 
     /**
@@ -80,7 +81,9 @@ public class FENUtils {
      *
      * @return the current positions FEN string
      */
-    public static String getFEN(Board board) {
+    public static String getFEN(Position position) {
+        Board board = position.getBoard();
+        GameState gameState = position.getGameState();
         char current = '0';
         String square;
         Piece piece;
@@ -120,14 +123,14 @@ public class FENUtils {
             }
         }
         fen.append(FENConstants.SPACE);
-        if (board.getTurn() == PieceColour.WHITE) {
+        if (gameState.getTurn() == PieceColour.WHITE) {
             fen.append(FENConstants.WHITE);
         } else {
             fen.append(FENConstants.BLACK);
         }
         fen.append(FENConstants.SPACE);
         boolean anyCastling = false;
-        int castlingRights = board.getCastlingRights();
+        int castlingRights = gameState.getCastlingRights();
         if ((castlingRights & FENConstants.WHITE_KINGSIDE_CASTLE_MASK) != FENConstants.NO_CASTLING_MASK) {
             fen.append(FENConstants.WHITE_KINGSIDE_CASTLE_CHAR);
             anyCastling = true;
@@ -147,9 +150,9 @@ public class FENUtils {
         if (!anyCastling) {
             fen.append(FENConstants.NONE);
         }
-        fen.append(FENConstants.SPACE).append(board.getEnPassantTarget()).append(FENConstants.SPACE);
-        fen.append(board.getHalfMoveClock()).append(FENConstants.SPACE);
-        fen.append(board.getMoveCount());
+        fen.append(FENConstants.SPACE).append(gameState.getEnPassantTarget()).append(FENConstants.SPACE);
+        fen.append(gameState.getHalfMoveClock()).append(FENConstants.SPACE);
+        fen.append(gameState.getMoveCount());
         return fen.toString();
     }
 

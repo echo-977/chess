@@ -31,86 +31,90 @@ class QueenTest {
     @Test
     @DisplayName("Test generateMoves without pieces")
     void testGenerateMoves() {
-        Board board = FENUtils.boardFromFEN("8/8/8/4q3/2Q5/8/8/8 w - - 0 1");
+        Position position = FENUtils.positionFromFEN("8/8/8/4q3/2Q5/8/8/8 w - - 0 1");
+        Board board = position.getBoard();
         piece1 = (Queen) board.pieceSearch("c4");
         piece2 = (Queen) board.pieceSearch("e5");
-        Move[] piece1MovesExpected = {new Move(board, piece1, "c5"), new Move(board, piece1, "c6"),
-                new Move(board, piece1, "c7"), new Move(board, piece1, "c8"),
-                new Move(board, piece1, "d5"), new Move(board, piece1, "e6"),
-                new Move(board, piece1, "f7"), new Move(board, piece1, "g8"),
-                new Move(board, piece1, "d4"), new Move(board, piece1, "e4"),
-                new Move(board, piece1, "f4"), new Move(board, piece1, "g4"),
-                new Move(board, piece1, "h4"), new Move(board, piece1, "d3"),
-                new Move(board, piece1, "e2"), new Move(board, piece1, "f1"),
-                new Move(board, piece1, "c3"), new Move(board, piece1, "c2"),
-                new Move(board, piece1, "c1"), new Move(board, piece1, "b3"),
-                new Move(board, piece1, "a2"), new Move(board, piece1, "b4"),
-                new Move(board, piece1, "a4"), new Move(board, piece1, "b5"),
-                new Move(board, piece1, "a6"), null, null};
-        Move[] piece1MovesActual = piece1.generateMoves(board);
+        Move[] piece1MovesExpected = {new Move(position, piece1, "c5"),
+                new Move(position, piece1, "c6"), new Move(position, piece1, "c7"),
+                new Move(position, piece1, "c8"), new Move(position, piece1, "d5"),
+                new Move(position, piece1, "e6"), new Move(position, piece1, "f7"),
+                new Move(position, piece1, "g8"), new Move(position, piece1, "d4"),
+                new Move(position, piece1, "e4"), new Move(position, piece1, "f4"),
+                new Move(position, piece1, "g4"), new Move(position, piece1, "h4"),
+                new Move(position, piece1, "d3"), new Move(position, piece1, "e2"),
+                new Move(position, piece1, "f1"), new Move(position, piece1, "c3"),
+                new Move(position, piece1, "c2"), new Move(position, piece1, "c1"),
+                new Move(position, piece1, "b3"), new Move(position, piece1, "a2"),
+                new Move(position, piece1, "b4"), new Move(position, piece1, "a4"),
+                new Move(position, piece1, "b5"), new Move(position, piece1, "a6"), null, null};
+        Move[] piece1MovesActual = piece1.generateMoves(position);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        Move[] piece2MovesExpected = {new Move(board, piece2, "e6"), new Move(board, piece2, "e7"),
-                new Move(board, piece2, "e8"), new Move(board, piece2, "f6"),
-                new Move(board, piece2, "g7"), new Move(board, piece2, "h8"),
-                new Move(board, piece2, "f5"), new Move(board, piece2, "g5"),
-                new Move(board, piece2, "h5"), new Move(board, piece2, "f4"),
-                new Move(board, piece2, "g3"), new Move(board, piece2, "h2"),
-                new Move(board, piece2, "e4"), new Move(board, piece2, "e3"),
-                new Move(board, piece2, "e2"), new Move(board, piece2, "e1"),
-                new Move(board, piece2, "d4"), new Move(board, piece2, "c3"),
-                new Move(board, piece2, "b2"), new Move(board, piece2, "a1"),
-                new Move(board, piece2, "d5"), new Move(board, piece2, "c5"),
-                new Move(board, piece2, "b5"), new Move(board, piece2, "a5"),
-                new Move(board, piece2, "d6"), new Move(board, piece2, "c7"),
-                new Move(board, piece2, "b8")};
-        Move[] piece2MovesActual = piece2.generateMoves(board);
+        Move[] piece2MovesExpected = {new Move(position, piece2, "e6"),
+                new Move(position, piece2, "e7"), new Move(position, piece2, "e8"),
+                new Move(position, piece2, "f6"), new Move(position, piece2, "g7"),
+                new Move(position, piece2, "h8"), new Move(position, piece2, "f5"),
+                new Move(position, piece2, "g5"), new Move(position, piece2, "h5"),
+                new Move(position, piece2, "f4"), new Move(position, piece2, "g3"),
+                new Move(position, piece2, "h2"), new Move(position, piece2, "e4"),
+                new Move(position, piece2, "e3"), new Move(position, piece2, "e2"),
+                new Move(position, piece2, "e1"), new Move(position, piece2, "d4"),
+                new Move(position, piece2, "c3"), new Move(position, piece2, "b2"),
+                new Move(position, piece2, "a1"), new Move(position, piece2, "d5"),
+                new Move(position, piece2, "c5"), new Move(position, piece2, "b5"),
+                new Move(position, piece2, "a5"), new Move(position, piece2, "d6"),
+                new Move(position, piece2, "c7"), new Move(position, piece2, "b8")};
+        Move[] piece2MovesActual = piece2.generateMoves(position);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 
     @Test
     @DisplayName("Test generateMoves with pieces")
     void testGenerateMovesWithPieces() {
-        Board board = FENUtils.boardFromFEN("8/2P5/b7/4q3/2Q2P2/8/4p3/8 w - - 0 1");
+        Position position = FENUtils.positionFromFEN("8/2P5/b7/4q3/2Q2P2/8/4p3/8 w - - 0 1");
+        Board board = position.getBoard();
         piece1 = (Queen) board.pieceSearch("c4");
         piece2 = (Queen) board.pieceSearch("e5");
-        Move move1 = new Move(board, piece1, "e2");
+        Move move1 = new Move(position, piece1, "e2");
         move1.setCapture(true);
-        Move move2 = new Move(board, piece1, "a6");
+        Move move2 = new Move(position, piece1, "a6");
         move2.setCapture(true);
-        Move[] piece1MovesExpected = {new Move(board, piece1, "c5"), new Move(board, piece1, "c6"),
-                new Move(board, piece1, "d5"), new Move(board, piece1, "e6"),
-                new Move(board, piece1, "f7"), new Move(board, piece1, "g8"),
-                new Move(board, piece1, "d4"), new Move(board, piece1, "e4"),
-                new Move(board, piece1, "d3"), move1, new Move(board, piece1, "c3"),
-                new Move(board, piece1, "c2"), new Move(board, piece1, "c1"),
-                new Move(board, piece1, "b3"), new Move(board, piece1, "a2"),
-                new Move(board, piece1, "b4"), new Move(board, piece1, "a4"),
-                new Move(board, piece1, "b5"), move2, null, null, null, null, null, null, null, null};
-        Move[] piece1MovesActual = piece1.generateMoves(board);
+        Move[] piece1MovesExpected = {new Move(position, piece1, "c5"),
+                new Move(position, piece1, "c6"), new Move(position, piece1, "d5"),
+                new Move(position, piece1, "e6"), new Move(position, piece1, "f7"),
+                new Move(position, piece1, "g8"), new Move(position, piece1, "d4"),
+                new Move(position, piece1, "e4"), new Move(position, piece1, "d3"), move1,
+                new Move(position, piece1, "c3"), new Move(position, piece1, "c2"),
+                new Move(position, piece1, "c1"), new Move(position, piece1, "b3"),
+                new Move(position, piece1, "a2"), new Move(position, piece1, "b4"),
+                new Move(position, piece1, "a4"), new Move(position, piece1, "b5"),
+                move2, null, null, null, null, null, null, null, null};
+        Move[] piece1MovesActual = piece1.generateMoves(position);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        move1 = new Move(board, piece2, "f4");
+        move1 = new Move(position, piece2, "f4");
         move1.setCapture(true);
-        move2 = new Move(board, piece2, "c7");
+        move2 = new Move(position, piece2, "c7");
         move2.setCapture(true);
-        Move[] piece2MovesExpected = {new Move(board, piece2, "e6"), new Move(board, piece2, "e7"),
-                new Move(board, piece2, "e8"), new Move(board, piece2, "f6"),
-                new Move(board, piece2, "g7"), new Move(board, piece2, "h8"),
-                new Move(board, piece2, "f5"), new Move(board, piece2, "g5"),
-                new Move(board, piece2, "h5"), move1, new Move(board, piece2, "e4"),
-                new Move(board, piece2, "e3"), new Move(board, piece2, "d4"),
-                new Move(board, piece2, "c3"), new Move(board, piece2, "b2"),
-                new Move(board, piece2, "a1"), new Move(board, piece2, "d5"),
-                new Move(board, piece2, "c5"), new Move(board, piece2, "b5"),
-                new Move(board, piece2, "a5"), new Move(board, piece2, "d6"),
-                move2, null, null, null, null, null};
-        Move[] piece2MovesActual = piece2.generateMoves(board);
+        Move[] piece2MovesExpected = {new Move(position, piece2, "e6"),
+                new Move(position, piece2, "e7"), new Move(position, piece2, "e8"),
+                new Move(position, piece2, "f6"), new Move(position, piece2, "g7"),
+                new Move(position, piece2, "h8"), new Move(position, piece2, "f5"),
+                new Move(position, piece2, "g5"), new Move(position, piece2, "h5"), move1,
+                new Move(position, piece2, "e4"), new Move(position, piece2, "e3"),
+                new Move(position, piece2, "d4"), new Move(position, piece2, "c3"),
+                new Move(position, piece2, "b2"), new Move(position, piece2, "a1"),
+                new Move(position, piece2, "d5"), new Move(position, piece2, "c5"),
+                new Move(position, piece2, "b5"), new Move(position, piece2, "a5"),
+                new Move(position, piece2, "d6"), move2, null, null, null, null, null};
+        Move[] piece2MovesActual = piece2.generateMoves(position);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 
     @Test
     @DisplayName(("Test canCaptureSquare"))
     void testCanCaptureSquare() {
-        Board board = FENUtils.boardFromFEN("8/1P1P1P2/8/1P1q2P1/8/1P3P2/3P4/8 w - - 0 1");
+        Position position = FENUtils.positionFromFEN("8/1P1P1P2/8/1P1q2P1/8/1P3P2/3P4/8 w - - 0 1");
+        Board board = position.getBoard();
         Queen queen =  (Queen) board.pieceSearch("d5");
         assertFalse(queen.canCaptureSquare(board, "d8"));
         assertTrue(queen.canCaptureSquare(board, "d7"));

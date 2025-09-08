@@ -160,10 +160,10 @@ public abstract class Piece{
     /**
      * Abstract method to generate all the legal moves the piece can do.
      * Concrete piece subclasses will implement this.
-     * @param board the board that we are searching for moves on.
+     * @param position the position that we are searching for moves on.
      * @return a string array of all the legal moves.
      */
-    public abstract Move[] generateMoves(Board board);
+    public abstract Move[] generateMoves(Position position);
 
     /**
      * Abstract method to check if a piece can capture a given square.

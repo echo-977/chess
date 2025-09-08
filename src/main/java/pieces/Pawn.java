@@ -17,11 +17,11 @@ public class Pawn extends Piece{
 
     /**
      * Generates all the legal moves the pawn can do.
-     * @param board the board that we are searching for moves on.
+     * @param position the board that we are searching for moves on.
      * @return an array of moves of all the squares the pawn can move.
      */
     @Override
-    public Move[] generateMoves(Board board) {
+    public Move[] generateMoves(Position position) {
         char file = getFile();
         int checkRank = getRank();
         Move[] moves = new Move[ChessConstants.MAX_PAWN_MOVES];
@@ -36,8 +36,8 @@ public class Pawn extends Piece{
         for (int i = 0; i < 2; i++) { //pawns can move forward either 1 or 2 squares
             checkRank = checkRank + moveDirection;
             candidateMove = file + String.valueOf(checkRank);
-            if (isLegalMove(candidateMove) && board.pieceSearch(candidateMove) == null) {
-                movesIndex = addMove(board, moves, movesIndex, candidateMove);
+            if (isLegalMove(candidateMove) && position.getBoard().pieceSearch(candidateMove) == null) {
+                movesIndex = addMove(position, moves, movesIndex, candidateMove);
             } else {
                 break; //if single push is blocked then double push is blocked
             }
@@ -45,33 +45,34 @@ public class Pawn extends Piece{
         String captureTarget;
         if (file > 'a') { //pawns on the a-file cannot capture to the left
             captureTarget = (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection);
-            movesIndex = addCaptureMove(board, captureTarget, movesIndex, moves);
+            movesIndex = addCaptureMove(position, captureTarget, movesIndex, moves);
         }
         if (file < 'h') { //pawns on the h-file cannot capture to the right
             captureTarget = (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection);
-            addCaptureMove(board, captureTarget, movesIndex, moves);
+            addCaptureMove(position, captureTarget, movesIndex, moves);
         }
         return moves;
     }
 
     /**
      * Helper function for adding capture moves on either side of the pawn.
-     * @param board the board we are looking for moves on.
+     *
+     * @param position      the position we are looking for moves in.
      * @param captureTarget the square the pawn can capture.
-     * @param movesIndex the index of the next available space in the moves array.
-     * @param moves the array of moves.
+     * @param movesIndex    the index of the next available space in the moves array.
+     * @param moves         the array of moves.
      * @return updated value of movesIndex.
      */
-    private int addCaptureMove(Board board, String captureTarget, int movesIndex, Move[] moves) {
-        Piece piece = board.pieceSearch(captureTarget);
+    private int addCaptureMove(Position position, String captureTarget, int movesIndex, Move[] moves) {
+        Piece piece = position.getBoard().pieceSearch(captureTarget);
         if (piece != null && piece.getColour() != getColour()) {
-            movesIndex = addMove(board, moves, movesIndex, captureTarget);
+            movesIndex = addMove(position, moves, movesIndex, captureTarget);
         }
-        String enPassantTarget = board.getEnPassantTarget();
+        String enPassantTarget = position.getGameState().getEnPassantTarget();
         if (!enPassantTarget.equals(FENConstants.NONE)) {
             if (enPassantTarget.equals(captureTarget)) {
                 int index = movesIndex;
-                movesIndex = addMove(board, moves, movesIndex, captureTarget);
+                movesIndex = addMove(position, moves, movesIndex, captureTarget);
                 if (movesIndex == index + 1) { //en passant move was added so we need to set it as such
                     moves[movesIndex - 1].setEnPassant(true);
                 }
@@ -82,13 +83,14 @@ public class Pawn extends Piece{
 
     /**
      * Helper function to add moves for the generateMoves method.
-     * @param board the board we are looking for moves on.
-     * @param moves the array of moves from generateMoves.
-     * @param movesIndex index of next available spot in moves.
+     *
+     * @param position    the position we are looking for moves in.
+     * @param moves       the array of moves from generateMoves.
+     * @param movesIndex  index of next available spot in moves.
      * @param destination where the piece is going to.
      * @return updated value of movesIndex.
      */
-    public int addMove(Board board, Move[] moves, int movesIndex, String destination) {
+    public int addMove(Position position, Move[] moves, int movesIndex, String destination) {
         int rank = SquareMapUtils.getRank(destination);
         Move move;
         if ((getColour() == PieceColour.WHITE && rank == 8) || (getColour() == PieceColour.BLACK && rank == 1)) {
@@ -96,7 +98,7 @@ public class Pawn extends Piece{
                 if (!canPromoteTo(type)) {
                     continue;
                 }
-                move = Move.createIfLegal(board, this, destination);
+                move = Move.createIfLegal(position, destination, this);
                 if (move != null) {
                     move.setPromotionType(type);
                     moves[movesIndex] = move;
@@ -106,7 +108,7 @@ public class Pawn extends Piece{
                 }
             }
         } else {
-            moves[movesIndex] = Move.createIfLegal(board, this, destination);
+            moves[movesIndex] = Move.createIfLegal(position, destination, this);
             if (moves[movesIndex] != null) {
                 movesIndex++;
             }
