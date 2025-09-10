@@ -3,7 +3,7 @@ public class GameState {
     private int moveCount;
     private int halfMoveClock;
     private int castlingRights;
-    private String enPassantTarget;
+    private int enPassantTarget;
 
     /**
      * Stores the data about a position that cannot be saved with pieces alone.
@@ -59,7 +59,7 @@ public class GameState {
      *
      * @param enPassantTarget the en passant target square.
      */
-    public void setEnPassantTarget(String enPassantTarget) {
+    public void setEnPassantTarget(int enPassantTarget) {
         this.enPassantTarget = enPassantTarget;
     }
 
@@ -76,7 +76,7 @@ public class GameState {
      * Simple getter for the en passant target square.
      * @return the current en passant target square according to FEN notation.
      */
-    public String getEnPassantTarget() {
+    public int getEnPassantTarget() {
         return enPassantTarget;
     }
 
@@ -120,13 +120,13 @@ public class GameState {
                 castlingRights &= ~FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
             }
         } else if (movePieceType == PieceType.ROOK) {
-            if (movePiece.getFile() == 'h') {
+            if (SquareMapUtils.getFileContribution(movePiece.getSquare()) == Files.H) {
                 if (movePiece.getColour() == PieceColour.WHITE) {
                     castlingRights &= ~FENConstants.WHITE_KINGSIDE_CASTLE_MASK;
                 } else {
                     castlingRights &= ~FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
                 }
-            } else if (movePiece.getFile() == 'a') {
+            } else if (SquareMapUtils.getRankContribution(movePiece.getSquare()) == Files.A) {
                 if (movePiece.getColour() == PieceColour.WHITE) {
                     castlingRights &= ~FENConstants.WHITE_QUEENSIDE_CASTLE_MASK;
                 } else {
@@ -189,6 +189,6 @@ public class GameState {
         }
         return this.turn == other.turn && this.moveCount == other.moveCount &&
                 this.halfMoveClock == other.halfMoveClock && this.castlingRights == other.castlingRights &&
-                this.enPassantTarget.equals(other.enPassantTarget);
+                this.enPassantTarget == other.enPassantTarget;
     }
 }

@@ -2,14 +2,12 @@ public class Queen extends LinearPiece{
 
     /**
      * Constructs a queen with the specified name, color, rank, and file.
-     * Ensures inputs for a piece are valid.
      *
-     * @param colour the colour of the piece ("White" or "Black")
-     * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
-     * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
+     * @param colour the colour of the queen ("White" or "Black")
+     * @param square the square the queen is on.
      */
-    public Queen(PieceColour colour, char file, int rank) {
-        super(PieceType.QUEEN, colour, file, rank);
+    public Queen(PieceColour colour, int square) {
+        super(PieceType.QUEEN, colour, square);
     }
 
     /**
@@ -21,14 +19,14 @@ public class Queen extends LinearPiece{
     public Move[] generateMoves(Position position) {
         Move[] moves = new Move[ChessConstants.MAX_QUEEN_MOVES];
         int movesIndex = 0;
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP);
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP);
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.NONE);
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.DOWN);
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.NONE, ChessDirections.DOWN);
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT, ChessDirections.DOWN);
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT, ChessDirections.NONE);
-        linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.NONE + ChessDirections.UP);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT + ChessDirections.UP);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT + ChessDirections.NONE);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT + ChessDirections.DOWN);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.NONE + ChessDirections.DOWN);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT + ChessDirections.DOWN);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT + ChessDirections.NONE);
+        linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT + ChessDirections.UP);
         return moves;
     }
 
@@ -38,15 +36,16 @@ public class Queen extends LinearPiece{
      * @return boolean value denoting if the move is theoretically legal.
      */
     @Override
-    public boolean isLegalMove(String move) {
+    public boolean isLegalMove(int move) {
         if (!super.isLegalMove(move)) {
             return false;
         }
-        char moveFile = SquareMapUtils.getFile(move);
-        int moveRank = SquareMapUtils.getRank(move);
-        char file = getFile();
-        int rank = getRank();
-        return ((moveRank == rank ^ moveFile == file) || (Math.abs(rank - moveRank) == Math.abs(file - moveFile)));
+        int square = getSquare();
+        int squareFile = SquareMapUtils.getFileContribution(square);
+        int squareRank = SquareMapUtils.getRankContribution(square);
+        int moveFile = SquareMapUtils.getFileContribution(move);
+        int moveRank = SquareMapUtils.getRankContribution(move);
+        return ((moveFile == squareFile ^ moveRank == squareRank) || (Math.abs(squareRank - moveRank) / ChessConstants.RANK_OFFSET == Math.abs(squareFile - moveFile)));
         //since a queen behaves either like a rook or bishop
     }
 
@@ -58,26 +57,24 @@ public class Queen extends LinearPiece{
      * @return a boolean for whether the piece can capture that square.
      */
     @Override
-    public boolean canCaptureSquare(Board board, String targetSquare) {
-        char targetFile = SquareMapUtils.getFile(targetSquare);
-        int targetRank = SquareMapUtils.getRank(targetSquare);
+    public boolean canCaptureSquare(Board board, int targetSquare) {
         if (!isLegalMove(targetSquare)) {
             return false;
         }
-        int[] directions;
-        int fileDirection, rankDirection;
-        char file = getFile();
-        int rank = getRank();
-        if (Math.abs(targetFile - file) == Math.abs(targetRank - rank)) {
-            directions = getDiagonalDirections(targetFile, targetRank);
-        } else if ((targetFile == file || targetRank == rank)) {
-            directions = getOrthogonalDirections(targetFile, targetRank);
+        int direction;
+        int square = getSquare();
+        int squareFile = SquareMapUtils.getFileContribution(square);
+        int squareRank = SquareMapUtils.getRankContribution(square);
+        int targetFile = SquareMapUtils.getFileContribution(targetSquare);
+        int targetRank = SquareMapUtils.getRankContribution(targetSquare);
+        if (Math.abs(targetRank - squareRank) / ChessConstants.RANK_OFFSET == Math.abs(targetFile - squareFile)) {
+            direction = getDiagonalDirection(squareFile, squareRank, targetFile, targetRank);
+        } else if ((targetFile == squareFile || targetRank == squareRank)) {
+            direction = getOrthogonalDirection(squareFile, squareRank, targetFile, targetRank);
         } else {
             return false;
         }
-        fileDirection = directions[ChessConstants.FILE_DIRECTION_INDEX];
-        rankDirection = directions[ChessConstants.RANK_DIRECTION_INDEX];
-        return recursiveCaptureCheck(board, (char) (targetFile + fileDirection), targetRank + rankDirection, fileDirection, rankDirection);
+        return recursiveCaptureCheck(board, targetSquare + direction, direction);
     }
 
     /**
@@ -86,9 +83,7 @@ public class Queen extends LinearPiece{
      * @return a queen object at the given square with the same properties.
      */
     @Override
-    public Piece copyToSquare(String square) {
-        char file = SquareMapUtils.getFile(square);
-        int rank = SquareMapUtils.getRank(square);
-        return new Queen(getColour(), file, rank);
+    public Piece copyToSquare(int square) {
+        return new Queen(getColour(), square);
     }
 }

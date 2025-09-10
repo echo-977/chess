@@ -11,21 +11,21 @@ class QueenTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Queen(PieceColour.WHITE, 'a', 1);
-        piece2 = new Queen(PieceColour.BLACK, 'd', 5);
+        piece1 = new Queen(PieceColour.WHITE, Files.A + Ranks.ONE);
+        piece2 = new Queen(PieceColour.BLACK, Files.D + Ranks.FIVE);
     }
 
     @Test
     @DisplayName("Test isLegalMove")
     void testLegalMove() {
-        assertTrue(piece1.isLegalMove("b2"));
-        assertTrue(piece2.isLegalMove("e4"));
-        assertFalse(piece1.isLegalMove("b6"));
-        assertFalse(piece2.isLegalMove("f8"));
-        assertTrue(piece1.isLegalMove("a7"));
-        assertTrue(piece2.isLegalMove("h5"));
-        assertFalse(piece1.isLegalMove("b6"));
-        assertFalse(piece2.isLegalMove("f8"));
+        assertTrue(piece1.isLegalMove(Files.B + Ranks.TWO));
+        assertTrue(piece2.isLegalMove(Files.E + Ranks.FOUR));
+        assertFalse(piece1.isLegalMove(Files.B + Ranks.SIX));
+        assertFalse(piece2.isLegalMove(Files.F + Ranks.EIGHT));
+        assertTrue(piece1.isLegalMove(Files.A + Ranks.SEVEN));
+        assertTrue(piece2.isLegalMove(Files.H + Ranks.FIVE));
+        assertFalse(piece1.isLegalMove(Files.B + Ranks.SIX));
+        assertFalse(piece2.isLegalMove(Files.F + Ranks.EIGHT));
     }
 
     @Test
@@ -33,37 +33,62 @@ class QueenTest {
     void testGenerateMoves() {
         Position position = FENUtils.positionFromFEN("8/8/8/4q3/2Q5/8/8/8 w - - 0 1");
         Board board = position.getBoard();
-        piece1 = (Queen) board.pieceSearch("c4");
-        piece2 = (Queen) board.pieceSearch("e5");
-        Move[] piece1MovesExpected = {new Move(position, piece1, "c5"),
-                new Move(position, piece1, "c6"), new Move(position, piece1, "c7"),
-                new Move(position, piece1, "c8"), new Move(position, piece1, "d5"),
-                new Move(position, piece1, "e6"), new Move(position, piece1, "f7"),
-                new Move(position, piece1, "g8"), new Move(position, piece1, "d4"),
-                new Move(position, piece1, "e4"), new Move(position, piece1, "f4"),
-                new Move(position, piece1, "g4"), new Move(position, piece1, "h4"),
-                new Move(position, piece1, "d3"), new Move(position, piece1, "e2"),
-                new Move(position, piece1, "f1"), new Move(position, piece1, "c3"),
-                new Move(position, piece1, "c2"), new Move(position, piece1, "c1"),
-                new Move(position, piece1, "b3"), new Move(position, piece1, "a2"),
-                new Move(position, piece1, "b4"), new Move(position, piece1, "a4"),
-                new Move(position, piece1, "b5"), new Move(position, piece1, "a6"), null, null};
+        piece1 = (Queen) board.pieceSearch(Files.C + Ranks.FOUR);
+        piece2 = (Queen) board.pieceSearch(Files.E + Ranks.FIVE);
+        Move[] piece1MovesExpected = {new Move(position, piece1, Files.C + Ranks.FIVE),
+                new Move(position, piece1, Files.C + Ranks.SIX),
+                new Move(position, piece1, Files.C + Ranks.SEVEN),
+                new Move(position, piece1, Files.C + Ranks.EIGHT),
+                new Move(position, piece1, Files.D + Ranks.FIVE),
+                new Move(position, piece1, Files.E + Ranks.SIX),
+                new Move(position, piece1, Files.F + Ranks.SEVEN),
+                new Move(position, piece1, Files.G + Ranks.EIGHT),
+                new Move(position, piece1, Files.D + Ranks.FOUR),
+                new Move(position, piece1, Files.E + Ranks.FOUR),
+                new Move(position, piece1, Files.F + Ranks.FOUR),
+                new Move(position, piece1, Files.G + Ranks.FOUR),
+                new Move(position, piece1, Files.H + Ranks.FOUR),
+                new Move(position, piece1, Files.D + Ranks.THREE),
+                new Move(position, piece1, Files.E + Ranks.TWO),
+                new Move(position, piece1, Files.F + Ranks.ONE),
+                new Move(position, piece1, Files.C + Ranks.THREE),
+                new Move(position, piece1, Files.C + Ranks.TWO),
+                new Move(position, piece1, Files.C + Ranks.ONE),
+                new Move(position, piece1, Files.B + Ranks.THREE),
+                new Move(position, piece1, Files.A + Ranks.TWO),
+                new Move(position, piece1, Files.B + Ranks.FOUR),
+                new Move(position, piece1, Files.A + Ranks.FOUR),
+                new Move(position, piece1, Files.B + Ranks.FIVE),
+                new Move(position, piece1, Files.A + Ranks.SIX), null, null};
         Move[] piece1MovesActual = piece1.generateMoves(position);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        Move[] piece2MovesExpected = {new Move(position, piece2, "e6"),
-                new Move(position, piece2, "e7"), new Move(position, piece2, "e8"),
-                new Move(position, piece2, "f6"), new Move(position, piece2, "g7"),
-                new Move(position, piece2, "h8"), new Move(position, piece2, "f5"),
-                new Move(position, piece2, "g5"), new Move(position, piece2, "h5"),
-                new Move(position, piece2, "f4"), new Move(position, piece2, "g3"),
-                new Move(position, piece2, "h2"), new Move(position, piece2, "e4"),
-                new Move(position, piece2, "e3"), new Move(position, piece2, "e2"),
-                new Move(position, piece2, "e1"), new Move(position, piece2, "d4"),
-                new Move(position, piece2, "c3"), new Move(position, piece2, "b2"),
-                new Move(position, piece2, "a1"), new Move(position, piece2, "d5"),
-                new Move(position, piece2, "c5"), new Move(position, piece2, "b5"),
-                new Move(position, piece2, "a5"), new Move(position, piece2, "d6"),
-                new Move(position, piece2, "c7"), new Move(position, piece2, "b8")};
+        Move[] piece2MovesExpected = {new Move(position, piece2, Files.E + Ranks.SIX),
+                new Move(position, piece2, Files.E + Ranks.SEVEN),
+                new Move(position, piece2, Files.E + Ranks.EIGHT),
+                new Move(position, piece2, Files.F + Ranks.SIX),
+                new Move(position, piece2, Files.G + Ranks.SEVEN),
+                new Move(position, piece2, Files.H + Ranks.EIGHT),
+                new Move(position, piece2, Files.F + Ranks.FIVE),
+                new Move(position, piece2, Files.G + Ranks.FIVE),
+                new Move(position, piece2, Files.H + Ranks.FIVE),
+                new Move(position, piece2, Files.F + Ranks.FOUR),
+                new Move(position, piece2, Files.G + Ranks.THREE),
+                new Move(position, piece2, Files.H + Ranks.TWO),
+                new Move(position, piece2, Files.E + Ranks.FOUR),
+                new Move(position, piece2, Files.E + Ranks.THREE),
+                new Move(position, piece2, Files.E + Ranks.TWO),
+                new Move(position, piece2, Files.E + Ranks.ONE),
+                new Move(position, piece2, Files.D + Ranks.FOUR),
+                new Move(position, piece2, Files.C + Ranks.THREE),
+                new Move(position, piece2, Files.B + Ranks.TWO),
+                new Move(position, piece2, Files.A + Ranks.ONE),
+                new Move(position, piece2, Files.D + Ranks.FIVE),
+                new Move(position, piece2, Files.C + Ranks.FIVE),
+                new Move(position, piece2, Files.B + Ranks.FIVE),
+                new Move(position, piece2, Files.A + Ranks.FIVE),
+                new Move(position, piece2, Files.D + Ranks.SIX),
+                new Move(position, piece2, Files.C + Ranks.SEVEN),
+                new Move(position, piece2, Files.B + Ranks.EIGHT)};
         Move[] piece2MovesActual = piece2.generateMoves(position);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
@@ -73,39 +98,56 @@ class QueenTest {
     void testGenerateMovesWithPieces() {
         Position position = FENUtils.positionFromFEN("8/2P5/b7/4q3/2Q2P2/8/4p3/8 w - - 0 1");
         Board board = position.getBoard();
-        piece1 = (Queen) board.pieceSearch("c4");
-        piece2 = (Queen) board.pieceSearch("e5");
-        Move move1 = new Move(position, piece1, "e2");
+        piece1 = (Queen) board.pieceSearch(Files.C + Ranks.FOUR);
+        piece2 = (Queen) board.pieceSearch(Files.E + Ranks.FIVE);
+        Move move1 = new Move(position, piece1, Files.E + Ranks.TWO);
         move1.setCapture(true);
-        Move move2 = new Move(position, piece1, "a6");
+        Move move2 = new Move(position, piece1, Files.A + Ranks.SIX);
         move2.setCapture(true);
-        Move[] piece1MovesExpected = {new Move(position, piece1, "c5"),
-                new Move(position, piece1, "c6"), new Move(position, piece1, "d5"),
-                new Move(position, piece1, "e6"), new Move(position, piece1, "f7"),
-                new Move(position, piece1, "g8"), new Move(position, piece1, "d4"),
-                new Move(position, piece1, "e4"), new Move(position, piece1, "d3"), move1,
-                new Move(position, piece1, "c3"), new Move(position, piece1, "c2"),
-                new Move(position, piece1, "c1"), new Move(position, piece1, "b3"),
-                new Move(position, piece1, "a2"), new Move(position, piece1, "b4"),
-                new Move(position, piece1, "a4"), new Move(position, piece1, "b5"),
+        Move[] piece1MovesExpected = {new Move(position, piece1, Files.C + Ranks.FIVE),
+                new Move(position, piece1, Files.C + Ranks.SIX),
+                new Move(position, piece1, Files.D + Ranks.FIVE),
+                new Move(position, piece1, Files.E + Ranks.SIX),
+                new Move(position, piece1, Files.F + Ranks.SEVEN),
+                new Move(position, piece1, Files.G + Ranks.EIGHT),
+                new Move(position, piece1, Files.D + Ranks.FOUR),
+                new Move(position, piece1, Files.E + Ranks.FOUR),
+                new Move(position, piece1, Files.D + Ranks.THREE), move1,
+                new Move(position, piece1, Files.C + Ranks.THREE),
+                new Move(position, piece1, Files.C + Ranks.TWO),
+                new Move(position, piece1, Files.C + Ranks.ONE),
+                new Move(position, piece1, Files.B + Ranks.THREE),
+                new Move(position, piece1, Files.A + Ranks.TWO),
+                new Move(position, piece1, Files.B + Ranks.FOUR),
+                new Move(position, piece1, Files.A + Ranks.FOUR),
+                new Move(position, piece1, Files.B + Ranks.FIVE),
                 move2, null, null, null, null, null, null, null, null};
         Move[] piece1MovesActual = piece1.generateMoves(position);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        move1 = new Move(position, piece2, "f4");
+        move1 = new Move(position, piece2, Files.F + Ranks.FOUR);
         move1.setCapture(true);
-        move2 = new Move(position, piece2, "c7");
+        move2 = new Move(position, piece2, Files.C + Ranks.SEVEN);
         move2.setCapture(true);
-        Move[] piece2MovesExpected = {new Move(position, piece2, "e6"),
-                new Move(position, piece2, "e7"), new Move(position, piece2, "e8"),
-                new Move(position, piece2, "f6"), new Move(position, piece2, "g7"),
-                new Move(position, piece2, "h8"), new Move(position, piece2, "f5"),
-                new Move(position, piece2, "g5"), new Move(position, piece2, "h5"), move1,
-                new Move(position, piece2, "e4"), new Move(position, piece2, "e3"),
-                new Move(position, piece2, "d4"), new Move(position, piece2, "c3"),
-                new Move(position, piece2, "b2"), new Move(position, piece2, "a1"),
-                new Move(position, piece2, "d5"), new Move(position, piece2, "c5"),
-                new Move(position, piece2, "b5"), new Move(position, piece2, "a5"),
-                new Move(position, piece2, "d6"), move2, null, null, null, null, null};
+        Move[] piece2MovesExpected = {new Move(position, piece2, Files.E + Ranks.SIX),
+                new Move(position, piece2, Files.E + Ranks.SEVEN),
+                new Move(position, piece2, Files.E + Ranks.EIGHT),
+                new Move(position, piece2, Files.F + Ranks.SIX),
+                new Move(position, piece2, Files.G + Ranks.SEVEN),
+                new Move(position, piece2, Files.H + Ranks.EIGHT),
+                new Move(position, piece2, Files.F + Ranks.FIVE),
+                new Move(position, piece2, Files.G + Ranks.FIVE),
+                new Move(position, piece2, Files.H + Ranks.FIVE), move1,
+                new Move(position, piece2, Files.E + Ranks.FOUR),
+                new Move(position, piece2, Files.E + Ranks.THREE),
+                new Move(position, piece2, Files.D + Ranks.FOUR),
+                new Move(position, piece2, Files.C + Ranks.THREE),
+                new Move(position, piece2, Files.B + Ranks.TWO),
+                new Move(position, piece2, Files.A + Ranks.ONE),
+                new Move(position, piece2, Files.D + Ranks.FIVE),
+                new Move(position, piece2, Files.C + Ranks.FIVE),
+                new Move(position, piece2, Files.B + Ranks.FIVE),
+                new Move(position, piece2, Files.A + Ranks.FIVE),
+                new Move(position, piece2, Files.D + Ranks.SIX), move2, null, null, null, null, null};
         Move[] piece2MovesActual = piece2.generateMoves(position);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
@@ -115,30 +157,30 @@ class QueenTest {
     void testCanCaptureSquare() {
         Position position = FENUtils.positionFromFEN("8/1P1P1P2/8/1P1q2P1/8/1P3P2/3P4/8 w - - 0 1");
         Board board = position.getBoard();
-        Queen queen =  (Queen) board.pieceSearch("d5");
-        assertFalse(queen.canCaptureSquare(board, "d8"));
-        assertTrue(queen.canCaptureSquare(board, "d7"));
-        assertFalse(queen.canCaptureSquare(board, "g8"));
-        assertTrue(queen.canCaptureSquare(board, "f7"));
-        assertFalse(queen.canCaptureSquare(board, "h5"));
-        assertTrue(queen.canCaptureSquare(board, "g5"));
-        assertFalse(queen.canCaptureSquare(board, "g2"));
-        assertTrue(queen.canCaptureSquare(board, "f3"));
-        assertFalse(queen.canCaptureSquare(board, "d1"));
-        assertTrue(queen.canCaptureSquare(board, "d2"));
-        assertFalse(queen.canCaptureSquare(board, "a2"));
-        assertTrue(queen.canCaptureSquare(board, "b3"));
-        assertFalse(queen.canCaptureSquare(board, "a5"));
-        assertTrue(queen.canCaptureSquare(board, "b5"));
-        assertFalse(queen.canCaptureSquare(board, "a8"));
-        assertTrue(queen.canCaptureSquare(board, "b7"));
+        Queen queen =  (Queen) board.pieceSearch(Files.D + Ranks.FIVE);
+        assertFalse(queen.canCaptureSquare(board, Files.D + Ranks.EIGHT));
+        assertTrue(queen.canCaptureSquare(board, Files.D + Ranks.SEVEN));
+        assertFalse(queen.canCaptureSquare(board, Files.G + Ranks.EIGHT));
+        assertTrue(queen.canCaptureSquare(board, Files.F + Ranks.SEVEN));
+        assertFalse(queen.canCaptureSquare(board, Files.H + Ranks.FIVE));
+        assertTrue(queen.canCaptureSquare(board, Files.G + Ranks.FIVE));
+        assertFalse(queen.canCaptureSquare(board, Files.G + Ranks.TWO));
+        assertTrue(queen.canCaptureSquare(board, Files.F + Ranks.THREE));
+        assertFalse(queen.canCaptureSquare(board, Files.D + Ranks.ONE));
+        assertTrue(queen.canCaptureSquare(board, Files.D + Ranks.TWO));
+        assertFalse(queen.canCaptureSquare(board, Files.A + Ranks.TWO));
+        assertTrue(queen.canCaptureSquare(board, Files.B + Ranks.THREE));
+        assertFalse(queen.canCaptureSquare(board, Files.A + Ranks.FIVE));
+        assertTrue(queen.canCaptureSquare(board, Files.B + Ranks.FIVE));
+        assertFalse(queen.canCaptureSquare(board, Files.A + Ranks.SEVEN));
+        assertTrue(queen.canCaptureSquare(board, Files.B + Ranks.SEVEN));
     }
 
     @Test
     @DisplayName("Test copyToSquare")
     void testCopyToSquare() {
-        Queen test = (Queen) piece1.copyToSquare("d8");
-        assertEquals("d8", test.getSquare());
+        Queen test = (Queen) piece1.copyToSquare(Files.D + Ranks.EIGHT);
+        assertEquals(Files.D + Ranks.EIGHT, test.getSquare());
         assertEquals(piece1.getColour(), test.getColour());
     }
 }

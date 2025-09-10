@@ -6,11 +6,10 @@ public abstract class DirectionalPiece extends Piece {
      *
      * @param type   the type of the piece (e.g., "Pawn", "Knight")
      * @param colour the colour of the piece ("White" or "Black")
-     * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
-     * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
+     * @param square the square the piece is on.
      */
-    public DirectionalPiece(PieceType type, PieceColour colour, char file, int rank) {
-        super(type, colour, file, rank);
+    public DirectionalPiece(PieceType type, PieceColour colour, int square) {
+        super(type, colour, square);
     }
 
     /**
@@ -20,22 +19,17 @@ public abstract class DirectionalPiece extends Piece {
      * @param moves the current string of moves generated (legal moves are added to this).
      * @param directions array of 2d directions the piece can go in.
      */
-    public void directionalMoveSearch(Position position, Move[] moves, int[][] directions) {
-        char file = getFile();
-        int rank = getRank();
-        char checkFile;
-        int checkRank;
-        String candidateMove;
+    public void directionalMoveSearch(Position position, Move[] moves, int[] directions) {
+        int square = getSquare();
+        int candidateMove;
         Piece piece;
         int movesIndex = 0;
-        for (int i = 0; i < 8; i++) {
-            checkFile = (char) (file + directions[i][ChessConstants.FILE_DIRECTION_INDEX]);
-            checkRank = rank + directions[i][ChessConstants.RANK_DIRECTION_INDEX];
-            candidateMove = checkFile + String.valueOf(checkRank);
+        for (int i = 0; i < ChessConstants.NUM_DIRECTIONS; i++) {
+            candidateMove = square + directions[i];
             if (isLegalMove(candidateMove)) {
                 piece = position.getBoard().pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    moves[movesIndex] = Move.createIfLegal(position, candidateMove, this);
+                    moves[movesIndex] = Move.createIfLegal(position, this, candidateMove);
                     if (moves[movesIndex] != null) {
                         movesIndex++;
                     }

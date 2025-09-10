@@ -45,13 +45,16 @@ public class Position {
         State stateBeforeMove = new State(move, capturedPiece, gameState.getEnPassantTarget(), castlingRights,
                 gameState.getHalfMoveClock(), gameState.getMoveCount(), board.getThreatMap(PieceColour.WHITE),
                 board.getThreatMap(PieceColour.BLACK));
-        if (movePieceType == PieceType.PAWN &&
-                Math.abs(movePiece.getRank() - SquareMapUtils.getRank(move.getDestination())) == 2) {
+        if (movePieceType == PieceType.PAWN) {
             int direction = (gameState.getTurn() == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
-            String enPassantTarget = movePiece.getFile() + String.valueOf(movePiece.getRank() + direction);
-            gameState.setEnPassantTarget(enPassantTarget);
-        } else {
-            gameState.setEnPassantTarget(FENConstants.NONE);
+            if (movePiece.getSquare() + 2 * direction == move.getDestination()){
+                int enPassantTarget = movePiece.getSquare() + direction;
+                gameState.setEnPassantTarget(enPassantTarget);
+            } else {
+                gameState.setEnPassantTarget(ChessConstants.NO_EN_PASSANT_TARGET);
+            }
+        } else if (gameState.getEnPassantTarget() != ChessConstants.NO_EN_PASSANT_TARGET) {
+            gameState.setEnPassantTarget(ChessConstants.NO_EN_PASSANT_TARGET);
         }
         if (move.getCastleMask() != FENConstants.NO_CASTLING_MASK) {
             board.handleCastleMovement(move);
@@ -63,8 +66,8 @@ public class Position {
             board.handlePromotion(move);
         } else {
             move.getPiece().move(move.getDestination());
-            pieces[SquareMapUtils.mapSquareToInt(move.getDestination())] = move.getPiece();
-            pieces[SquareMapUtils.mapSquareToInt(move.getSource())] = null;
+            pieces[move.getDestination()] = move.getPiece();
+            pieces[move.getSource()] = null;
         }
         gameState.incrementMoveClocks(move);
         gameState.changeTurn();
@@ -80,19 +83,19 @@ public class Position {
      * @return boolean flag for if the capture logic was completed successfully.
      */
     public Piece handleCaptureMove(Move move) {
-        String captureDestination = board.getCaptureDestination(move);
+        int captureDestination = board.getCaptureDestination(move);
         Piece capturedPiece = board.pieceSearch(captureDestination);
         if (capturedPiece.getType() == PieceType.ROOK) {
             int castlingRights = gameState.getCastlingRights();
             switch(capturedPiece.getSquare()) {
-                case "a1" -> castlingRights &= ~FENConstants.WHITE_QUEENSIDE_CASTLE_MASK;
-                case "h1" -> castlingRights &= ~FENConstants.WHITE_KINGSIDE_CASTLE_MASK;
-                case "a8" -> castlingRights &= ~FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
-                case "h8" -> castlingRights &= ~FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
+                case Files.A + Ranks.ONE -> castlingRights &= ~FENConstants.WHITE_QUEENSIDE_CASTLE_MASK;
+                case Files.H + Ranks.ONE -> castlingRights &= ~FENConstants.WHITE_KINGSIDE_CASTLE_MASK;
+                case Files.A + Ranks.EIGHT -> castlingRights &= ~FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
+                case Files.H + Ranks.EIGHT -> castlingRights &= ~FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
             }
             gameState.setCastlingRights(castlingRights);
         }
-        board.getPieces()[SquareMapUtils.mapSquareToInt(captureDestination)] = null;
+        board.getPieces()[captureDestination] = null;
         return capturedPiece;
     }
 
@@ -103,17 +106,17 @@ public class Position {
     public void unDoMove(State state) {
         Piece movePiece = state.move().getPiece();
         Piece[] pieces = board.getPieces();
-        pieces[SquareMapUtils.mapSquareToInt(state.move().getDestination())] = null;
+        pieces[state.move().getDestination()] = null;
         if (state.move().getPromotionType() == null) {
             movePiece.move(state.move().getSource());
         }
         if (state.capturedPiece() != null) {
-            pieces[SquareMapUtils.mapSquareToInt(state.capturedPiece().getSquare())] = state.capturedPiece();
+            pieces[state.capturedPiece().getSquare()] = state.capturedPiece();
         }
         if (state.move().getCastleMask() != FENConstants.NO_CASTLING_MASK) {
             board.unDoCastleMovement(state);
         }
-        pieces[SquareMapUtils.mapSquareToInt(state.move().getSource())] = state.move().getPiece();
+        pieces[state.move().getSource()] = state.move().getPiece();
         if (movePiece.getType() == PieceType.PAWN &&
                 (SquareMapUtils.getRank(state.move().getSource()) == 2 ||
                         SquareMapUtils.getRank(state.move().getSource()) == 7)) {

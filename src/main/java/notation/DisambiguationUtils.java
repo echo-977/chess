@@ -28,7 +28,7 @@ public class DisambiguationUtils {
             handled[handledIndex] = moves[i];
             handledIndex++;
             for (int j = i + 1; j < numMoves; j++) {
-                if (moves[i].getDestination().equals(moves[j].getDestination()) &&
+                if (moves[i].getDestination() == moves[j].getDestination() &&
                         moves[i].getPiece().getType() == moves[j].getPiece().getType()) {
                     needDisambiguation[moveCount] = moves[j];
                     moveCount++;
@@ -61,8 +61,8 @@ public class DisambiguationUtils {
                 continue;
             }
             Piece piece = move.getPiece();
-            int fileIndex = piece.mapFile();
-            int rankIndex = piece.mapRank();
+            int fileIndex = SquareMapUtils.getFileContribution(piece.getSquare());
+            int rankIndex = SquareMapUtils.getRankContribution(piece.getSquare()) / ChessConstants.NUM_FILES;
             numPiecesPerFile[fileIndex]++;
             numPiecesPerRank[rankIndex]++;
         }

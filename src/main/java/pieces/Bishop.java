@@ -2,14 +2,12 @@ public class Bishop extends LinearPiece{
 
     /**
      * Constructs a bishop with the specified name, color, rank, and file.
-     * Ensures inputs for a piece are valid.
      *
-     * @param colour the colour of the piece ("White" or "Black")
-     * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
-     * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
+     * @param colour the colour of the bishop ("White" or "Black")
+     * @param square the square the bishop is on.
      */
-    public Bishop(PieceColour colour, char file, int rank) {
-        super(PieceType.BISHOP, colour, file, rank);
+    public Bishop(PieceColour colour, int square) {
+        super(PieceType.BISHOP, colour, square);
     }
 
     /**
@@ -21,10 +19,10 @@ public class Bishop extends LinearPiece{
     public Move[] generateMoves(Position position) {
         Move[] moves = new Move[ChessConstants.MAX_BISHOP_MOVES];
         int movesIndex = 0;
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP);
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP);
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.DOWN);
-        linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT, ChessDirections.LEFT);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT + ChessDirections.UP);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT + ChessDirections.UP);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT + ChessDirections.DOWN);
+        linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT + ChessDirections.DOWN);
         return moves;
     }
 
@@ -34,15 +32,16 @@ public class Bishop extends LinearPiece{
      * @return boolean value denoting if the move is theoretically legal.
      */
     @Override
-    public boolean isLegalMove(String move) {
+    public boolean isLegalMove(int move) {
         if (!super.isLegalMove(move)) {
             return false;
         }
-        char moveFile = SquareMapUtils.getFile(move);
-        int moveRank = SquareMapUtils.getRank(move);
-        char file = getFile();
-        int rank = getRank();
-        return Math.abs(rank - moveRank) == Math.abs(file - moveFile);
+        int square = getSquare();
+        int squareFile = SquareMapUtils.getFileContribution(square);
+        int squareRank = SquareMapUtils.getRankContribution(square);
+        int moveFile = SquareMapUtils.getFileContribution(move);
+        int moveRank = SquareMapUtils.getRankContribution(move);
+        return Math.abs(moveRank - squareRank) / ChessConstants.RANK_OFFSET == Math.abs(moveFile - squareFile);
 
     }
 
@@ -54,24 +53,21 @@ public class Bishop extends LinearPiece{
      * @return a boolean for whether the piece can capture that square.
      */
     @Override
-    public boolean canCaptureSquare(Board board, String targetSquare) {
-        char targetFile = SquareMapUtils.getFile(targetSquare);
-        int targetRank = SquareMapUtils.getRank(targetSquare);
+    public boolean canCaptureSquare(Board board, int targetSquare) {
         if (!isLegalMove(targetSquare)) {
             return false;
         }
-        int[] directions;
-        int fileDirection, rankDirection;
-        char file = getFile();
-        int rank = getRank();
-        if ((targetFile - file) == (targetRank - rank) || -(targetFile - file) == (targetRank - rank)) {
-            directions = getDiagonalDirections(targetFile, targetRank);
+        int square = getSquare();
+        int squareFile = SquareMapUtils.getFileContribution(square);
+        int squareRank = SquareMapUtils.getRankContribution(square);
+        int targetFile = SquareMapUtils.getFileContribution(targetSquare);
+        int targetRank = SquareMapUtils.getRankContribution(targetSquare);
+        if (Math.abs(targetRank - squareRank) / ChessConstants.RANK_OFFSET == Math.abs(targetFile - squareFile)) {
+            int direction = getDiagonalDirection(squareFile, squareRank, targetFile, targetRank);
+            return recursiveCaptureCheck(board, targetSquare + direction, direction);
         } else {
             return false;
         }
-        fileDirection = directions[ChessConstants.FILE_DIRECTION_INDEX];
-        rankDirection = directions[ChessConstants.RANK_DIRECTION_INDEX];
-        return recursiveCaptureCheck(board, (char) (targetFile + fileDirection), targetRank + rankDirection, fileDirection, rankDirection);
     }
 
     /**
@@ -80,9 +76,7 @@ public class Bishop extends LinearPiece{
      * @return a bishop object at the given square with the same properties.
      */
     @Override
-    public Piece copyToSquare(String square) {
-        char file = SquareMapUtils.getFile(square);
-        int rank = SquareMapUtils.getRank(square);
-        return new Bishop(getColour(), file, rank);
+    public Piece copyToSquare(int square) {
+        return new Bishop(getColour(), square);
     }
 }

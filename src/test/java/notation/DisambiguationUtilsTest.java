@@ -10,10 +10,10 @@ public class DisambiguationUtilsTest {
     void testSetDisambiguationFlagsFile() {
         Position position = FENUtils.positionFromFEN("8/8/3N1N2/2N5/4p3/6N1/8/8 w - - 0 1");
         Board board = position.getBoard();
-        Move[] moves = {new Move(position, board.pieceSearch("c5"), "e4"),
-                new Move(position, board.pieceSearch("d6"), "e4"),
-                new Move(position, board.pieceSearch("f6"), "e4"),
-                new Move(position, board.pieceSearch("g3"), "e4")};
+        Move[] moves = {new Move(position, board.pieceSearch(Files.C+ Ranks.FIVE), Files.E + Ranks.FOUR),
+                new Move(position, board.pieceSearch(Files.D + Ranks.SIX), Files.E + Ranks.FOUR),
+                new Move(position, board.pieceSearch(Files.F + Ranks.SIX), Files.E + Ranks.FOUR),
+                new Move(position, board.pieceSearch(Files.G + Ranks.THREE), Files.E + Ranks.FOUR)};
         DisambiguationUtils.setDisambiguationFlags(moves);
         for (Move move : moves) {
             assertTrue(move.isFileDisambiguation());
@@ -26,8 +26,8 @@ public class DisambiguationUtilsTest {
     void testSetDisambiguationFlagsRank() {
         Position position = FENUtils.positionFromFEN("8/8/8/2N5/4p3/2N5/8/8 w - - 0 1");
         Board board = position.getBoard();
-        Move[] moves = {new Move(position, board.pieceSearch("c5"), "e4"),
-                new Move(position, board.pieceSearch("c3"), "e4")};
+        Move[] moves = {new Move(position, board.pieceSearch(Files.C + Ranks.FIVE), Files.E + Ranks.FOUR),
+                new Move(position, board.pieceSearch(Files.C + Ranks.THREE), Files.E + Ranks.FOUR)};
         DisambiguationUtils.setDisambiguationFlags(moves);
         for (Move move : moves) {
             assertFalse(move.isFileDisambiguation());
@@ -40,9 +40,9 @@ public class DisambiguationUtilsTest {
     void testSetDisambiguationFlagsBoth() {
         Position position = FENUtils.positionFromFEN("8/8/8/2N5/4p3/2N3N1/8/8 w - - 0 1");
         Board board = position.getBoard();
-        Move[] moves = {new Move(position, board.pieceSearch("c5"), "e4"),
-                new Move(position, board.pieceSearch("c3"), "e4"),
-                new Move(position, board.pieceSearch("g3"), "e4")};
+        Move[] moves = {new Move(position, board.pieceSearch(Files.C + Ranks.FIVE), Files.E + Ranks.FOUR),
+                new Move(position, board.pieceSearch(Files.C + Ranks.THREE), Files.E + Ranks.FOUR),
+                new Move(position, board.pieceSearch(Files.G + Ranks.THREE), Files.E + Ranks.FOUR)};
         DisambiguationUtils.setDisambiguationFlags(moves);
         for (Move move : moves) {
             assertTrue(move.isFileDisambiguation());
@@ -55,11 +55,11 @@ public class DisambiguationUtilsTest {
     void  testHandleDisambiguation() {
         Position position = FENUtils.positionFromFEN("8/8/8/2N5/4p1R1/2N3N1/8/8 w - - 0 1");
         Board board = position.getBoard();
-        Move[] moves = {new Move(position, board.pieceSearch("c5"), "e4"),
-                new Move(position, board.pieceSearch("c3"), "e4"),
-                new Move(position, board.pieceSearch("g3"), "e4"),
-                new Move(position, board.pieceSearch("c5"), "d7"),
-                new Move(position, board.pieceSearch("g4"), "e4")};
+        Move[] moves = {new Move(position, board.pieceSearch(Files.C + Ranks.FIVE), Files.E + Ranks.FOUR),
+                new Move(position, board.pieceSearch(Files.C + Ranks.THREE), Files.E + Ranks.FOUR),
+                new Move(position, board.pieceSearch(Files.G + Ranks.THREE), Files.E + Ranks.FOUR),
+                new Move(position, board.pieceSearch(Files.C + Ranks.FIVE), Files.D + Ranks.SEVEN),
+                new Move(position, board.pieceSearch(Files.G + Ranks.FOUR), Files.E + Ranks.FOUR)};
         DisambiguationUtils.handleDisambiguation(moves);
         assertTrue(moves[0].isFileDisambiguation());
         assertTrue(moves[0].isRankDisambiguation());

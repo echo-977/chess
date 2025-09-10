@@ -11,8 +11,8 @@ public class Board {
      * Constructs a board based on all the boards attributes.
      *
      * @param pieces         length 64 array of all the pieces on the board.
-     * @param whiteThreatMap boolean array of all squares white threatens.
-     * @param blackThreatMap boolean array of all squares black threatens.
+     * @param whiteThreatMap a boolean array of all squares white threatens.
+     * @param blackThreatMap a boolean array of all squares black threatens.
      */
     public Board(Piece[] pieces, boolean[] whiteThreatMap, boolean[] blackThreatMap) {
         this.pieces = pieces;
@@ -41,8 +41,8 @@ public class Board {
      * @param square the target square
      * @return the piece if there is a piece on the square, otherwise null
      */
-    public Piece pieceSearch(String square) {
-        return pieces[SquareMapUtils.mapSquareToInt(square)];
+    public Piece pieceSearch(int square) {
+        return pieces[square];
     }
 
     /**
@@ -69,19 +69,11 @@ public class Board {
      * @param move the move of the capture.
      * @return the square of the captured piece.
      */
-    public String getCaptureDestination(Move move) {
-        String captureDestination;
+    public int getCaptureDestination(Move move) {
+        int captureDestination;
         if (move.isEnPassant()) {
-            int targetDirection;
-            if (move.getPiece().getColour() == PieceColour.WHITE) {
-                targetDirection = ChessDirections.DOWN;
-            } else {
-                targetDirection = ChessDirections.UP;
-            }
-            char file = SquareMapUtils.getFile(move.getDestination());
-            int rank = SquareMapUtils.getRank(move.getDestination());
-            int captureRank = rank + targetDirection;
-            captureDestination = file + String.valueOf(captureRank);
+            int targetDirection = (move.getPiece().getColour() == PieceColour.WHITE) ? ChessDirections.DOWN : ChessDirections.UP;
+            captureDestination = move.getDestination() + targetDirection;
         } else {
             captureDestination = move.getDestination();
         }
@@ -94,23 +86,23 @@ public class Board {
      * @param move the move being played.
      */
     public void handleCastleMovement(Move move) {
-        String destination = move.getDestination();
-        char file = SquareMapUtils.getFile(destination);
-        int rank = SquareMapUtils.getRank(destination);
-        String rookSquare;
+        int destination = move.getDestination();
+        int file = SquareMapUtils.getFileContribution(destination);
+        int rank = SquareMapUtils.getRankContribution(destination);
+        int rookSquare;
         Rook rook;
-        if (file == 'g') {
-            rookSquare = "h" + rank;
+        if (file == ChessConstants.KINGSIDE_CASTLE_FILE) {
+            rookSquare = Files.H + rank;
             rook = (Rook) pieceSearch(rookSquare);
-            pieces[SquareMapUtils.mapSquareToInt(rookSquare)] = null;
-            rook.move("f" + rank);
-            pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = rook;
-        } else if (file == 'c') {
-            rookSquare = "a" + rank;
+            pieces[rookSquare] = null;
+            rook.move(ChessConstants.KINGSIDE_CASTLE_ROOK_FILE + rank);
+            pieces[rook.getSquare()] = rook;
+        } else if (file == ChessConstants.QUEENSIDE_CASTLE_FILE) {
+            rookSquare = Files.A + rank;
             rook = (Rook) pieceSearch(rookSquare);
-            pieces[SquareMapUtils.mapSquareToInt(rookSquare)] = null;
-            rook.move("d" + rank);
-            pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = rook;
+            pieces[rookSquare] = null;
+            rook.move(ChessConstants.QUEENSIDE_CASTLE_ROOK_FILE + rank);
+            pieces[rook.getSquare()] = rook;
         }
     }
 
@@ -121,17 +113,15 @@ public class Board {
      */
     public void handlePromotion(Move move) {
         PieceColour colour = move.getPiece().getColour();
-        char file = SquareMapUtils.getFile(move.getDestination());
-        int rank = SquareMapUtils.getRank(move.getDestination());
         Piece promotedPiece = switch (move.getPromotionType()) {
-            case QUEEN -> new Queen(colour, file, rank);
-            case ROOK -> new Rook(colour, file, rank);
-            case BISHOP -> new Bishop(colour, file, rank);
-            case KNIGHT -> new Knight(colour, file, rank);
+            case QUEEN -> new Queen(colour, move.getDestination());
+            case ROOK -> new Rook(colour, move.getDestination());
+            case BISHOP -> new Bishop(colour, move.getDestination());
+            case KNIGHT -> new Knight(colour, move.getDestination());
             default -> null;
         };
-        pieces[SquareMapUtils.mapSquareToInt(move.getDestination())] = promotedPiece; //put promoted piece on board
-        pieces[SquareMapUtils.mapSquareToInt(move.getSource())] = null; //take the pawn off the board
+        pieces[move.getDestination()] = promotedPiece; //put promoted piece on board
+        pieces[move.getSource()] = null; //take the pawn off the board
     }
 
     /**
@@ -170,7 +160,7 @@ public class Board {
         Piece[] clonedPieces = new Piece[ChessConstants.NUM_SQUARES];
         for (int squareIndex = 0; squareIndex < ChessConstants.NUM_SQUARES; squareIndex++) {
             if (pieces[squareIndex] != null) {
-                clonedPieces[squareIndex] = pieces[squareIndex].copyToSquare(pieces[squareIndex].getSquare());
+                clonedPieces[squareIndex] = pieces[squareIndex].copyToSquare(squareIndex);
             }
         }
         return new Board(clonedPieces, whiteThreatMap.clone(), blackThreatMap.clone());
@@ -199,17 +189,17 @@ public class Board {
         int castleMask = state.move().getCastleMask();
         if ((castleMask & (FENConstants.WHITE_KINGSIDE_CASTLE_MASK | FENConstants.BLACK_KINGSIDE_CASTLE_MASK))
                 != FENConstants.NO_CASTLING_MASK) {
-            Rook rook =  ((Rook) pieceSearch("f" + movePiece.getRank()));
-            pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = null;
-            rook.move("h" + movePiece.getRank());
-            pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = rook;
+            Rook rook =  ((Rook) pieceSearch(Files.F + SquareMapUtils.getRankContribution(movePiece.getSquare())));
+            pieces[rook.getSquare()] = null;
+            rook.move(Files.H + SquareMapUtils.getRankContribution(movePiece.getSquare()));
+            pieces[rook.getSquare()] = rook;
         }
         else if ((castleMask & (FENConstants.WHITE_QUEENSIDE_CASTLE_MASK | FENConstants.BLACK_QUEENSIDE_CASTLE_MASK))
                 != FENConstants.NO_CASTLING_MASK) {
-            Rook rook =  ((Rook) pieceSearch("d" + movePiece.getRank()));
-            pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = null;
-            rook.move("a" + movePiece.getRank());
-            pieces[SquareMapUtils.mapSquareToInt(rook.getSquare())] = rook;
+            Rook rook =  ((Rook) pieceSearch(Files.D + SquareMapUtils.getRankContribution(movePiece.getSquare())));
+            pieces[rook.getSquare()] = null;
+            rook.move(Files.A + SquareMapUtils.getRankContribution(movePiece.getSquare()));
+            pieces[rook.getSquare()] = rook;
         }
     }
 

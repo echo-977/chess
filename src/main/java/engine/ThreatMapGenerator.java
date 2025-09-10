@@ -8,10 +8,16 @@ public class ThreatMapGenerator {
     public static boolean[] getThreatMap(Board board, PieceColour colour) {
         Piece[] pieces = board.getPieces();
         boolean[] threatMap = new boolean[ChessConstants.NUM_SQUARES];
-        for (int i = 0; i < ChessConstants.NUM_SQUARES; i++) {
+        for (int squareIndex = 0; squareIndex < ChessConstants.NUM_SQUARES; squareIndex++) {
             for (Piece piece : pieces) {
-                if (piece != null && piece.getColour() == colour && piece.canCaptureSquare(board, SquareMapUtils.mapIntToSquare(i))) {
-                    threatMap[i] = true;
+                if (piece == null) {
+                    continue;
+                }
+                if (piece.getColour() != colour) {
+                    continue;
+                }
+                if (piece.canCaptureSquare(board, squareIndex)) {
+                    threatMap[squareIndex] = true;
                     break;
                 }
             }

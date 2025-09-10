@@ -2,14 +2,12 @@ public class Knight extends DirectionalPiece{
 
     /**
      * Constructs a knight with the specified name, color, rank, and file.
-     * Ensures inputs for a piece are valid.
      *
-     * @param colour the colour of the piece ("White" or "Black")
-     * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
-     * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
+     * @param colour the colour of the knight ("White" or "Black")
+     * @param square the square the knight is on.
      */
-    public Knight(PieceColour colour, char file, int rank) {
-        super(PieceType.KNIGHT, colour, file, rank);
+    public Knight(PieceColour colour, int square) {
+        super(PieceType.KNIGHT, colour, square);
     }
 
     /**
@@ -20,11 +18,11 @@ public class Knight extends DirectionalPiece{
     @Override
     public Move[] generateMoves(Position position) {
         Move[] moves = new Move[ChessConstants.MAX_KNIGHT_MOVES];
-        int[][] directions = {
-                {ChessDirections.RIGHT, 2 * ChessDirections.UP}, {2 * ChessDirections.RIGHT, ChessDirections.UP},
-                {2 * ChessDirections.RIGHT, ChessDirections.DOWN}, {ChessDirections.RIGHT, 2 * ChessDirections.DOWN},
-                {ChessDirections.LEFT, 2 * ChessDirections.DOWN}, {2 * ChessDirections.LEFT, ChessDirections.DOWN},
-                {2 * ChessDirections.LEFT, ChessDirections.UP}, {ChessDirections.LEFT, 2 * ChessDirections.UP}
+        int[] directions = {
+                ChessDirections.RIGHT + 2 * ChessDirections.UP, 2 * ChessDirections.RIGHT + ChessDirections.UP,
+                2 * ChessDirections.RIGHT + ChessDirections.DOWN, ChessDirections.RIGHT + 2 * ChessDirections.DOWN,
+                ChessDirections.LEFT + 2 * ChessDirections.DOWN, 2 * ChessDirections.LEFT + ChessDirections.DOWN,
+                2 * ChessDirections.LEFT + ChessDirections.UP, ChessDirections.LEFT + 2 * ChessDirections.UP
         };
         directionalMoveSearch(position, moves, directions);
         return moves;
@@ -36,18 +34,19 @@ public class Knight extends DirectionalPiece{
      * @return boolean value denoting if the move is theoretically legal.
      */
     @Override
-    public boolean isLegalMove(String move) {
+    public boolean isLegalMove(int move) {
         if (!super.isLegalMove(move)) {
             return false;
         }
-        char file = getFile();
-        int rank = getRank();
-        char moveFile = SquareMapUtils.getFile(move);
-        int moveRank = SquareMapUtils.getRank(move);
-        if (Math.abs(moveRank - rank) == 1 && Math.abs(moveFile - file) == 2) {
+        int square = getSquare();
+        int squareFile = SquareMapUtils.getFileContribution(square);
+        int squareRank = SquareMapUtils.getRankContribution(square);
+        int moveFile = SquareMapUtils.getFileContribution(move);
+        int moveRank = SquareMapUtils.getRankContribution(move);
+        if (Math.abs(moveRank - squareRank) == ChessConstants.RANK_OFFSET && Math.abs(moveFile - squareFile) == 2 * ChessConstants.FILE_OFFSET) {
             return true;
         } else {
-            return Math.abs(moveRank - rank) == 2 && Math.abs(moveFile - file) == 1;
+            return Math.abs(moveRank - squareRank) == 2 * ChessConstants.RANK_OFFSET && Math.abs(moveFile - squareFile) == ChessConstants.FILE_OFFSET;
         }
     }
 
@@ -59,7 +58,7 @@ public class Knight extends DirectionalPiece{
      * @return a boolean for whether the piece can capture that square.
      */
     @Override
-    public boolean canCaptureSquare(Board board, String targetSquare) {
+    public boolean canCaptureSquare(Board board, int targetSquare) {
         return isLegalMove(targetSquare); //if the knight can move to where the king is it can capture it
     }
 
@@ -69,10 +68,8 @@ public class Knight extends DirectionalPiece{
      * @return a knight object at the given square with the same properties.
      */
     @Override
-    public Piece copyToSquare(String square) {
-        char file = SquareMapUtils.getFile(square);
-        int rank = SquareMapUtils.getRank(square);
-        return new Knight(getColour(), file, rank);
+    public Piece copyToSquare(int square) {
+        return new Knight(getColour(), square);
     }
 }
 

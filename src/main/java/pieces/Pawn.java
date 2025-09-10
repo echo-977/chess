@@ -3,15 +3,13 @@ public class Pawn extends Piece{
 
     /**
      * Constructs a pawn with the specified name, color, rank, and file.
-     * Ensures inputs for a piece are valid.
      *
-     * @param colour         the colour of the piece ("White" or "Black")
-     * @param file           the file (column) position on the board in algebraic notation (e.g., "e")
-     * @param rank           the rank (row) position on the board in algebraic notation (e.g., "2")
-     * @param moved          whether the pawn has moved
+     * @param colour the colour of the pawn ("White" or "Black")
+     * @param square the square the pawn is on.
+     * @param moved  whether the pawn has moved
      */
-    public Pawn(PieceColour colour, char file, int rank, boolean moved) {
-        super(PieceType.PAWN, colour, file, rank);
+    public Pawn(PieceColour colour, int square, boolean moved) {
+        super(PieceType.PAWN, colour, square);
         this.moved = moved;
     }
 
@@ -22,33 +20,26 @@ public class Pawn extends Piece{
      */
     @Override
     public Move[] generateMoves(Position position) {
-        char file = getFile();
-        int checkRank = getRank();
+        int square = getSquare();
+        int candidateMove = square;
         Move[] moves = new Move[ChessConstants.MAX_PAWN_MOVES];
-        String candidateMove;
-        int moveDirection;
+        int moveDirection = (getColour() == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
         int movesIndex = 0;
-        if (getColour() == PieceColour.WHITE) {
-            moveDirection = ChessDirections.UP;
-        } else {
-            moveDirection = ChessDirections.DOWN;
-        }
         for (int i = 0; i < 2; i++) { //pawns can move forward either 1 or 2 squares
-            checkRank = checkRank + moveDirection;
-            candidateMove = file + String.valueOf(checkRank);
+            candidateMove += moveDirection;
             if (isLegalMove(candidateMove) && position.getBoard().pieceSearch(candidateMove) == null) {
                 movesIndex = addMove(position, moves, movesIndex, candidateMove);
             } else {
                 break; //if single push is blocked then double push is blocked
             }
         }
-        String captureTarget;
-        if (file > 'a') { //pawns on the a-file cannot capture to the left
-            captureTarget = (char) (getFile() + ChessDirections.LEFT) + String.valueOf(getRank() + moveDirection);
+        int captureTarget;
+        if (SquareMapUtils.getFileContribution(square) > Files.A) { //pawns on the a-file cannot capture to the left
+            captureTarget = square + ChessDirections.LEFT + moveDirection;
             movesIndex = addCaptureMove(position, captureTarget, movesIndex, moves);
         }
-        if (file < 'h') { //pawns on the h-file cannot capture to the right
-            captureTarget = (char) (getFile() + ChessDirections.RIGHT) + String.valueOf(getRank() + moveDirection);
+        if (SquareMapUtils.getFileContribution(square) < Files.H) { //pawns on the h-file cannot capture to the right
+            captureTarget = square + ChessDirections.RIGHT + moveDirection;
             addCaptureMove(position, captureTarget, movesIndex, moves);
         }
         return moves;
@@ -63,14 +54,14 @@ public class Pawn extends Piece{
      * @param moves         the array of moves.
      * @return updated value of movesIndex.
      */
-    private int addCaptureMove(Position position, String captureTarget, int movesIndex, Move[] moves) {
+    private int addCaptureMove(Position position, int captureTarget, int movesIndex, Move[] moves) {
         Piece piece = position.getBoard().pieceSearch(captureTarget);
         if (piece != null && piece.getColour() != getColour()) {
             movesIndex = addMove(position, moves, movesIndex, captureTarget);
         }
-        String enPassantTarget = position.getGameState().getEnPassantTarget();
-        if (!enPassantTarget.equals(FENConstants.NONE)) {
-            if (enPassantTarget.equals(captureTarget)) {
+        int enPassantTarget = position.getGameState().getEnPassantTarget();
+        if (enPassantTarget != ChessConstants.NO_EN_PASSANT_TARGET) {
+            if (enPassantTarget == captureTarget) {
                 int index = movesIndex;
                 movesIndex = addMove(position, moves, movesIndex, captureTarget);
                 if (movesIndex == index + 1) { //en passant move was added so we need to set it as such
@@ -90,7 +81,7 @@ public class Pawn extends Piece{
      * @param destination where the piece is going to.
      * @return updated value of movesIndex.
      */
-    public int addMove(Position position, Move[] moves, int movesIndex, String destination) {
+    public int addMove(Position position, Move[] moves, int movesIndex, int destination) {
         int rank = SquareMapUtils.getRank(destination);
         Move move;
         if ((getColour() == PieceColour.WHITE && rank == 8) || (getColour() == PieceColour.BLACK && rank == 1)) {
@@ -98,7 +89,7 @@ public class Pawn extends Piece{
                 if (!canPromoteTo(type)) {
                     continue;
                 }
-                move = Move.createIfLegal(position, destination, this);
+                move = Move.createIfLegal(position, this, destination);
                 if (move != null) {
                     move.setPromotionType(type);
                     moves[movesIndex] = move;
@@ -108,7 +99,7 @@ public class Pawn extends Piece{
                 }
             }
         } else {
-            moves[movesIndex] = Move.createIfLegal(position, destination, this);
+            moves[movesIndex] = Move.createIfLegal(position, this, destination);
             if (moves[movesIndex] != null) {
                 movesIndex++;
             }
@@ -134,19 +125,21 @@ public class Pawn extends Piece{
      * @return boolean value denoting if the move is theoretically legal.
      */
     @Override
-    public boolean isLegalMove(String move) {
+    public boolean isLegalMove(int move) {
         if (!super.isLegalMove(move)) {
             return false;
         }
-        char file = getFile();
-        int rank = getRank();
-        char moveFile = SquareMapUtils.getFile(move);
-        int moveRank = SquareMapUtils.getRank(move);
-        if (Math.abs(moveRank - rank) == 1 && moveFile == file) {
+        int square = getSquare();
+        int squareFile = SquareMapUtils.getFileContribution(square);
+        int squareRank = SquareMapUtils.getRankContribution(square);
+        int moveFile = SquareMapUtils.getFileContribution(move);
+        int moveRank = SquareMapUtils.getRankContribution(move);
+        int moveDirection = (getColour() == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
+        if (squareRank + moveDirection == moveRank && squareFile == moveFile) {
             return true;
         }
         else {
-            return (!getMoved() && Math.abs(moveRank - rank) == 2 && moveFile == file);
+            return (!getMoved() && squareRank + 2 * moveDirection == moveRank && squareFile == moveFile);
         }
     }
 
@@ -155,7 +148,7 @@ public class Pawn extends Piece{
      * @param move the square to move the piece to.
      */
     @Override
-    public void move(String move) {
+    public void move(int move) {
         if (!moved) {
             moved = true;
         }
@@ -170,22 +163,22 @@ public class Pawn extends Piece{
      * @return a boolean for whether the piece can capture that square.
      */
     @Override
-    public boolean canCaptureSquare(Board board, String targetSquare) {
+    public boolean canCaptureSquare(Board board, int targetSquare) {
         if (!super.isLegalMove(targetSquare)) {
             return false;
         }
-        char file = getFile();
-        int rank = getRank();
-        char targetFile = SquareMapUtils.getFile(targetSquare);
-        int targetRank = SquareMapUtils.getRank(targetSquare);
-        int direction;
-        if (getColour() == PieceColour.WHITE) {
-            direction = ChessDirections.UP;
-        } else {
-            direction = ChessDirections.DOWN;
+        int square = getSquare();
+        int squareFile = SquareMapUtils.getFileContribution(square);
+        int moveDirection = (getColour() == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
+        boolean leftCapture = false;
+        boolean rightCapture = false;
+        if (squareFile > Files.A) { //when on the A file the pawn cannot capture left
+            leftCapture = square + moveDirection + ChessDirections.LEFT == targetSquare;
         }
-        return targetRank == rank + direction &&
-                (targetFile == (char) (file + ChessDirections.LEFT) || targetFile == (char) (file + ChessDirections.RIGHT));
+        if (squareFile < Files.H) { //when on the H file the pawn cannot capture left
+            rightCapture = square + moveDirection + ChessDirections.RIGHT == targetSquare;
+        }
+        return leftCapture || rightCapture;
     }
 
     /**
@@ -202,10 +195,8 @@ public class Pawn extends Piece{
      * @return a pawn object at the given square with the same properties.
      */
     @Override
-    public Piece copyToSquare(String square) {
-        char file = SquareMapUtils.getFile(square);
-        int rank = SquareMapUtils.getRank(square);
-        return new Pawn(getColour(), file, rank, getMoved());
+    public Piece copyToSquare(int square) {
+        return new Pawn(getColour(), square, getMoved());
     }
 
     /**

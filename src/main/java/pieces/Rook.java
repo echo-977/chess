@@ -2,14 +2,13 @@ public class Rook extends LinearPiece{
 
     /**
      * Constructs a rook with the specified name, color, rank, and file.
-     * Ensures inputs for a piece are valid.
      *
-     * @param colour the colour of the piece ("White" or "Black")
-     * @param file   the file (column) position on the board in algebraic notation (e.g., "e")
-     * @param rank   the rank (row) position on the board in algebraic notation (e.g., "2")
+     * @param colour the colour of the rook ("White" or "Black")
+     * @param square the square the rook is on.
+
      */
-    public Rook(PieceColour colour, char file, int rank) {
-        super(PieceType.ROOK, colour, file, rank);
+    public Rook(PieceColour colour, int square) {
+        super(PieceType.ROOK, colour, square);
     }
 
     /**
@@ -21,10 +20,10 @@ public class Rook extends LinearPiece{
     public Move[] generateMoves(Position position) {
         Move[] moves = new Move[ChessConstants.MAX_ROOK_MOVES];
         int movesIndex = 0;
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT, ChessDirections.NONE);
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.NONE);
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP);
-        linearMoveSearch(position, moves, movesIndex, ChessDirections.NONE, ChessDirections.DOWN);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT);
+        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.UP);
+        linearMoveSearch(position, moves, movesIndex, ChessDirections.DOWN);
         return moves;
     }
 
@@ -34,13 +33,13 @@ public class Rook extends LinearPiece{
      * @return boolean value denoting if the move is theoretically legal.
      */
     @Override
-    public boolean isLegalMove(String move) {
+    public boolean isLegalMove(int move) {
         if (!super.isLegalMove(move)) {
             return false;
         }
-        char file = SquareMapUtils.getFile(move);
-        int rank = SquareMapUtils.getRank(move);
-        return (rank == getRank() ^ file == getFile());
+        int square = getSquare();
+        return (SquareMapUtils.getFileContribution(move) == SquareMapUtils.getFileContribution(square) ^
+                SquareMapUtils.getRankContribution(move) == SquareMapUtils.getRankContribution(square));
     }
 
     /**
@@ -51,24 +50,17 @@ public class Rook extends LinearPiece{
      * @return a boolean for whether the piece can capture that square.
      */
     @Override
-    public boolean canCaptureSquare(Board board, String targetSquare) {
-        char targetFile = SquareMapUtils.getFile(targetSquare);
-        int targetRank = SquareMapUtils.getRank(targetSquare);
+    public boolean canCaptureSquare(Board board, int targetSquare) {
         if (!isLegalMove(targetSquare)) {
             return false;
         }
-        int [] directions;
-        int fileDirection, rankDirection;
-        char file = getFile();
-        int rank = getRank();
-        if ((targetFile == file || targetRank == rank)) {
-            directions = getOrthogonalDirections(targetFile, targetRank);
-        } else {
-            return false;
-        }
-        fileDirection = directions[ChessConstants.FILE_DIRECTION_INDEX];
-        rankDirection = directions[ChessConstants.RANK_DIRECTION_INDEX];
-        return recursiveCaptureCheck(board, (char) (targetFile + fileDirection), targetRank + rankDirection, fileDirection, rankDirection);
+        int square = getSquare();
+        int squareFile = SquareMapUtils.getFileContribution(square);
+        int squareRank = SquareMapUtils.getRankContribution(square);
+        int targetFile = SquareMapUtils.getFileContribution(targetSquare);
+        int targetRank = SquareMapUtils.getRankContribution(targetSquare);
+        int direction = getOrthogonalDirection(squareFile, squareRank, targetFile, targetRank);
+        return recursiveCaptureCheck(board, targetSquare + direction, direction);
     }
 
     /**
@@ -77,9 +69,7 @@ public class Rook extends LinearPiece{
      * @return a rook object at the given square with the same properties.
      */
     @Override
-    public Piece copyToSquare(String square) {
-        char file = SquareMapUtils.getFile(square);
-        int rank = SquareMapUtils.getRank(square);
-        return new Rook(getColour(), file, rank);
+    public Piece copyToSquare(int square) {
+        return new Rook(getColour(), square);
     }
 }

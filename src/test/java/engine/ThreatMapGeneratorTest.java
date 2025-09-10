@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 public class ThreatMapGeneratorTest {
 
     @Test
-    @DisplayName("Test getThreatMap")
+    @DisplayName("Test getThreatMap (position 1)")
     void testGetThreatMap() {
         Board board = FENUtils.positionFromFEN("8/8/3r4/4r3/4b3/8/8/8 w - - 0 1").getBoard();
         boolean[] expectedThreatMap = {true, false, false, true, true, false, false, false,

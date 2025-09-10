@@ -10,19 +10,19 @@ class PawnTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Pawn(PieceColour.WHITE, 'a', 1, false);
-        piece2 = new Pawn(PieceColour.BLACK, 'd', 5, false);
+        piece1 = new Pawn(PieceColour.WHITE, Files.A + Ranks.ONE, false);
+        piece2 = new Pawn(PieceColour.BLACK, Files.D + Ranks.FIVE, false);
     }
 
     @Test
     @DisplayName("Test isLegalMove")
     void testLegalMove() {
-        assertTrue(piece1.isLegalMove("a2"));
-        assertTrue(piece1.isLegalMove("a3"));
-        assertTrue(piece2.isLegalMove("d4"));
-        assertTrue(piece2.isLegalMove("d3"));
-        assertFalse(piece1.isLegalMove("b1"));
-        assertFalse(piece2.isLegalMove("c5"));
+        assertTrue(piece1.isLegalMove(Files.A + Ranks.TWO));
+        assertTrue(piece1.isLegalMove(Files.A + Ranks.TWO));
+        assertTrue(piece2.isLegalMove(Files.D + Ranks.FOUR));
+        assertTrue(piece2.isLegalMove(Files.D + Ranks.THREE));
+        assertFalse(piece1.isLegalMove(Files.B + Ranks.ONE));
+        assertFalse(piece2.isLegalMove(Files.C + Ranks.FIVE));
     }
 
     @Test
@@ -30,11 +30,13 @@ class PawnTest {
     void testGenerateMoves() {
         Position position = FENUtils.positionFromFEN("8/3p4/8/8/8/8/P7/8 w - - 0 1");
         Board board = position.getBoard();
-        Piece piece1 = board.pieceSearch("a2");
-        Piece piece2 = board.pieceSearch("d7");
-        Move[] piece1MovesExpected = {new Move(position, piece1, "a3"), new Move(position, piece1, "a4"),
+        Piece piece1 = board.pieceSearch(Files.A + Ranks.TWO);
+        Piece piece2 = board.pieceSearch(Files.D + Ranks.SEVEN);
+        Move[] piece1MovesExpected = {new Move(position, piece1, Files.A + Ranks.THREE),
+                new Move(position, piece1, Files.A + Ranks.FOUR),
                 null, null, null, null, null, null, null, null, null, null};
-        Move[] piece2MovesExpected = {new Move(position, piece2, "d6"), new Move(position, piece2, "d5"),
+        Move[] piece2MovesExpected = {new Move(position, piece2, Files.D + Ranks.SIX),
+                new Move(position, piece2, Files.D + Ranks.FIVE),
                 null, null, null, null, null, null, null, null, null, null};
         Move[] piece1MovesActual = piece1.generateMoves(position);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
@@ -47,10 +49,10 @@ class PawnTest {
     void testGenerateMovesBlocked() {
         Position position = FENUtils.positionFromFEN("rnbqkb1r/pppppppp/5n2/8/N7/8/PPPPPPPP/R1BQKBNR b KQkq - 3 2");
         Board board = position.getBoard();
-        Piece piece1 = board.pieceSearch("a2");
-        Piece piece2 = board.pieceSearch("f7");
-        Move[] piece1MovesExpected = {new Move(position, piece1, "a3"), null, null, null, null, null, null, null,
-                null, null, null, null};
+        Piece piece1 = board.pieceSearch(Files.A + Ranks.TWO);
+        Piece piece2 = board.pieceSearch(Files.F + Ranks.SEVEN);
+        Move[] piece1MovesExpected = {new Move(position, piece1, Files.A + Ranks.THREE),
+                null, null, null, null, null, null, null, null, null, null, null};
         Move[] piece2MovesExpected = {null, null, null, null, null, null, null, null, null, null, null, null};
         Move[] piece1MovesActual = piece1.generateMoves(position);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
@@ -63,17 +65,17 @@ class PawnTest {
     void testGenerateMovesCaptures() {
         Position position = FENUtils.positionFromFEN("rn1qkb1r/p1pp2pp/1p3p2/1b1npNB1/2PP4/5N2/PP2PPPP/R2QKB1R b KQkq - 7 10");
         Board board = position.getBoard();
-        Pawn piece1 = (Pawn) board.pieceSearch("c4)");
-        Pawn piece2 = (Pawn) board.pieceSearch("f6");
-        Move move1 = new Move(position, piece1, "b5");
+        Pawn piece1 = (Pawn) board.pieceSearch(Files.C + Ranks.FOUR);
+        Pawn piece2 = (Pawn) board.pieceSearch(Files.F + Ranks.SIX);
+        Move move1 = new Move(position, piece1, Files.B + Ranks.FIVE);
         move1.setCapture(true);
-        Move move2 = new Move(position, piece1, "d5");
+        Move move2 = new Move(position, piece1, Files.D + Ranks.FIVE);
         move2.setCapture(true);
-        Move[] piece1MovesExpected = {new Move(position, piece1, "c5"), move1, move2, null, null, null, null,
-                null, null, null, null, null};
+        Move[] piece1MovesExpected = {new Move(position, piece1, Files.C + Ranks.FIVE), move1, move2, null,
+                null, null, null, null, null, null, null, null};
         Move[] piece1MovesActual = piece1.generateMoves(position);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        move1 = new Move(position, piece2, "g5");
+        move1 = new Move(position, piece2, Files.G + Ranks.FIVE);
         move1.setCapture(true);
         Move[] piece2MovesExpected = {move1, null, null, null, null, null, null, null, null, null, null, null};
         Move[] piece2MovesActual = piece2.generateMoves(position);
@@ -85,18 +87,18 @@ class PawnTest {
     void testGenerateMovesEnPassant() {
         Position position = FENUtils.positionFromFEN("rn1qkb1r/pp3p1p/5n2/2pPp3/6p1/2B2P2/PPP1P1PP/RN1QKB1R w KQkq c6 0 10");
         Board board = position.getBoard();
-        piece1 = (Pawn) board.pieceSearch("d5");
-        piece2 = (Pawn) board.pieceSearch("g4");
-        Move move1 = new Move(position, piece1, "d6");
-        Move move2 = new Move(position, piece1 ,"c6");
+        piece1 = (Pawn) board.pieceSearch(Files.D + Ranks.FIVE);
+        piece2 = (Pawn) board.pieceSearch(Files.G + Ranks.FOUR);
+        Move move1 = new Move(position, piece1, Files.D + Ranks.SIX);
+        Move move2 = new Move(position, piece1 ,Files.C + Ranks.SIX);
         move2.setEnPassant(true);
         move2.setCapture(true);
         Move[] piece1MovesExpected = {move1, move2, null, null,
                 null, null, null, null, null, null, null, null};
         Move[] piece1MovesActual = piece1.generateMoves(position);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        move1 = new Move(position, piece2, "g3");
-        move2 = new Move(position, piece2, "f3");
+        move1 = new Move(position, piece2, Files.G + Ranks.THREE);
+        move2 = new Move(position, piece2, Files.F + Ranks.THREE);
         move2.setCapture(true);
         Move[] piece2MovesExpected = {move1, move2, null, null,
                 null, null, null, null, null, null, null, null};
@@ -109,9 +111,9 @@ class PawnTest {
     void testGenerateMovesPromotions() {
         Position position = FENUtils.positionFromFEN("2r1N3/3P4/8/8/8/8/3p4/2R1R3 w - - 0 1");
         Board board = position.getBoard();
-        piece1 = (Pawn) board.pieceSearch("d7");
-        piece2 = (Pawn) board.pieceSearch("d2");
-        String[] destinations = {"d8", "c8"};
+        piece1 = (Pawn) board.pieceSearch(Files.D + Ranks.SEVEN);
+        piece2 = (Pawn) board.pieceSearch(Files.D + Ranks.TWO);
+        int[] destinations = {Files.D + Ranks.EIGHT, Files.C + Ranks.EIGHT};
         Move[] piece1MovesExpected = new Move[12];
         int index = 0;
         for (int i = 0; i < 2; i++) {
@@ -128,7 +130,7 @@ class PawnTest {
         }
         Move[] piece1MovesActual = piece1.generateMoves(position);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        destinations = new String[] {"d1", "c1", "e1"};
+        destinations = new int[] {Files.D + Ranks.ONE, Files.C + Ranks.ONE, Files.E + Ranks.ONE};
         Move[] piece2MovesExpected = new Move[12];
         index = 0;
         for (int i = 0; i < 3; i++) {
@@ -151,7 +153,7 @@ class PawnTest {
     @DisplayName("Test moved")
     void testMoved() {
         assertFalse(piece1.getMoved());
-        piece1.move("a2");
+        piece1.move(Files.A + Ranks.TWO);
         assertTrue(piece1.getMoved());
     }
 
@@ -160,21 +162,21 @@ class PawnTest {
     void testCanCaptureSquare() {
         Position position = FENUtils.positionFromFEN("8/8/8/3p4/8/8/8/PK6 w - - 0 1");
         Board board = position.getBoard();
-        assertTrue(piece1.canCaptureSquare(board, "b2"));
-        assertFalse(piece1.canCaptureSquare(board, "a2"));
-        assertFalse(piece1.canCaptureSquare(board, "b1"));
-        assertTrue(piece2.canCaptureSquare(board, "c4"));
-        assertTrue(piece2.canCaptureSquare(board, "e4"));
-        assertFalse(piece2.canCaptureSquare(board, "d4"));
-        assertFalse(piece2.canCaptureSquare(board, "d6"));
-        assertFalse(piece2.canCaptureSquare(board, "f3"));
+        assertTrue(piece1.canCaptureSquare(board, Files.B + Ranks.TWO));
+        assertFalse(piece1.canCaptureSquare(board, Files.A + Ranks.TWO));
+        assertFalse(piece1.canCaptureSquare(board, Files.B + Ranks.ONE));
+        assertTrue(piece2.canCaptureSquare(board, Files.C + Ranks.FOUR));
+        assertTrue(piece2.canCaptureSquare(board, Files.E + Ranks.FOUR));
+        assertFalse(piece2.canCaptureSquare(board, Files.D + Ranks.FOUR));
+        assertFalse(piece2.canCaptureSquare(board, Files.D + Ranks.SIX));
+        assertFalse(piece2.canCaptureSquare(board, Files.F + Ranks.THREE));
     }
 
     @Test
     @DisplayName("Test copyToSquare")
     void testCopyToSquare() {
-        Pawn test = (Pawn) piece1.copyToSquare("d8");
-        assertEquals("d8", test.getSquare());
+        Pawn test = (Pawn) piece1.copyToSquare(Files.D + Ranks.EIGHT);
+        assertEquals(Files.D + Ranks.EIGHT, test.getSquare());
         assertEquals(piece1.getColour(), test.getColour());
         assertEquals(piece1.getMoved(), test.getMoved());
     }

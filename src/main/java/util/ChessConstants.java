@@ -5,6 +5,7 @@ public class ChessConstants {
     public static final int NUM_SQUARES = 64;
     public static final int NUM_FILES = 8;
     public static final int NUM_RANKS = 8;
+    public static final int NUM_DIRECTIONS = 8;
     public static final int NUM_PROMOTIONS = 4;
 
     public static final int MAX_PAWN_MOVES = 12;
@@ -14,11 +15,13 @@ public class ChessConstants {
     public static final int MAX_BISHOP_MOVES = 13;
     public static final int MAX_KNIGHT_MOVES = 8;
 
-    public static final int FILE_DIRECTION_INDEX = 0;
-    public static final int RANK_DIRECTION_INDEX = 1;
+    public static final char KINGSIDE_CASTLE_FILE = Files.G;
+    public static final char QUEENSIDE_CASTLE_FILE = Files.C;
+    public static final char KINGSIDE_CASTLE_ROOK_FILE = Files.F;
+    public static final char QUEENSIDE_CASTLE_ROOK_FILE = Files.D;
 
-    public static final char KINGSIDE_CASTLE_FILE = 'g';
-    public static final char QUEENSIDE_CASTLE_FILE = 'c';
-    public static final char KINGSIDE_CASTLE_ROOK_FILE = 'f';
-    public static final char QUEENSIDE_CASTLE_ROOK_FILE = 'd';
+    public static final int NO_EN_PASSANT_TARGET = -1;
+
+    public static final int FILE_OFFSET = 1;
+    public static final int RANK_OFFSET = 8;
 }

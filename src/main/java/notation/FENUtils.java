@@ -16,61 +16,57 @@ public class FENUtils {
             turn = PieceColour.BLACK;
         }
         fen[FENConstants.PIECE_FIELD] = fen[FENConstants.PIECE_FIELD].replaceAll(FENConstants.NEW_RANK, "");
-        String currentSquare;
-        int skip = 0;
-        int current = 0;
+        int square = 0;
         PieceColour colour;
         Piece[] pieces = new Piece[ChessConstants.NUM_SQUARES];
         boolean moved;
-        for (int squareIndex = 0; squareIndex < ChessConstants.NUM_SQUARES; squareIndex++) {
-            skip--;
-            if (skip > 0) { //used for numbers in FEN string representing sequential empty squares
-                continue;
-            }
-            if (Character.isDigit(fen[FENConstants.PIECE_FIELD].charAt(current))) {
-                skip = Character.getNumericValue(fen[FENConstants.PIECE_FIELD].charAt(current));
-                current++;
-                continue;
-            }
-            if (Character.isUpperCase(fen[FENConstants.PIECE_FIELD].charAt(current))) {
-                colour = PieceColour.WHITE;
+        for (char fenCharacter : fen[FENConstants.PIECE_FIELD].toCharArray()) {
+            if (Character.isDigit(fenCharacter)) {
+                square += (fenCharacter - '0');
             } else {
-                colour = PieceColour.BLACK;
+                if (Character.isUpperCase(fenCharacter)) {
+                    colour = PieceColour.WHITE;
+                } else {
+                    colour = PieceColour.BLACK;
+                }
+                switch (Character.toLowerCase(fenCharacter)) {
+                    case FENConstants.QUEEN_CHAR:
+                        pieces[square] = new Queen(colour, square);
+                        break;
+                    case FENConstants.BISHOP_CHAR:
+                        pieces[square] = new Bishop(colour, square);
+                        break;
+                    case FENConstants.KNIGHT_CHAR:
+                        pieces[square] = new Knight(colour, square);
+                        break;
+                    case FENConstants.KING_CHAR:
+                        pieces[square] = new King(colour, square, false);
+                        break;
+                    case FENConstants.ROOK_CHAR:
+                        pieces[square] = new Rook(colour, square);
+                        break;
+                    case FENConstants.PAWN_CHAR:
+                        if (square >= Files.A + Ranks.SEVEN && square <= Files.H + Ranks.SEVEN && colour == PieceColour.BLACK) {
+                            moved = false;
+                        } else {
+                            moved = !(square >= Files.A + Ranks.TWO && square <= Files.H + Ranks.TWO && colour == PieceColour.WHITE);
+                        }
+                        pieces[square] = new Pawn(colour, square, moved);
+                        break;
+                }
+                square += FENConstants.SQUARE_OFFSET;
             }
-            currentSquare = SquareMapUtils.mapIntToSquare(squareIndex);
-            char file = SquareMapUtils.getFile(currentSquare);
-            int rank = SquareMapUtils.getRank(currentSquare);
-            switch (Character.toLowerCase(fen[FENConstants.PIECE_FIELD].charAt(current))) {
-                case FENConstants.QUEEN_CHAR:
-                    pieces[squareIndex] = new Queen(colour, file, rank);
-                    break;
-                case FENConstants.BISHOP_CHAR:
-                    pieces[squareIndex] = new Bishop(colour, file, rank);
-                    break;
-                case FENConstants.KNIGHT_CHAR:
-                    pieces[squareIndex] = new Knight(colour, file, rank);
-                    break;
-                case FENConstants.PAWN_CHAR:
-                    if (rank == 7 && colour == PieceColour.BLACK) {
-                        moved = false;
-                    } else {
-                        moved = !(rank == 2 && colour == PieceColour.WHITE);
-                    }
-                    pieces[squareIndex] = new Pawn(colour, file, rank, moved);
-                    break;
-                case FENConstants.KING_CHAR:
-                    pieces[squareIndex] = new King(colour, file, rank,false);
-                    break;
-                case FENConstants.ROOK_CHAR:
-                    pieces[squareIndex] = new Rook(colour, file, rank);
-                    break;
-            }
-            current++;
+
+
         }
         Board board = new Board(pieces, new boolean[64], new boolean[64]);
         GameState gameState = new GameState(turn, moveCount, halfMoveClock);
         gameState.setCastlingRights(parseCastlingRights(fen[FENConstants.CASTLING_FIELD]));
-        gameState.setEnPassantTarget(fen[FENConstants.EN_PASSANT_FIELD]);
+        if (fen[FENConstants.EN_PASSANT_FIELD].equals(FENConstants.NONE)) {
+            gameState.setEnPassantTarget(ChessConstants.NO_EN_PASSANT_TARGET);
+        } else {
+            gameState.setEnPassantTarget(SquareMapUtils.mapSquareToInt(fen[FENConstants.EN_PASSANT_FIELD]));
+        }
         board.updateThreatMap(PieceColour.WHITE);
         board.updateThreatMap(PieceColour.BLACK);
         return new Position(board, gameState);
@@ -85,19 +81,17 @@ public class FENUtils {
         Board board = position.getBoard();
         GameState gameState = position.getGameState();
         char current = '0';
-        String square;
         Piece piece;
         StringBuilder fen = new StringBuilder();
-        for (int i = 0; i < 64; i++) {
-            if (((i) % 8 == 0) && i != 0) {
+        for (int squareIndex = 0; squareIndex < ChessConstants.NUM_SQUARES; squareIndex++) {
+            if (((squareIndex) % ChessConstants.NUM_FILES == 0) && squareIndex != 0) {
                 if (Character.isDigit(current) && current > '0') {
                     fen.append(current);
                     current = '0';
                 }
                 fen.append(FENConstants.NEW_RANK);
             }
-            square = SquareMapUtils.mapIntToSquare(i);
-            piece = board.pieceSearch(square);
+            piece = board.pieceSearch(squareIndex);
             if (piece == null) {
                 if (Character.isDigit(current)) {
                     current++;
@@ -118,7 +112,7 @@ public class FENUtils {
                     case PieceType.KNIGHT -> fen.append(piece.getColour() == PieceColour.WHITE ? FENConstants.WHITE_KNIGHT : FENConstants.BLACK_KNIGHT);
                 }
             }
-            if (i == 63 && Character.isDigit(current) && current > '0') {
+            if (squareIndex == 63 && Character.isDigit(current) && current > '0') {
                 fen.append(current);
             }
         }
@@ -150,7 +144,13 @@ public class FENUtils {
         if (!anyCastling) {
             fen.append(FENConstants.NONE);
         }
-        fen.append(FENConstants.SPACE).append(gameState.getEnPassantTarget()).append(FENConstants.SPACE);
+        fen.append(FENConstants.SPACE);
+        if (gameState.getEnPassantTarget() == ChessConstants.NO_EN_PASSANT_TARGET) {
+            fen.append(FENConstants.NONE);
+        } else {
+            fen.append(SquareMapUtils.mapIntToSquare(gameState.getEnPassantTarget()));
+        }
+        fen.append(FENConstants.SPACE);
         fen.append(gameState.getHalfMoveClock()).append(FENConstants.SPACE);
         fen.append(gameState.getMoveCount());
         return fen.toString();

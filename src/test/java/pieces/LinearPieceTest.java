@@ -9,19 +9,19 @@ class LinearPieceTest {
 
     @BeforeEach
     public void init() {
-        piece = new LinearPiece(PieceType.QUEEN, PieceColour.WHITE, 'd', 4) {
+        piece = new LinearPiece(PieceType.QUEEN, PieceColour.WHITE, Files.D + Ranks.FOUR) {
             @Override
             public Move[] generateMoves(Position position) {
                 return new Move[8]; //minimal implementation here to allow testing of concrete methods
             }
 
             @Override
-            public boolean canCaptureSquare(Board board, String targetSquare) {
+            public boolean canCaptureSquare(Board board, int targetSquare) {
                 return false; //minimal implementation here to allow testing of concrete methods
             }
 
             @Override
-            public Piece copyToSquare(String square) {
+            public Piece copyToSquare(int square) {
                 return null;
             }
         };
@@ -33,9 +33,11 @@ class LinearPieceTest {
         Position position = FENUtils.positionFromFEN("8/8/8/8/3Q4/8/8/8 w - - 0 1");
         Move[] moves = new Move[7];
         int movesIndex = 0;
-        piece.linearMoveSearch(position, moves, movesIndex, ChessDirections.NONE, ChessDirections.UP); //up
-        Move[] expectedMoves = {new Move(position, piece, "d5"), new Move(position, piece, "d6"),
-                new Move(position, piece, "d7"), new Move(position, piece, "d8"), null, null, null};
+        piece.linearMoveSearch(position, moves, movesIndex, ChessDirections.NONE + ChessDirections.UP); //up
+        Move[] expectedMoves = {new Move(position, piece, Files.D + Ranks.FIVE),
+                new Move(position, piece, Files.D + Ranks.SIX),
+                new Move(position, piece, Files.D + Ranks.SEVEN),
+                new Move(position, piece, Files.D + Ranks.EIGHT), null, null, null};
         assertArrayEquals(expectedMoves, moves);
     }
 
@@ -45,8 +47,9 @@ class LinearPieceTest {
         Position position = FENUtils.positionFromFEN("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
         Move[] moves = new Move[7];
         int movesIndex = 0;
-        piece.linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT, ChessDirections.UP); //up left
-        Move[] expectedMoves = {new Move(position, piece, "c5"), null, null, null, null, null, null};
+        piece.linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT + ChessDirections.UP); //up left
+        Move[] expectedMoves = {new Move(position, piece, Files.C + Ranks.FIVE), null, null, null, null,
+                null, null};
         assertArrayEquals(expectedMoves, moves);
     }
 
@@ -56,10 +59,10 @@ class LinearPieceTest {
         Position position = FENUtils.positionFromFEN("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
         Move[] moves = new Move[7];
         int movesIndex = 0;
-        piece.linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT, ChessDirections.UP); //up left
-        Move move1 = new Move(position, piece, "f6");
+        piece.linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT + ChessDirections.UP); //up left
+        Move move1 = new Move(position, piece, Files.F + Ranks.SIX);
         move1.setCapture(true);
-        Move[] expectedMoves = {new Move(position, piece, "e5"), move1, null, null, null,
+        Move[] expectedMoves = {new Move(position, piece, Files.E + Ranks.FIVE), move1, null, null, null,
                 null, null};
         assertArrayEquals(expectedMoves, moves);
     }
@@ -68,48 +71,65 @@ class LinearPieceTest {
     @DisplayName("Test recursiveCaptureCheck")
     void testRecursiveCaptureCheck() {
         Board board = FENUtils.positionFromFEN("8/8/8/3q2P1/8/8/8/8 w - - 0 1").getBoard();
-        LinearPiece piece = (LinearPiece) board.pieceSearch("d5");
+        LinearPiece piece = (LinearPiece) board.pieceSearch(Files.D + Ranks.FIVE);
         //targetSquare = "h5";
-        assertFalse(piece.recursiveCaptureCheck(board, 'g', 5, ChessDirections.LEFT, ChessDirections.NONE));
+        assertFalse(piece.recursiveCaptureCheck(board, Files.G + Ranks.FIVE,
+                ChessDirections.LEFT + ChessDirections.NONE));
         //targetSquare = "g5";
-        assertTrue(piece.recursiveCaptureCheck(board, 'f', 5, ChessDirections.LEFT, ChessDirections.NONE));
+        assertTrue(piece.recursiveCaptureCheck(board, Files.F + Ranks.FIVE,
+                ChessDirections.LEFT + ChessDirections.NONE));
         //targetSquare = "f5";
-        assertTrue(piece.recursiveCaptureCheck(board, 'e', 5, ChessDirections.LEFT, ChessDirections.NONE));
+        assertTrue(piece.recursiveCaptureCheck(board, Files.E + Ranks.FIVE,
+                ChessDirections.LEFT + ChessDirections.NONE));
     }
 
     @Test
     @DisplayName("Test getOrthogonalDirections")
     void testGetOrthogonalDirections() {
-        int[] directions;
-        directions = piece.getOrthogonalDirections('d', 6);
-        assertEquals(ChessDirections.NONE, directions[ChessConstants.FILE_DIRECTION_INDEX]);
-        assertEquals(ChessDirections.DOWN, directions[ChessConstants.RANK_DIRECTION_INDEX]);
-        directions = piece.getOrthogonalDirections('g', 4);
-        assertEquals(ChessDirections.LEFT, directions[ChessConstants.FILE_DIRECTION_INDEX]);
-        assertEquals(ChessDirections.NONE, directions[ChessConstants.RANK_DIRECTION_INDEX]);
-        directions = piece.getOrthogonalDirections('d', 1);
-        assertEquals(ChessDirections.NONE, directions[ChessConstants.FILE_DIRECTION_INDEX]);
-        assertEquals(ChessDirections.UP, directions[ChessConstants.RANK_DIRECTION_INDEX]);
-        directions = piece.getOrthogonalDirections('a', 4);
-        assertEquals(ChessDirections.RIGHT, directions[ChessConstants.FILE_DIRECTION_INDEX]);
-        assertEquals(ChessDirections.NONE, directions[ChessConstants.RANK_DIRECTION_INDEX]);
+        int direction;
+        int square = piece.getSquare();
+        int squareFile = SquareMapUtils.getFileContribution(square);
+        int squareRank = SquareMapUtils.getRankContribution(square);
+        int targetFile = SquareMapUtils.getFileContribution(Files.D + Ranks.SIX);
+        int targetRank = SquareMapUtils.getRankContribution(Files.D + Ranks.SIX);
+        direction = piece.getOrthogonalDirection(squareFile, squareRank, targetFile, targetRank);
+        assertEquals(ChessDirections.DOWN, direction);
+        targetFile = SquareMapUtils.getFileContribution(Files.G + Ranks.FOUR);
+        targetRank = SquareMapUtils.getRankContribution(Files.G + Ranks.FOUR);
+        direction = piece.getOrthogonalDirection(squareFile, squareRank, targetFile, targetRank);
+        assertEquals(ChessDirections.LEFT, direction);
+        targetFile = SquareMapUtils.getFileContribution(Files.D + Ranks.ONE);
+        targetRank = SquareMapUtils.getRankContribution(Files.D + Ranks.ONE);
+        direction = piece.getOrthogonalDirection(squareFile, squareRank, targetFile, targetRank);
+        assertEquals(ChessDirections.UP, direction);
+        targetFile = SquareMapUtils.getFileContribution(Files.A + Ranks.FOUR);
+        targetRank = SquareMapUtils.getRankContribution(Files.A + Ranks.FOUR);
+        direction = piece.getOrthogonalDirection(squareFile, squareRank, targetFile, targetRank);
+        assertEquals(ChessDirections.RIGHT, direction);
     }
 
     @Test
     @DisplayName("Test getDiagonalDirections")
     void testGetDiagonalDirections() {
-        int[] directions;
-        directions = piece.getDiagonalDirections('g', 7);
-        assertEquals(ChessDirections.LEFT, directions[ChessConstants.FILE_DIRECTION_INDEX]);
-        assertEquals(ChessDirections.DOWN, directions[ChessConstants.RANK_DIRECTION_INDEX]);
-        directions = piece.getDiagonalDirections('g', 1);
-        assertEquals(ChessDirections.LEFT, directions[ChessConstants.FILE_DIRECTION_INDEX]);
-        assertEquals(ChessDirections.UP, directions[ChessConstants.RANK_DIRECTION_INDEX]);
-        directions = piece.getDiagonalDirections('a', 1);
-        assertEquals(ChessDirections.RIGHT, directions[ChessConstants.FILE_DIRECTION_INDEX]);
-        assertEquals(ChessDirections.UP, directions[ChessConstants.RANK_DIRECTION_INDEX]);
-        directions = piece.getDiagonalDirections('a', 7);
-        assertEquals(ChessDirections.RIGHT, directions[ChessConstants.FILE_DIRECTION_INDEX]);
-        assertEquals(ChessDirections.DOWN, directions[ChessConstants.RANK_DIRECTION_INDEX]);
+        int direction;
+        int square = piece.getSquare();
+        int squareFile = SquareMapUtils.getFileContribution(square);
+        int squareRank = SquareMapUtils.getRankContribution(square);
+        int targetFile = SquareMapUtils.getFileContribution(Files.G + Ranks.SEVEN);
+        int targetRank = SquareMapUtils.getRankContribution(Files.G + Ranks.SEVEN);
+        direction = piece.getDiagonalDirection(squareFile, squareRank, targetFile, targetRank);
+        assertEquals(ChessDirections.LEFT + ChessDirections.DOWN, direction);
+        targetFile = SquareMapUtils.getFileContribution(Files.G + Ranks.ONE);
+        targetRank = SquareMapUtils.getRankContribution(Files.G + Ranks.ONE);
+        direction = piece.getDiagonalDirection(squareFile, squareRank, targetFile, targetRank);
+        assertEquals(ChessDirections.LEFT + ChessDirections.UP, direction);
+        targetFile = SquareMapUtils.getFileContribution(Files.A + Ranks.ONE);
+        targetRank = SquareMapUtils.getRankContribution(Files.A + Ranks.ONE);
+        direction = piece.getDiagonalDirection(squareFile, squareRank, targetFile, targetRank);
+        assertEquals(ChessDirections.RIGHT + ChessDirections.UP, direction);
+        targetFile = SquareMapUtils.getFileContribution(Files.A + Ranks.SEVEN);
+        targetRank = SquareMapUtils.getRankContribution(Files.A + Ranks.SEVEN);
+        direction = piece.getDiagonalDirection(squareFile, squareRank, targetFile, targetRank);
+        assertEquals(ChessDirections.RIGHT + ChessDirections.DOWN, direction);
     }
 }

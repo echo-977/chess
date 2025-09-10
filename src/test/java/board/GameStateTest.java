@@ -24,10 +24,10 @@ public class GameStateTest {
     @DisplayName("Test getEnPassantTarget")
     void testGetEnPassantTarget() {
         Position position = FENUtils.positionFromFEN("rn1qkb1r/pp3p1p/5n2/2pPp3/6p1/2B2P2/PPP1P1PP/RN1QKB1R w KQkq c6 0 10");
-        assertEquals("c6", position.getGameState().getEnPassantTarget());
+        assertEquals(Files.C + Ranks.SIX, position.getGameState().getEnPassantTarget());
         position = FENUtils.positionFromFEN("rnbqkbnr/pppp1p1p/8/4pPp1/8/8/PPPPP1PP/RNBQKBNR w KQkq g6 0 2");
-        assertEquals("g6", position.getGameState().getEnPassantTarget());
+        assertEquals(Files.G + Ranks.SIX, position.getGameState().getEnPassantTarget());
         position = FENUtils.positionFromFEN("rnbqkbnr/p1pppppp/8/8/1pP5/8/PP1PPPPP/RNBQKBNR b KQkq c3 0 3");
-        assertEquals("c3", position.getGameState().getEnPassantTarget());
+        assertEquals(Files.C + Ranks.THREE, position.getGameState().getEnPassantTarget());
     }
 }

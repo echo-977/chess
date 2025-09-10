@@ -1,7 +1,7 @@
 public class Move {
     private final Piece piece;
-    private final String destination;
-    private final String source;
+    private final int destination;
+    private final int source;
     private boolean isCheck;
     private boolean isCapture;
     private boolean isCheckmate;
@@ -19,7 +19,7 @@ public class Move {
      * @param piece       the piece that will do the move.
      * @param destination square the piece moves to.
      */
-    public Move(Position position, Piece piece, String destination) {
+    public Move(Position position, Piece piece, int destination) {
         this.piece = piece;
         this.source = piece.getSquare();
         this.destination = destination;
@@ -33,9 +33,9 @@ public class Move {
             queensideCastleMask = FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
         }
         if (piece.getType() == PieceType.KING) {
-            if (piece.getFile() + ChessDirections.RIGHT * 2 == SquareMapUtils.getFile(destination)) {
+            if (piece.getSquare() + ChessDirections.RIGHT * 2 == destination) {
                 castleMask = kingsideCastleMask;
-            } else if (piece.getFile() + ChessDirections.LEFT * 2 == SquareMapUtils.getFile(destination)) {
+            } else if (piece.getSquare() + ChessDirections.LEFT * 2 == destination) {
                 castleMask = queensideCastleMask;
             } else {
                 castleMask = FENConstants.NO_CASTLING_MASK;
@@ -44,7 +44,7 @@ public class Move {
         if (position.getBoard().pieceSearch(destination) != null) {
             isCapture = true;
         }
-        if (piece.getType() == PieceType.PAWN && destination.equals(position.getGameState().getEnPassantTarget())) {
+        if (piece.getType() == PieceType.PAWN && destination == position.getGameState().getEnPassantTarget()) {
             isEnPassant = true;
             isCapture = true;
         }
@@ -134,7 +134,7 @@ public class Move {
      * Simple getter for source.
      * @return source.
      */
-    public String getSource() {
+    public int getSource() {
         return source;
     }
 
@@ -142,7 +142,7 @@ public class Move {
      * Simpler getter for the destination square.
      * @return the destination.
      */
-    public String getDestination() {
+    public int getDestination() {
         return destination;
     }
 
@@ -217,16 +217,15 @@ public class Move {
     public void calculateCheck() {
         Board board = position.getBoard();
         PieceColour colour = piece.getColour();
-        char file;
-        int rank = SquareMapUtils.getRank(destination);
+        int file;
+        int rank = SquareMapUtils.getRankContribution(destination);
         Piece piece;
         if (promotionType != null) {
-            file = SquareMapUtils.getFile(destination);
             piece = switch (promotionType) {
-                case PieceType.QUEEN -> new Queen(colour, file, rank);
-                case PieceType.KNIGHT -> new Knight(colour, file, rank);
-                case PieceType.ROOK -> new Rook(colour, file, rank);
-                default -> new Bishop(colour, file, rank);
+                case PieceType.QUEEN -> new Queen(colour, destination);
+                case PieceType.KNIGHT -> new Knight(colour, destination);
+                case PieceType.ROOK -> new Rook(colour, destination);
+                default -> new Bishop(colour, destination);
             };
         } else {
             if ((castleMask & (FENConstants.WHITE_KINGSIDE_CASTLE_MASK | FENConstants.BLACK_KINGSIDE_CASTLE_MASK)) != FENConstants.NO_CASTLING_MASK) {
@@ -234,7 +233,7 @@ public class Move {
             } else {
                 file = ChessConstants.QUEENSIDE_CASTLE_ROOK_FILE;
             }
-            piece = new Rook(colour, file, rank);
+            piece = new Rook(colour, file + rank);
         }
         King king = board.findKing(colour.opponentColour());
         if (king != null){
@@ -290,18 +289,18 @@ public class Move {
                 break;
         }
         if (fileDisambiguation) {
-            move.append(piece.getFile());
+            move.append(SquareMapUtils.getFile(piece.getSquare()));
         }
         if (rankDisambiguation) {
-            move.append(piece.getRank());
+            move.append(SquareMapUtils.getRank(piece.getSquare()));
         }
         if (isCapture) {
             if (piece.getType() == PieceType.PAWN) {
-                move.append(piece.getFile());
+                move.append(SquareMapUtils.getFile(piece.getSquare()));
             }
             move.append(AlgebraicNotation.CAPTURE);
         }
-        move.append(destination);
+        move.append(SquareMapUtils.mapIntToSquare(destination));
         if (isCheckmate) {
             move.append(AlgebraicNotation.CHECKMATE);
         }
@@ -316,11 +315,11 @@ public class Move {
      * In the event that the move is illegal a null object is returned, otherwise the move is returned.
      *
      * @param position    the position the move is played in.
-     * @param destination the square the piece is moved to.
      * @param piece       the piece that is being moved.
+     * @param destination the square the piece is moved to.
      * @return null if the move is illegal, otherwise the move object.
      */
-    public static Move createIfLegal(Position position, String destination, Piece piece) {
+    public static Move createIfLegal(Position position, Piece piece, int destination) {
         Move potentialMove = new Move(position, piece, destination);
         Board board = position.getBoard();
         State stateBeforeMove = position.doMove(potentialMove);
@@ -331,12 +330,11 @@ public class Move {
             return potentialMove;
         }
         boolean[] threatMap = board.getThreatMap(colour.opponentColour());
-        String kingSquare = king.getSquare();
-        if (threatMap[SquareMapUtils.mapSquareToInt(kingSquare)]) { //king is in check so move is invalid
+        if (threatMap[king.getSquare()]) { //king is in check so move is invalid
             position.unDoMove(stateBeforeMove);
             return null;
         } else {
-            potentialMove.isCheck = board.getThreatMap(colour)[SquareMapUtils.mapSquareToInt(board.findKing(colour.opponentColour()).getSquare())];
+            potentialMove.isCheck = board.getThreatMap(colour)[board.findKing(colour.opponentColour()).getSquare()];
             position.unDoMove(stateBeforeMove);
             return potentialMove;
         }
@@ -371,13 +369,13 @@ public class Move {
         if (!(object instanceof Move other)) {
             return false;
         }
-        return other.piece.equals(this.piece) && other.destination.equals(this.destination) &&
+        return other.piece.equals(this.piece) && other.destination == this.destination &&
                 other.promotionType == this.promotionType && other.isEnPassant == this.isEnPassant &&
                 other.isCapture == this.isCapture;
     }
 
     @Override
     public String toString() {
-        return source + destination;
+        return SquareMapUtils.mapIntToSquare(source) + SquareMapUtils.mapIntToSquare(destination);
     }
 }

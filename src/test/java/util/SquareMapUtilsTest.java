@@ -20,4 +20,28 @@ public class SquareMapUtilsTest {
         assertEquals(0, SquareMapUtils.mapSquareToInt("a8"));
         assertEquals(35, SquareMapUtils.mapSquareToInt("d4"));
     }
+
+    @Test
+    @DisplayName("Test getFile (int)")
+    void testGetFile() {
+        assertEquals('a', SquareMapUtils.getFile(Files.A + Ranks.EIGHT));
+        assertEquals('h', SquareMapUtils.getFile(Files.H + Ranks.EIGHT));
+        assertEquals('d', SquareMapUtils.getFile(Files.D + Ranks.FOUR));
+    }
+
+    @Test
+    @DisplayName("Test getRank (int)")
+    void testGetRank() {
+        assertEquals(8, SquareMapUtils.getRank(Files.A + Ranks.EIGHT));
+        assertEquals(6, SquareMapUtils.getRank(Files.H + Ranks.SIX));
+        assertEquals(1, SquareMapUtils.getRank(Files.E + Ranks.ONE));
+    }
+
+    @Test
+    @DisplayName("Test getSquare")
+    void testGetSquare() {
+        assertEquals(Files.D + Ranks.SEVEN, SquareMapUtils.getSquare('d', 7));
+        assertEquals(Files.A + Ranks.EIGHT, SquareMapUtils.getSquare('a', 8));
+        assertEquals(Files.H + Ranks.ONE, SquareMapUtils.getSquare('h', 1));
+    }
 }
