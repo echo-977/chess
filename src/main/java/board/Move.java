@@ -98,7 +98,7 @@ public class Move {
     public void setCastleMask(int castleMask) {
         this.castleMask = castleMask;
         if (castleMask != FENConstants.NO_CASTLING_MASK) {
-            isCheck = causesCheck(position.getBoard(), piece, destination);
+            calculateCheck();
         }
     }
 
@@ -108,7 +108,7 @@ public class Move {
      */
     public void setPromotionType(PieceType promotionType) {
         this.promotionType = promotionType;
-        isCheck = causesCheck(position.getBoard(), piece, destination);
+        calculateCheck();
     }
 
     /**
@@ -211,40 +211,35 @@ public class Move {
     }
 
     /**
-     * Calculates whether moving a piece to a certain square will cause a check.
-     * @param board the board the piece is being moved on.
-     * @param piece the piece being moved.
-     * @param destination the square the piece is moved to.
-     * @return boolean stating whether the move is a check on the enemy king.
+     * Calculates whether the given move (castling or promotion) is a check or not.
+     * Works by simulating where the piece would end up and whether it can reach the opponents king square.
      */
-    public boolean causesCheck(Board board, Piece piece, String destination) {
-        Piece checkTest = piece.copyToSquare(destination);
-        PieceColour enemyKingColour = piece.getColour().opponentColour();
-        King enemyKing = board.findKing(enemyKingColour);
-        if (enemyKing == null) {
-            return false;
-        }
-        if (checkTest.canCaptureSquare(board, enemyKing.getSquare())) {
-            return true; //direct check
-        } //discovered checks
-        Board boardAfterMove = board.copy();
-        Piece pieceOnNewBoard = boardAfterMove.pieceSearch(piece.getSquare());
-        char destinationFile = SquareMapUtils.getFile(destination);
-        if (pieceOnNewBoard instanceof King king && Math.abs(destinationFile - pieceOnNewBoard.getFile()) == 2) {
-            king.castleMove(boardAfterMove, destination);
-        }
+    public void calculateCheck() {
+        Board board = position.getBoard();
+        PieceColour colour = piece.getColour();
+        char file;
+        int rank = SquareMapUtils.getRank(destination);
+        Piece piece;
         if (promotionType != null) {
-            boardAfterMove.handlePromotion(this);
+            file = SquareMapUtils.getFile(destination);
+            piece = switch (promotionType) {
+                case PieceType.QUEEN -> new Queen(colour, file, rank);
+                case PieceType.KNIGHT -> new Knight(colour, file, rank);
+                case PieceType.ROOK -> new Rook(colour, file, rank);
+                default -> new Bishop(colour, file, rank);
+            };
         } else {
-            pieceOnNewBoard.move(destination);
-        }
-        for (Piece updatedBoardPiece : boardAfterMove.getPieces()) {
-            if (updatedBoardPiece != null && updatedBoardPiece.getColour() != enemyKingColour &&
-                    updatedBoardPiece.canCaptureSquare(boardAfterMove, enemyKing.getSquare())) {
-                return true;
+            if ((castleMask & (FENConstants.WHITE_KINGSIDE_CASTLE_MASK | FENConstants.BLACK_KINGSIDE_CASTLE_MASK)) != FENConstants.NO_CASTLING_MASK) {
+                file = ChessConstants.KINGSIDE_CASTLE_ROOK_FILE;
+            } else {
+                file = ChessConstants.QUEENSIDE_CASTLE_ROOK_FILE;
             }
+            piece = new Rook(colour, file, rank);
         }
-        return false;
+        King king = board.findKing(colour.opponentColour());
+        if (king != null){
+            isCheck = piece.canCaptureSquare(board, board.findKing(colour.opponentColour()).getSquare());
+        }
     }
 
     /**

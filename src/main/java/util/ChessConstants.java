@@ -16,4 +16,9 @@ public class ChessConstants {
 
     public static final int FILE_DIRECTION_INDEX = 0;
     public static final int RANK_DIRECTION_INDEX = 1;
+
+    public static final char KINGSIDE_CASTLE_FILE = 'g';
+    public static final char QUEENSIDE_CASTLE_FILE = 'c';
+    public static final char KINGSIDE_CASTLE_ROOK_FILE = 'f';
+    public static final char QUEENSIDE_CASTLE_ROOK_FILE = 'd';
 }
