@@ -2,6 +2,8 @@ import java.util.Arrays;
 
 public class Board {
     private final Piece[] pieces;
+    private King whiteKing;
+    private King blackKing;
     private boolean[] whiteThreatMap;
     private boolean[] blackThreatMap;
 
@@ -16,6 +18,21 @@ public class Board {
         this.pieces = pieces;
         this.whiteThreatMap = whiteThreatMap;
         this.blackThreatMap = blackThreatMap;
+        for (Piece piece : pieces) {
+            if (piece != null && piece.getType() == PieceType.KING) {
+                if (piece.getColour() == PieceColour.WHITE) {
+                    whiteKing = (King) piece;
+                    if (blackKing != null) {
+                        break;
+                    }
+                } else {
+                    blackKing = (King) piece;
+                    if (whiteKing != null) {
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -44,12 +61,7 @@ public class Board {
      * @return king of the given colour.
      */
     public King findKing(PieceColour colour) {
-        for (int index = 0; index < ChessConstants.NUM_SQUARES; index++) {
-            if (pieces[index] != null && pieces[index].getType() == PieceType.KING && pieces[index].getColour() == colour) {
-                return (King) pieces[index];
-            }
-        }
-        return null;
+        return (colour == PieceColour.WHITE) ? whiteKing : blackKing;
     }
 
     /**
