@@ -10,7 +10,7 @@ public class Perft {
             return 1;
         }
         long nodes = 0;
-        Move[] moves = position.generateMoves(position.getGameState().getTurn());
+        Move[] moves = MoveGenerator.generateMoves(position);
         for (Move move : moves) {
             if (move != null) {
                 State stateBeforeMove = position.doMove(move);
@@ -42,7 +42,7 @@ public class Perft {
         }
         long nodes = 0;
         long count;
-        Move[] moves = position.generateMoves(position.getGameState().getTurn());
+        Move[] moves = MoveGenerator.generateMoves(position);
         for (Move move : moves) {
             if (move != null) {
                 State stateBeforeMove = position.doMove(move);
@@ -81,7 +81,7 @@ public class Perft {
             }
         }
         int numCPUCores = Runtime.getRuntime().availableProcessors();
-        Move[] moves = position.generateMoves(position.getGameState().getTurn());
+        Move[] moves = MoveGenerator.generateMoves(position);
         int numThreadMoves = (moves.length + numCPUCores - 1) / numCPUCores;
         final Move[][] threadMoves = new Move[numCPUCores][numThreadMoves];
         int threadMovesIndex;

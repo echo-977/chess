@@ -125,45 +125,6 @@ public class Position {
     }
 
     /**
-     * Generates all the moves for a given colour.
-     *
-     * @param colour the colour we want to generate moves for.
-     * @return an array of all the moves the colour can do.
-     */
-    public Move[] generateMoves(PieceColour colour) {
-        Piece[] pieces = board.getPieces();
-        int moveCount = 0;
-        Move[][] allMoves = new Move[ChessConstants.NUM_SQUARES][];
-        for (int squareIndex = 0; squareIndex < ChessConstants.NUM_SQUARES; squareIndex++) {
-            if (pieces[squareIndex] == null || pieces[squareIndex].getColour() != colour) {
-                allMoves[squareIndex] = new Move[0];
-                continue;
-            }
-            allMoves[squareIndex] = pieces[squareIndex].generateMoves(this);
-            for (Move move : allMoves[squareIndex]) {
-                if (move != null) {
-                    moveCount++;
-                }
-            }
-        }
-        Move[] moves = new Move[moveCount];
-        moveCount = 0;
-        for (int squareIndex = 0; squareIndex < ChessConstants.NUM_SQUARES ; squareIndex++) {
-            if (pieces[squareIndex] == null || pieces[squareIndex].getColour() != colour) {
-                continue;
-            }
-            for (Move move : allMoves[squareIndex]) {
-                if (move != null) {
-                    moves[moveCount] = move;
-                    moveCount++;
-                }
-            }
-        }
-        DisambiguationUtils.handleDisambiguation(moves);
-        return moves;
-    }
-
-    /**
      * Returns an identical, independent copy of the position.
      *
      * @return a functionally identical position.
