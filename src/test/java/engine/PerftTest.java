@@ -24,7 +24,6 @@ public class PerftTest {
     @DisplayName("Test generateMoves (position 2)")
     void testGenerateMovesPosition2() {
         Position position = FENUtils.positionFromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
-        Board board = position.getBoard();
         //assertEquals(48, Perft.ThreadedPerft(position, 1, false));
         //assertEquals(2039, Perft.ThreadedPerft(position, 2, false));
         //assertEquals(97862, Perft.ThreadedPerft(position, 3, false));
