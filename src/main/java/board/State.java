@@ -1,5 +1,5 @@
 public record State(
-        Move move,
+        int move,
         Piece capturedPiece,
         int enPassantSquare,
         int castlingRights,

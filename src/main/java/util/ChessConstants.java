@@ -3,8 +3,8 @@ public class ChessConstants {
 
     public static final int NUM_PIECES = 32;
     public static final int NUM_SQUARES = 64;
-    public static final int NUM_FILES = 8;
-    public static final int NUM_RANKS = 8;
+    public static final int NUM_FILES = BOARD_SIZE;
+    public static final int NUM_RANKS = BOARD_SIZE;
     public static final int NUM_DIRECTIONS = 8;
     public static final int NUM_PROMOTIONS = 4;
 
@@ -15,10 +15,17 @@ public class ChessConstants {
     public static final int MAX_BISHOP_MOVES = 13;
     public static final int MAX_KNIGHT_MOVES = 8;
 
-    public static final char KINGSIDE_CASTLE_FILE = Files.G;
-    public static final char QUEENSIDE_CASTLE_FILE = Files.C;
-    public static final char KINGSIDE_CASTLE_ROOK_FILE = Files.F;
-    public static final char QUEENSIDE_CASTLE_ROOK_FILE = Files.D;
+    public static final int KINGSIDE_CASTLE_FILE = Files.G;
+    public static final int QUEENSIDE_CASTLE_FILE = Files.C;
+    public static final int KINGSIDE_CASTLE_ROOK_FILE = Files.F;
+    public static final int QUEENSIDE_CASTLE_ROOK_FILE = Files.D;
+    public static final int KINGSIDE_ROOK_SOURCE_FILE = Files.H;
+    public static final int QUEENSIDE_ROOK_SOURCE_FILE = Files.A;
+    public static final int WHITE_KINGSIDE_ROOK_SQUARE = Squares.H1;
+    public static final int WHITE_QUEENSIDE_ROOK_SQUARE = Squares.A1;
+    public static final int BLACK_KINGSIDE_ROOK_SQUARE = Squares.H8;
+    public static final int BLACK_QUEENSIDE_ROOK_SQUARE = Squares.A8;
+
 
     public static final int NO_EN_PASSANT_TARGET = -1;
 

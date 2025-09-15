@@ -13,11 +13,11 @@ public class Bishop extends LinearPiece{
     /**
      * Generates all the legal moves the bishop can do.
      * @param position the position that we are searching for moves on.
-     * @return an array of all the squares the bishop can move to as strings.
+     * @return an array of all the moves the bishop can do.
      */
     @Override
-    public Move[] generateMoves(Position position) {
-        Move[] moves = new Move[ChessConstants.MAX_BISHOP_MOVES];
+    public int[] generateMoves(Position position) {
+        int[] moves = new int[ChessConstants.MAX_BISHOP_MOVES];
         int movesIndex = 0;
         movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT + ChessDirections.UP);
         movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT + ChessDirections.UP);

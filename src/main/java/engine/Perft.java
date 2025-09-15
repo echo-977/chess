@@ -10,16 +10,16 @@ public class Perft {
             return 1;
         }
         long nodes = 0;
-        Move[] moves = MoveGenerator.generateMoves(position);
-        for (Move move : moves) {
-            if (move != null) {
+        int[] moves = MoveGenerator.generateMoves(position);
+        for (int move : moves) {
+            if (move != MoveFlags.NO_MOVE) {
                 State stateBeforeMove = position.doMove(move);
                 try {
                     nodes += Perft(position, depth - 1);
                     position.unDoMove(stateBeforeMove);
                 } catch (Exception e) {
                     position.unDoMove(stateBeforeMove);
-                    System.out.println("Error with move: " + move);
+                    System.out.println("Error with move: " + Move.toString(move));
                     System.out.println("On board: " + FENUtils.getFEN(position));
                     position.doMove(move);
                     throw e;
@@ -42,18 +42,18 @@ public class Perft {
         }
         long nodes = 0;
         long count;
-        Move[] moves = MoveGenerator.generateMoves(position);
-        for (Move move : moves) {
-            if (move != null) {
+        int[] moves = MoveGenerator.generateMoves(position);
+        for (int move : moves) {
+            if (move != MoveFlags.NO_MOVE) {
                 State stateBeforeMove = position.doMove(move);
                 try {
                     count = Perft(position, depth - 1);
                     position.unDoMove(stateBeforeMove);
-                    System.out.println(move + ": " + count);
+                    System.out.println(Move.toString(move) + ": " + count);
                     nodes += count;
                 } catch (Exception e) {
                     position.unDoMove(stateBeforeMove);
-                    System.out.println("Error when doing move: " + move);
+                    System.out.println("Error when doing move: " + Move.toString(move));
                     System.out.println("On board: " + FENUtils.getFEN(position));
                     position.doMove(move);
                     throw e;
@@ -81,9 +81,9 @@ public class Perft {
             }
         }
         int numCPUCores = Runtime.getRuntime().availableProcessors();
-        Move[] moves = MoveGenerator.generateMoves(position);
+        int[] moves = MoveGenerator.generateMoves(position);
         int numThreadMoves = (moves.length + numCPUCores - 1) / numCPUCores;
-        final Move[][] threadMoves = new Move[numCPUCores][numThreadMoves];
+        final int[][] threadMoves = new int[numCPUCores][numThreadMoves];
         int threadMovesIndex;
         int index;
         Thread[] threads = new Thread[numCPUCores];
@@ -100,14 +100,13 @@ public class Perft {
             threads[threadIndex] = new Thread(() -> {
                 long nodes = 0;
                 long count;
-                for (Move move : threadMoves[threadNum]) {
-                    if (move != null) {
+                for (int move : threadMoves[threadNum]) {
+                    if (move != MoveFlags.NO_MOVE) {
                         Position positionCopy = position.copy();
-                        Move moveCopy = move.clone(positionCopy);
-                        positionCopy.doMove(moveCopy);
+                        positionCopy.doMove(move);
                         if (doDivide) {
                             count = Perft(positionCopy, depth - 1);
-                            System.out.println(move + ": " + count);
+                            System.out.println(Move.toString(move) + ": " + count);
                             nodes += count;
                         } else {
                             nodes += Perft(positionCopy, depth - 1);

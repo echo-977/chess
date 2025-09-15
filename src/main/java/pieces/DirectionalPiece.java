@@ -16,10 +16,10 @@ public abstract class DirectionalPiece extends Piece {
      * Searches each given direction from the piece, checking if it is valid to move to that square.
      * Used in the move generation methods for king and knight.
      * @param position the position the piece is moving on.
-     * @param moves the current string of moves generated (legal moves are added to this).
+     * @param moves the array of moves generated (legal moves are added to this).
      * @param directions array of 2d directions the piece can go in.
      */
-    public void directionalMoveSearch(Position position, Move[] moves, int[] directions) {
+    public void directionalMoveSearch(Position position, int[] moves, int[] directions) {
         int square = getSquare();
         int candidateMove;
         Piece piece;
@@ -29,8 +29,8 @@ public abstract class DirectionalPiece extends Piece {
             if (isLegalMove(candidateMove)) {
                 piece = position.getBoard().pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    moves[movesIndex] = Move.createIfLegal(position, this, candidateMove);
-                    if (moves[movesIndex] != null) {
+                    moves[movesIndex] = Move.createIfLegal(position, candidateMove, square);
+                    if (moves[movesIndex] != MoveFlags.NO_MOVE) {
                         movesIndex++;
                     }
                 }

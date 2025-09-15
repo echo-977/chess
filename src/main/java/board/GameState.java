@@ -81,22 +81,6 @@ public class GameState {
     }
 
     /**
-     * Simple setter for halfmove clock.
-     * @param halfMoveClock the value the halfMoveClock will be set to.
-     */
-    public void setHalfMoveClock(int halfMoveClock) {
-        this.halfMoveClock = halfMoveClock;
-    }
-
-    /**
-     * Simple setter for moveCount.
-     * @param moveCount the value moveCount will be set to.
-     */
-    public void setMoveCount(int moveCount) {
-        this.moveCount = moveCount;
-    }
-
-    /**
      * Simple toggle for the turn.
      * Swaps the turn to the other colour.
      */
@@ -106,10 +90,9 @@ public class GameState {
 
     /**
      * Handle the removal of castling rights if the move uses a king or rook.
-     * @param move the move that causes castling rights to need removal.
+     * @param movePiece the pieced moved that needs castling rights to be removed.
      */
-    public void removeCastlingRights(Move move) {
-        Piece movePiece = move.getPiece();
+    public void removeCastlingRights(Piece movePiece) {
         PieceType movePieceType = movePiece.getType();
         if (movePieceType == PieceType.KING) {
             if (movePiece.getColour() == PieceColour.WHITE) {
@@ -120,13 +103,13 @@ public class GameState {
                 castlingRights &= ~FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
             }
         } else if (movePieceType == PieceType.ROOK) {
-            if (SquareMapUtils.getFileContribution(movePiece.getSquare()) == Files.H) {
+            if (SquareMapUtils.getFileContribution(movePiece.getSquare()) == ChessConstants.KINGSIDE_ROOK_SOURCE_FILE) {
                 if (movePiece.getColour() == PieceColour.WHITE) {
                     castlingRights &= ~FENConstants.WHITE_KINGSIDE_CASTLE_MASK;
                 } else {
                     castlingRights &= ~FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
                 }
-            } else if (SquareMapUtils.getRankContribution(movePiece.getSquare()) == Files.A) {
+            } else if (SquareMapUtils.getFileContribution(movePiece.getSquare()) == ChessConstants.QUEENSIDE_ROOK_SOURCE_FILE) {
                 if (movePiece.getColour() == PieceColour.WHITE) {
                     castlingRights &= ~FENConstants.WHITE_QUEENSIDE_CASTLE_MASK;
                 } else {
@@ -140,10 +123,11 @@ public class GameState {
      * Increments the move and half move clocks if they are meant to be.
      * Move clock increments with each black move.
      * Half move clock increments with every capture or non pawn move, otherwise it is reset to zero.
-     * @param move the move being played.
+     * @param movePiece the piece moved.
+     * @param moveFlag 4 bit flag that contains whether or not a move is a capture.
      */
-    public void incrementMoveClocks(Move move) {
-        if (move.getPiece().getType() == PieceType.PAWN || move.isCapture()) {
+    public void incrementMoveClocks(Piece movePiece, int moveFlag) {
+        if (movePiece.getType() == PieceType.PAWN || (moveFlag & MoveFlags.CAPTURE_BIT) == MoveFlags.CAPTURE_BIT) {
             this.halfMoveClock = 0;
         } else {
             this.halfMoveClock++;

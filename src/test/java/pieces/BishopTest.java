@@ -10,54 +10,54 @@ class BishopTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Bishop(PieceColour.WHITE, Files.A + Ranks.ONE);
-        piece2 = new Bishop(PieceColour.BLACK, Files.D + Ranks.FIVE);
+        piece1 = new Bishop(PieceColour.WHITE, Squares.A1);
+        piece2 = new Bishop(PieceColour.BLACK, Squares.D5);
     }
 
     @Test
     @DisplayName("Test isLegalMove")
     void testLegalMove() {
-        assertTrue(piece1.isLegalMove(Files.B + Ranks.TWO));
-        assertTrue(piece2.isLegalMove(Files.E + Ranks.FOUR));
-        assertFalse(piece1.isLegalMove(Files.B + Ranks.SIX));
-        assertFalse(piece2.isLegalMove(Files.F + Ranks.EIGHT));
+        assertTrue(piece1.isLegalMove(Squares.B2));
+        assertTrue(piece2.isLegalMove(Squares.E4));
+        assertFalse(piece1.isLegalMove(Squares.B6));
+        assertFalse(piece2.isLegalMove(Squares.F8));
     }
 
     @Test
     @DisplayName("Test generateMoves without pieces")
     void testGenerateMoves() {
-        piece1 = new Bishop(PieceColour.WHITE, Files.D + Ranks.FOUR);
-        piece2 = new Bishop(PieceColour.BLACK, Files.E + Ranks.FOUR);
+        piece1 = new Bishop(PieceColour.WHITE, Squares.D4);
+        piece2 = new Bishop(PieceColour.BLACK, Squares.E4);
         Position position = FENUtils.positionFromFEN("8/8/8/8/3Bb3/8/8/8 w - - 0 1");
-        Move[] piece1MovesExpected = {new Move(position, piece1, Files.C + Ranks.FIVE),
-                new Move(position, piece1, Files.B + Ranks.SIX),
-                new Move(position, piece1, Files.A + Ranks.SEVEN),
-                new Move(position, piece1, Files.E + Ranks.FIVE),
-                new Move(position, piece1, Files.F + Ranks.SIX),
-                new Move(position, piece1, Files.G + Ranks.SEVEN),
-                new Move(position, piece1, Files.H + Ranks.EIGHT),
-                new Move(position, piece1, Files.E + Ranks.THREE),
-                new Move(position, piece1, Files.F + Ranks.TWO),
-                new Move(position, piece1, Files.G + Ranks.ONE),
-                new Move(position, piece1, Files.C + Ranks.THREE),
-                new Move(position, piece1, Files.B + Ranks.TWO),
-                new Move(position, piece1, Files.A + Ranks.ONE)};
-        Move[] piece2MovesExpected = {new Move(position, piece2, Files.D + Ranks.FIVE),
-                new Move(position, piece2, Files.C + Ranks.SIX),
-                new Move(position, piece2, Files.B + Ranks.SEVEN),
-                new Move(position, piece2, Files.A + Ranks.EIGHT),
-                new Move(position, piece2, Files.F + Ranks.FIVE),
-                new Move(position, piece2, Files.G + Ranks.SIX),
-                new Move(position, piece2, Files.H + Ranks.SEVEN),
-                new Move(position, piece2, Files.F + Ranks.THREE),
-                new Move(position, piece2, Files.G + Ranks.TWO),
-                new Move(position, piece2, Files.H + Ranks.ONE),
-                new Move(position, piece2, Files.D + Ranks.THREE),
-                new Move(position, piece2, Files.C + Ranks.TWO),
-                new Move(position, piece2, Files.B + Ranks.ONE)};
-        Move[] piece1MovesActual = piece1.generateMoves(position);
+        int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE | Squares.C5 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
+                MoveFlags.QUIET_MOVE | Squares.B6 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
+                MoveFlags.QUIET_MOVE | Squares.A7 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
+                MoveFlags.QUIET_MOVE | Squares.E5 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
+                MoveFlags.QUIET_MOVE | Squares.F6 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
+                MoveFlags.QUIET_MOVE | Squares.G7 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
+                MoveFlags.QUIET_MOVE | Squares.H8 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
+                MoveFlags.QUIET_MOVE | Squares.E3 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
+                MoveFlags.QUIET_MOVE | Squares.F2 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
+                MoveFlags.QUIET_MOVE | Squares.G1 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
+                MoveFlags.QUIET_MOVE | Squares.C3 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
+                MoveFlags.QUIET_MOVE | Squares.B2 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
+                MoveFlags.QUIET_MOVE | Squares.A1 << MoveFlags.DESTINATION_SHIFT | Squares.D4};
+        int[] piece2MovesExpected = {MoveFlags.QUIET_MOVE | Squares.D5 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
+                MoveFlags.QUIET_MOVE | Squares.C6 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
+                MoveFlags.QUIET_MOVE | Squares.B7 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
+                MoveFlags.QUIET_MOVE | Squares.A8 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
+                MoveFlags.QUIET_MOVE | Squares.F5 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
+                MoveFlags.QUIET_MOVE | Squares.G6 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
+                MoveFlags.QUIET_MOVE | Squares.H7 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
+                MoveFlags.QUIET_MOVE | Squares.F3 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
+                MoveFlags.QUIET_MOVE | Squares.G2 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
+                MoveFlags.QUIET_MOVE | Squares.H1 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
+                MoveFlags.QUIET_MOVE | Squares.D3 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
+                MoveFlags.QUIET_MOVE | Squares.C2 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
+                MoveFlags.QUIET_MOVE | Squares.B1 << MoveFlags.DESTINATION_SHIFT | Squares.E4};
+        int[] piece1MovesActual = piece1.generateMoves(position);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        Move[] piece2MovesActual = piece2.generateMoves(position);
+        int[] piece2MovesActual = piece2.generateMoves(position);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 
@@ -66,31 +66,30 @@ class BishopTest {
     void testGenerateMovesWithPieces() {
         Position position = FENUtils.positionFromFEN("r2qkbnr/pp2pp2/n1p3pp/3p1b2/3P1B2/6PP/PPP1PP2/RN1QKBNR w KQkq - 0 1");
         Board board = position.getBoard();
-        piece1 = (Bishop) board.pieceSearch(Files.F + Ranks.FOUR);
-        piece2 = (Bishop) board.pieceSearch(Files.F + Ranks.FIVE);
-        Move move1 = new Move(position, piece1, Files.H + Ranks.SIX);
-        move1.setCapture(true);
-        Move[] piece1MovesExpected = {new Move(position, piece1, Files.E + Ranks.FIVE),
-                new Move(position, piece1, Files.D + Ranks.SIX),
-                new Move(position, piece1, Files.C + Ranks.SEVEN),
-                new Move(position, piece1, Files.B + Ranks.EIGHT),
-                new Move(position, piece1, Files.G + Ranks.FIVE), move1,
-                new Move(position, piece1, Files.E + Ranks.THREE),
-                new Move(position, piece1, Files.D + Ranks.TWO),
-                new Move(position, piece1, Files.C + Ranks.ONE), null, null, null, null};
-        Move[] piece1MovesActual = piece1.generateMoves(position);
+        piece1 = (Bishop) board.pieceSearch(Squares.F4);
+        piece2 = (Bishop) board.pieceSearch(Squares.F5);
+        int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE | Squares.E5 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
+                MoveFlags.QUIET_MOVE | Squares.D6 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
+                MoveFlags.QUIET_MOVE | Squares.C7 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
+                MoveFlags.QUIET_MOVE | Squares.B8 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
+                MoveFlags.QUIET_MOVE | Squares.G5 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
+                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.H6 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
+                MoveFlags.QUIET_MOVE | Squares.E3 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
+                MoveFlags.QUIET_MOVE | Squares.D2 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
+                MoveFlags.QUIET_MOVE | Squares.C1 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
+                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
+        int[] piece1MovesActual = piece1.generateMoves(position);
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        move1 = new Move(position, piece2, Files.H + Ranks.THREE);
-        move1.setCapture(true);
-        Move move2 = new Move(position, piece2, Files.C + Ranks.TWO);
-        move2.setCapture(true);
-        Move[] piece2MovesExpected = {new Move(position, piece2, Files.E + Ranks.SIX),
-                new Move(position, piece2, Files.D + Ranks.SEVEN),
-                new Move(position, piece2, Files.C + Ranks.EIGHT),
-                new Move(position, piece2, Files.G + Ranks.FOUR), move1,
-                new Move(position, piece2, Files.E + Ranks.FOUR),
-                new Move(position, piece2, Files.D + Ranks.THREE), move2, null, null, null, null, null};
-        Move[] piece2MovesActual = piece2.generateMoves(position);
+        int[] piece2MovesExpected = {MoveFlags.QUIET_MOVE | Squares.E6 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
+                MoveFlags.QUIET_MOVE | Squares.D7 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
+                MoveFlags.QUIET_MOVE | Squares.C8 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
+                MoveFlags.QUIET_MOVE | Squares.G4 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
+                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.H3 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
+                MoveFlags.QUIET_MOVE | Squares.E4 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
+                MoveFlags.QUIET_MOVE | Squares.D3 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
+                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.C2 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
+                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
+        int[] piece2MovesActual = piece2.generateMoves(position);
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 
@@ -99,23 +98,22 @@ class BishopTest {
     void testCanCaptureSquare() {
         Position position = FENUtils.positionFromFEN("8/1P3P2/8/3b4/8/1P6/6P1/8 w - - 0 1");
         Board board = position.getBoard();
-        Bishop bishop = (Bishop) board.pieceSearch(Files.D + Ranks.FIVE);
-        assertFalse(bishop.canCaptureSquare(board, Files.G + Ranks.EIGHT));
-        assertTrue(bishop.canCaptureSquare(board, Files.F + Ranks.SEVEN));
-        assertFalse(bishop.canCaptureSquare(board, Files.H + Ranks.ONE));
-        assertTrue(bishop.canCaptureSquare(board, Files.G + Ranks.TWO));
-        assertFalse(bishop.canCaptureSquare(board, Files.A + Ranks.TWO));
-        assertTrue(bishop.canCaptureSquare(board, Files.B + Ranks.THREE));
-        assertFalse(bishop.canCaptureSquare(board, Files.A + Ranks.EIGHT));
-        assertTrue(bishop.canCaptureSquare(board, Files.B + Ranks.SEVEN));
+        Bishop bishop = (Bishop) board.pieceSearch(Squares.D5);
+        assertFalse(bishop.canCaptureSquare(board, Squares.G8));
+        assertTrue(bishop.canCaptureSquare(board, Squares.F7));
+        assertFalse(bishop.canCaptureSquare(board, Squares.H1));
+        assertTrue(bishop.canCaptureSquare(board, Squares.G2));
+        assertFalse(bishop.canCaptureSquare(board, Squares.A2));
+        assertTrue(bishop.canCaptureSquare(board, Squares.B3));
+        assertFalse(bishop.canCaptureSquare(board, Squares.A8));
+        assertTrue(bishop.canCaptureSquare(board, Squares.B7));
     }
-
 
     @Test
     @DisplayName("Test copyToSquare")
     void testCopyToSquare() {
-        Bishop test = (Bishop) piece1.copyToSquare(Files.D + Ranks.EIGHT);
-        assertEquals(Files.D + Ranks.EIGHT, test.getSquare());
+        Bishop test = (Bishop) piece1.copyToSquare(Squares.D8);
+        assertEquals(Squares.D8, test.getSquare());
         assertEquals(piece1.getColour(), test.getColour());
     }
 }

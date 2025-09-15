@@ -14,13 +14,13 @@ public class King extends DirectionalPiece{
     }
 
     /**
-     * Generates all the (pseudo)legal moves the king can do.
+     * Generates all the legal moves the king can do.
      * @param position the position that we are searching for moves on.
-     * @return an array of all the squares the king can move to as strings.
+     * @return an array of all the moves the king can do.
      */
     @Override
-    public Move[] generateMoves(Position position) {
-        Move[] moves = new Move[ChessConstants.MAX_KING_MOVES];
+    public int[] generateMoves(Position position) {
+        int[] moves = new int[ChessConstants.MAX_KING_MOVES];
         int[] directions = {
                 ChessDirections.NONE + ChessDirections.UP, ChessDirections.RIGHT + ChessDirections.UP,
                 ChessDirections.RIGHT + ChessDirections.NONE, ChessDirections.RIGHT + ChessDirections.DOWN,
@@ -31,8 +31,9 @@ public class King extends DirectionalPiece{
         PieceColour colour = getColour();
         PieceColour enemyColour = colour.opponentColour();
         int castlingRights = position.getGameState().getCastlingRights();
-        int nextIndex;
-        int rank = SquareMapUtils.getRankContribution(getSquare());
+        int nextIndex = findNextIndex(moves);
+        int square = getSquare();
+        int rank = SquareMapUtils.getRankContribution(square);
         int kingsideCastleMask;
         int queensideCastleMask;
         if (colour == PieceColour.WHITE) {
@@ -43,24 +44,17 @@ public class King extends DirectionalPiece{
             queensideCastleMask = FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
         }
         Board board = position.getBoard();
-        if ((castlingRights & kingsideCastleMask) != 0 &&
-                !board.getThreatMap(enemyColour)[getSquare()]) {
+        if ((castlingRights & kingsideCastleMask) != 0 && !board.getThreatMap(enemyColour)[getSquare()]) {
             if (canCastleSearch(board, ChessConstants.KINGSIDE_CASTLE_FILE)) {
-                nextIndex = findNextIndex(moves);
-                moves[nextIndex] = Move.createIfLegal(position, this, ChessConstants.KINGSIDE_CASTLE_FILE + rank);
-                if (moves[nextIndex] != null) {
-                    moves[nextIndex].setCastleMask(kingsideCastleMask);
+                moves[nextIndex] = Move.createIfLegal(position, ChessConstants.KINGSIDE_CASTLE_FILE + rank, square);
+                if (moves[nextIndex] != MoveFlags.NO_MOVE) {
+                    nextIndex++;
                 }
             }
         }
-        if ((castlingRights & queensideCastleMask) != 0 &&
-                !board.getThreatMap(enemyColour)[getSquare()]) {
+        if ((castlingRights & queensideCastleMask) != 0 && !board.getThreatMap(enemyColour)[getSquare()]) {
             if (canCastleSearch(board, ChessConstants.QUEENSIDE_CASTLE_FILE) && board.pieceSearch(Files.B + rank) == null) {
-                nextIndex = findNextIndex(moves);
-                moves[nextIndex] = Move.createIfLegal(position, this, ChessConstants.QUEENSIDE_CASTLE_FILE + rank);
-                if (moves[nextIndex] != null) {
-                    moves[nextIndex].setCastleMask(queensideCastleMask);
-                }
+                moves[nextIndex] = Move.createIfLegal(position, ChessConstants.QUEENSIDE_CASTLE_FILE + rank, square);
             }
         }
         return moves;
@@ -127,9 +121,9 @@ public class King extends DirectionalPiece{
      * @param moves the array of moves.
      * @return index of first empty slot in the array.
      */
-    public int findNextIndex(Move[] moves) {
+    public int findNextIndex(int[] moves) {
         for (int i = 0; i < moves.length; i++) {
-            if (moves[i] == null) {
+            if (moves[i] == 0) {
                 return i;
             }
         }
@@ -171,7 +165,7 @@ public class King extends DirectionalPiece{
      * @param directions array of 2d directions the king can go in.
      */
     @Override
-    public void directionalMoveSearch(Position position, Move[] moves, int[] directions) {
+    public void directionalMoveSearch(Position position, int[] moves, int[] directions) {
         int square = getSquare();
         int candidateMove;
         Piece piece;
@@ -183,8 +177,8 @@ public class King extends DirectionalPiece{
             if (isLegalMove(candidateMove) && !threatMap[candidateMove]) {
                 piece = board.pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    moves[movesIndex] = Move.createIfLegal(position, this, candidateMove);
-                    if (moves[movesIndex] != null) {
+                    moves[movesIndex] = Move.createIfLegal(position, candidateMove, square);
+                    if (moves[movesIndex] != MoveFlags.NO_MOVE) {
                         movesIndex++;
                     }
                 }

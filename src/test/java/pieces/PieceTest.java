@@ -12,8 +12,8 @@ class PieceTest {
     public static void init() {
         piece = new Piece(PieceType.PAWN, PieceColour.WHITE, Files.A + Ranks.TWO) {
             @Override
-            public Move[] generateMoves(Position position) {
-                return new Move[8]; // minimal implementation here to allow testing of concrete methods
+            public int[] generateMoves(Position position) {
+                return new int[0]; // minimal implementation here to allow testing of concrete methods
             }
 
             @Override
@@ -31,10 +31,10 @@ class PieceTest {
     @Test
     @DisplayName("Test getSquare()")
     void getSquareTest() {
-        piece = new Piece(PieceType.PAWN, PieceColour.WHITE, Files.A + Ranks.TWO) {
+        piece = new Piece(PieceType.PAWN, PieceColour.WHITE, Squares.A2) {
             @Override
-            public Move[] generateMoves(Position position) {
-                return new Move[8]; // minimal implementation here to allow testing of concrete methods
+            public int[] generateMoves(Position position) {
+                return new int[0]; // minimal implementation here to allow testing of concrete methods
             }
 
             @Override
@@ -47,14 +47,14 @@ class PieceTest {
                 return null;
             }
         };
-        assertEquals(Files.A + Ranks.TWO, piece.getSquare());
+        assertEquals(Squares.A2, piece.getSquare());
     }
 
     @Test
     @DisplayName("Test move")
     void moveTest() {
-        piece.move(Files.B + Ranks.EIGHT);
-        assertEquals(Files.B + Ranks.EIGHT, piece.getSquare());
+        piece.move(Squares.B8);
+        assertEquals(Squares.B8, piece.getSquare());
     }
 
     @Test
@@ -64,9 +64,9 @@ class PieceTest {
         assertFalse(piece.isLegalMove(78));
         assertFalse(piece.isLegalMove(-1));
         assertFalse(piece.isLegalMove(-15));
-        assertTrue(piece.isLegalMove(Files.E + Ranks.SEVEN));
-        assertTrue(piece.isLegalMove(Files.F + Ranks.TWO));
-        assertTrue(piece.isLegalMove(Files.H + Ranks.ONE));
-        assertTrue(piece.isLegalMove(Files.A + Ranks.EIGHT));
+        assertTrue(piece.isLegalMove(Squares.E7));
+        assertTrue(piece.isLegalMove(Squares.F2));
+        assertTrue(piece.isLegalMove(Squares.H1));
+        assertTrue(piece.isLegalMove(Squares.A8));
     }
 }

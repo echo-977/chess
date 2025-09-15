@@ -17,13 +17,14 @@ public abstract class LinearPiece extends Piece {
      * Used in the move generation methods for rook, bishop and queen.
      *
      * @param position      the position we are searching for moves in.
-     * @param moves         the current string of moves generated (legal moves are added to this).
+     * @param moves         the array of moves generated (legal moves are added to this).
      * @param movesIndex    the index of the moves array.
      * @param direction     the direction to go in.
      * @return new index for the next available space in the moves array.
      */
-    public int linearMoveSearch(Position position, Move[] moves, int movesIndex, int direction) {
-        int candidateMoveSquare = getSquare();
+    public int linearMoveSearch(Position position, int[] moves, int movesIndex, int direction) {
+        int square = getSquare();
+        int candidateMoveSquare = square;
         int squareRank = SquareMapUtils.getRankContribution(candidateMoveSquare);
         Piece piece;
         candidateMoveSquare += direction;
@@ -50,13 +51,13 @@ public abstract class LinearPiece extends Piece {
             if (isLegalMove(candidateMoveSquare)) {
                 piece = position.getBoard().pieceSearch(candidateMoveSquare);
                 if (piece == null) { //no piece so the move is legal
-                    moves[movesIndex] = Move.createIfLegal(position, this, candidateMoveSquare);
-                    if (moves[movesIndex] != null) {
+                    moves[movesIndex] = Move.createIfLegal(position, candidateMoveSquare, square);
+                    if (moves[movesIndex] != MoveFlags.NO_MOVE) {
                         movesIndex++;
                     }
                 } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    moves[movesIndex] = Move.createIfLegal(position, this, candidateMoveSquare);
-                    if (moves[movesIndex] != null) {
+                    moves[movesIndex] = Move.createIfLegal(position, candidateMoveSquare, square);
+                    if (moves[movesIndex] != MoveFlags.NO_MOVE) {
                         movesIndex++;
                     }
                     break;

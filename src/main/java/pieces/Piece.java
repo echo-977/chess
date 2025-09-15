@@ -77,7 +77,7 @@ public abstract class Piece{
      * @param position the position that we are searching for moves on.
      * @return a string array of all the legal moves.
      */
-    public abstract Move[] generateMoves(Position position);
+    public abstract int[] generateMoves(Position position);
 
     /**
      * Abstract method to check if a piece can capture a given square.

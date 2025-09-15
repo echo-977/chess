@@ -7,10 +7,10 @@ class BoardTest {
     @DisplayName("Test pieceSearch")
     void testPieceSearch() {
         Board board = FENUtils.positionFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1").getBoard();
-        Piece piece = board.pieceSearch(Files.C + Ranks.ONE);
-        assertEquals(Files.C + Ranks.ONE, piece.getSquare());
+        Piece piece = board.pieceSearch(Squares.C1);
+        assertEquals(Squares.C1, piece.getSquare());
         assertEquals(PieceType.BISHOP, piece.getType());
-        piece = board.pieceSearch(Files.D + Ranks.FOUR);
+        piece = board.pieceSearch(Squares.D4);
         assertNull(piece);
     }
 
@@ -19,9 +19,9 @@ class BoardTest {
     void testFindKing() {
         Board board = FENUtils.positionFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1").getBoard();
         King whiteKing = board.findKing(PieceColour.WHITE);
-        assertEquals(Files.E + Ranks.ONE, whiteKing.getSquare());
+        assertEquals(Squares.E1, whiteKing.getSquare());
         King blackKing = board.findKing(PieceColour.BLACK);
-        assertEquals(Files.E + Ranks.EIGHT, blackKing.getSquare());
+        assertEquals(Squares.E8, blackKing.getSquare());
     }
 
     @Test
@@ -29,58 +29,43 @@ class BoardTest {
     void testGetCaptureDestination() {
         Position position = FENUtils.positionFromFEN("8/8/2b5/5Pp1/8/8/6R1/8 w - g6 0 1");
         Board board = position.getBoard();
-        Piece piece = position.getBoard().pieceSearch(Files.F + Ranks.FIVE);
-        Move move = new Move(position, piece, Files.G + Ranks.SIX);
-        move.setEnPassant(true);
-        assertEquals(Files.G + Ranks.FIVE, board.getCaptureDestination(move));
-        piece = board.pieceSearch(Files.G + Ranks.TWO);
-        move = new Move(position, piece, Files.G + Ranks.FIVE);
-        move.setCapture(true);
-        assertEquals(Files.G + Ranks.FIVE, board.getCaptureDestination(move));
-        piece = board.pieceSearch(Files.C + Ranks.SIX);
-        move = new Move(position, piece, Files.G + Ranks.TWO);
-        move.setCapture(true);
-        assertEquals(Files.G + Ranks.TWO, board.getCaptureDestination(move));
+        int moveFlag = MoveFlags.CAPTURE_BIT | MoveFlags.EN_PASSANT;
+        assertEquals(Squares.G5, board.getCaptureDestination(moveFlag, Squares.G6, Squares.F5));
+        moveFlag = MoveFlags.CAPTURE_BIT;
+        assertEquals(Squares.G5, board.getCaptureDestination(moveFlag, Squares.G5, Squares.G2));
+        assertEquals(Squares.G2, board.getCaptureDestination(moveFlag, Squares.G2, Squares.C6));
     }
 
     @Test
     @DisplayName("Test handleCastleMove")
     void testHandleCastle() {
-        Position position = FENUtils.positionFromFEN("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1");
+        Position position = FENUtils.positionFromFEN("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 1 1");
         Board board = position.getBoard();
-        King whiteKing = board.findKing(PieceColour.WHITE);
-        Move move = new Move(position, whiteKing, Files.G + Ranks.ONE);
-        move.setCastleMask(FENConstants.WHITE_KINGSIDE_CASTLE_MASK);
-        position.doMove(move);
+        int moveFlag = MoveFlags.KINGSIDE_CASTLE;
+        position.doMove(moveFlag << MoveFlags.FLAG_SHIFT | Squares.G1 << MoveFlags.DESTINATION_SHIFT | Squares.E1);
         assertEquals(FENConstants.NO_CASTLING_MASK, (position.getGameState().getCastlingRights() & FENConstants.WHITE_KINGSIDE_CASTLE_MASK));
-        Piece piece = board.pieceSearch(Files.F + Ranks.ONE);
+        Piece piece = board.pieceSearch(Squares.F1);
         assertEquals(PieceType.ROOK, piece.getType());
-        position = FENUtils.positionFromFEN("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1");
+        position = FENUtils.positionFromFEN("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 1 1");
         board = position.getBoard();
-        whiteKing = board.findKing(PieceColour.WHITE);
-        move = new Move(position, whiteKing, Files.C + Ranks.ONE);
-        move.setCastleMask(FENConstants.WHITE_QUEENSIDE_CASTLE_MASK);
-        position.doMove(move);
+        moveFlag = MoveFlags.QUEENSIDE_CASTLE;
+        position.doMove(moveFlag << MoveFlags.FLAG_SHIFT | Squares.C1 << MoveFlags.DESTINATION_SHIFT | Squares.E1);
         assertEquals(FENConstants.NO_CASTLING_MASK, (position.getGameState().getCastlingRights() & FENConstants.WHITE_QUEENSIDE_CASTLE_MASK));
-        piece = board.pieceSearch(Files.D + Ranks.ONE);
+        piece = board.pieceSearch(Squares.D1);
         assertEquals(PieceType.ROOK, piece.getType());
-        King blackKing = board.findKing(PieceColour.BLACK);
-        position = FENUtils.positionFromFEN("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1");
+        position = FENUtils.positionFromFEN("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 1 1");
         board = position.getBoard();
-        move = new Move(position, blackKing, Files.G + Ranks.EIGHT);
-        move.setCastleMask(FENConstants.BLACK_KINGSIDE_CASTLE_MASK);
-        position.doMove(move);
+        moveFlag = MoveFlags.KINGSIDE_CASTLE;
+        position.doMove(moveFlag << MoveFlags.FLAG_SHIFT | Squares.G8 << MoveFlags.DESTINATION_SHIFT | Squares.E8);
         assertEquals(FENConstants.NO_CASTLING_MASK, (position.getGameState().getCastlingRights() & FENConstants.BLACK_KINGSIDE_CASTLE_MASK));
-        piece = board.pieceSearch(Files.F + Ranks.EIGHT);
+        piece = board.pieceSearch(Squares.F8);
         assertEquals(PieceType.ROOK, piece.getType());
-        position = FENUtils.positionFromFEN("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1");
+        position = FENUtils.positionFromFEN("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 1 1");
         board = position.getBoard();
-        blackKing = board.findKing(PieceColour.BLACK);
-        move = new Move(position, blackKing, Files.C + Ranks.EIGHT);
-        move.setCastleMask(FENConstants.BLACK_QUEENSIDE_CASTLE_MASK);
-        position.doMove(move);
+        moveFlag = MoveFlags.QUEENSIDE_CASTLE;
+        position.doMove(moveFlag << MoveFlags.FLAG_SHIFT | Squares.C8 << MoveFlags.DESTINATION_SHIFT | Squares.E8);
         assertEquals(FENConstants.NO_CASTLING_MASK, (position.getGameState().getCastlingRights() & FENConstants.BLACK_QUEENSIDE_CASTLE_MASK));
-        piece = board.pieceSearch(Files.D + Ranks.EIGHT);
+        piece = board.pieceSearch(Squares.D8);
         assertEquals(PieceType.ROOK, piece.getType());
     }
 
@@ -89,33 +74,27 @@ class BoardTest {
     void testHandlePromotion() {
         Position position = FENUtils.positionFromFEN("4n3/3P4/8/8/8/8/4p3/3N4 w - - 0 1");
         Board board = position.getBoard();
-        Piece piece = board.pieceSearch(Files.D + Ranks.SEVEN);
-        Move move = new Move(position, piece, Files.D + Ranks.EIGHT);
-        move.setPromotionType(PieceType.ROOK);
-        position.doMove(move);
-        Piece promotion = board.pieceSearch(Files.D + Ranks.EIGHT);
+        int moveFlag = MoveFlags.PROMOTION_BIT | MoveFlags.ROOK;
+        position.doMove(moveFlag << MoveFlags.FLAG_SHIFT | Squares.D8 << MoveFlags.DESTINATION_SHIFT | Squares.D7);
+        Piece promotion = board.pieceSearch(Squares.D8);
         assertEquals(PieceType.ROOK, promotion.getType());
         position = FENUtils.positionFromFEN("4n3/3P4/8/8/8/8/4p3/3N4 w - - 0 1");
         board = position.getBoard();
-        move = new Move(position, piece, Files.E + Ranks.EIGHT);
-        move.setPromotionType(PieceType.BISHOP);
-        position.doMove(move);
-        promotion = board.pieceSearch(Files.E + Ranks.EIGHT);
+        moveFlag = MoveFlags.PROMOTION_BIT | MoveFlags.BISHOP | MoveFlags.CAPTURE_BIT;
+        position.doMove(moveFlag << MoveFlags.FLAG_SHIFT | Squares.E8 << MoveFlags.DESTINATION_SHIFT | Squares.D7);
+        promotion = board.pieceSearch(Squares.E8);
         assertEquals(PieceType.BISHOP, promotion.getType());
         position = FENUtils.positionFromFEN("4n3/3P4/8/8/8/8/4p3/3N4 w - - 0 1");
         board = position.getBoard();
-        piece = board.pieceSearch(Files.E + Ranks.TWO);
-        move = new Move(position, piece, Files.E + Ranks.ONE);
-        move.setPromotionType(PieceType.QUEEN);
-        board.handlePromotion(move);
-        promotion = board.pieceSearch(Files.E + Ranks.ONE);
+        moveFlag = MoveFlags.PROMOTION_BIT | MoveFlags.QUEEN;
+        position.doMove(moveFlag << MoveFlags.FLAG_SHIFT | Squares.E1 << MoveFlags.DESTINATION_SHIFT | Squares.E2);
+        promotion = board.pieceSearch(Squares.E1);
         assertEquals(PieceType.QUEEN, promotion.getType());
         position = FENUtils.positionFromFEN("4n3/3P4/8/8/8/8/4p3/3N4 w - - 0 1");
         board = position.getBoard();
-        move = new Move(position, piece, Files.D + Ranks.ONE);
-        move.setPromotionType(PieceType.KNIGHT);
-        position.doMove(move);
-        promotion = board.pieceSearch(Files.D + Ranks.ONE);
+        moveFlag = MoveFlags.PROMOTION_BIT | MoveFlags.KNIGHT;
+        position.doMove(moveFlag << MoveFlags.FLAG_SHIFT | Squares.D1 << MoveFlags.DESTINATION_SHIFT | Squares.E2);
+        promotion = board.pieceSearch(Squares.D1);
         assertEquals(PieceType.KNIGHT, promotion.getType());
         assertEquals(PieceColour.BLACK, promotion.getColour());
     }

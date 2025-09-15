@@ -66,16 +66,19 @@ public class Board {
 
     /**
      * Finds the square of the piece being captured.
-     * @param move the move of the capture.
+     * @param moveFlag flag containing whether a move is a capture or en passant and other move information.
+     * @param destinationSquare the destination of a move.
+     * @param sourceSquare the square of the piece moving.
      * @return the square of the captured piece.
      */
-    public int getCaptureDestination(Move move) {
+    public int getCaptureDestination(int moveFlag, int destinationSquare, int sourceSquare) {
         int captureDestination;
-        if (move.isEnPassant()) {
-            int targetDirection = (move.getPiece().getColour() == PieceColour.WHITE) ? ChessDirections.DOWN : ChessDirections.UP;
-            captureDestination = move.getDestination() + targetDirection;
+        if ((moveFlag & MoveFlags.EN_PASSANT) == MoveFlags.EN_PASSANT &&
+                (moveFlag & MoveFlags.PROMOTION_BIT) != MoveFlags.PROMOTION_BIT) { //move is an en passant capture
+            int targetDirection = (pieces[sourceSquare].getColour() == PieceColour.WHITE) ? ChessDirections.DOWN : ChessDirections.UP;
+            captureDestination = destinationSquare + targetDirection;
         } else {
-            captureDestination = move.getDestination();
+            captureDestination = destinationSquare;
         }
         return captureDestination;
     }
@@ -83,45 +86,41 @@ public class Board {
     /**
      * Handles the logic that is specific to castling.
      * Moves the rook to the correct square.
-     * @param move the move being played.
+     * @param moveFlag contains a flag bit for if the move is a king or queenside castle.
+     * @param destinationSquare resultant square of the king.
      */
-    public void handleCastleMovement(Move move) {
-        int destination = move.getDestination();
-        int file = SquareMapUtils.getFileContribution(destination);
-        int rank = SquareMapUtils.getRankContribution(destination);
-        int rookSquare;
-        Rook rook;
-        if (file == ChessConstants.KINGSIDE_CASTLE_FILE) {
-            rookSquare = Files.H + rank;
-            rook = (Rook) pieceSearch(rookSquare);
-            pieces[rookSquare] = null;
-            rook.move(ChessConstants.KINGSIDE_CASTLE_ROOK_FILE + rank);
-            pieces[rook.getSquare()] = rook;
-        } else if (file == ChessConstants.QUEENSIDE_CASTLE_FILE) {
-            rookSquare = Files.A + rank;
-            rook = (Rook) pieceSearch(rookSquare);
-            pieces[rookSquare] = null;
-            rook.move(ChessConstants.QUEENSIDE_CASTLE_ROOK_FILE + rank);
-            pieces[rook.getSquare()] = rook;
+    public void handleCastleMovement(int moveFlag, int destinationSquare) {
+        int rank = SquareMapUtils.getRankContribution(destinationSquare);
+        int rookSourceSquare, rookDestinationSquare;
+        if ((moveFlag & MoveFlags.QUEENSIDE_CASTLE) == MoveFlags.QUEENSIDE_CASTLE) {
+            rookSourceSquare = ChessConstants.QUEENSIDE_ROOK_SOURCE_FILE + rank;
+            rookDestinationSquare = ChessConstants.QUEENSIDE_CASTLE_ROOK_FILE + rank;
+            pieces[rookDestinationSquare] = pieces[rookSourceSquare];
+            pieces[rookSourceSquare] = null;
+            pieces[rookDestinationSquare].move(rookDestinationSquare);
+        } else if ((moveFlag & MoveFlags.KINGSIDE_CASTLE) == MoveFlags.KINGSIDE_CASTLE) {
+            rookSourceSquare = ChessConstants.KINGSIDE_ROOK_SOURCE_FILE + rank;
+            rookDestinationSquare = ChessConstants.KINGSIDE_CASTLE_ROOK_FILE + rank;
+            pieces[rookDestinationSquare] = pieces[rookSourceSquare];
+            pieces[rookSourceSquare] = null;
+            pieces[rookDestinationSquare].move(rookDestinationSquare);
         }
     }
 
     /**
      * Handles a promotion, replacing the pawn with a piece of the given type.
-     *
-     * @param move the promotion move to be carried out.
+     * @param moveFlag contains a flag bit for which piece the pawn promotes to.
+     * @param destinationSquare the square the pawn is promoted on.
+     * @param sourceSquare the square the pawn moved from.
      */
-    public void handlePromotion(Move move) {
-        PieceColour colour = move.getPiece().getColour();
-        Piece promotedPiece = switch (move.getPromotionType()) {
-            case QUEEN -> new Queen(colour, move.getDestination());
-            case ROOK -> new Rook(colour, move.getDestination());
-            case BISHOP -> new Bishop(colour, move.getDestination());
-            case KNIGHT -> new Knight(colour, move.getDestination());
-            default -> null;
+    public void handlePromotion(int moveFlag, int destinationSquare, int sourceSquare) {
+        pieces[destinationSquare] = switch (moveFlag & MoveFlags.PROMOTION_MASK) {
+            case MoveFlags.QUEEN -> new Queen(pieces[sourceSquare].getColour(), destinationSquare);
+            case MoveFlags.ROOK -> new Rook(pieces[sourceSquare].getColour(), destinationSquare);
+            case MoveFlags.BISHOP -> new Bishop(pieces[sourceSquare].getColour(), destinationSquare);
+            default -> new Knight(pieces[sourceSquare].getColour(), destinationSquare); //knight flag is equal to 0 so this is our base case
         };
-        pieces[move.getDestination()] = promotedPiece; //put promoted piece on board
-        pieces[move.getSource()] = null; //take the pawn off the board
+        pieces[sourceSquare] = null; //take the pawn off the board
     }
 
     /**
@@ -182,24 +181,25 @@ public class Board {
 
     /**
      * Undoes the rook movement that occurs during castling.
-     * @param state the state of the board before the move was called.
+     * @param moveFlag 4 bit flag containing a bit for whether the castle is king or queenside.
+     * @param destinationSquare the square the king moved to.
      */
-    public void unDoCastleMovement(State state) {
-        Piece movePiece = state.move().getPiece();
-        int castleMask = state.move().getCastleMask();
-        if ((castleMask & (FENConstants.WHITE_KINGSIDE_CASTLE_MASK | FENConstants.BLACK_KINGSIDE_CASTLE_MASK))
-                != FENConstants.NO_CASTLING_MASK) {
-            Rook rook =  ((Rook) pieceSearch(Files.F + SquareMapUtils.getRankContribution(movePiece.getSquare())));
-            pieces[rook.getSquare()] = null;
-            rook.move(Files.H + SquareMapUtils.getRankContribution(movePiece.getSquare()));
-            pieces[rook.getSquare()] = rook;
+    public void unDoCastleMovement(int moveFlag, int destinationSquare) {
+        int rank  = SquareMapUtils.getRankContribution(destinationSquare);
+        int rookSourceSquare, rookDestinationSquare;
+        if ((moveFlag & MoveFlags.QUEENSIDE_CASTLE) ==  MoveFlags.QUEENSIDE_CASTLE) {
+            rookDestinationSquare = ChessConstants.QUEENSIDE_CASTLE_ROOK_FILE + rank;
+            rookSourceSquare = ChessConstants.QUEENSIDE_ROOK_SOURCE_FILE + rank;
+            pieces[rookSourceSquare] = pieces[rookDestinationSquare];
+            pieces[rookDestinationSquare] = null;
+            pieces[rookSourceSquare].move(rookSourceSquare);
         }
-        else if ((castleMask & (FENConstants.WHITE_QUEENSIDE_CASTLE_MASK | FENConstants.BLACK_QUEENSIDE_CASTLE_MASK))
-                != FENConstants.NO_CASTLING_MASK) {
-            Rook rook =  ((Rook) pieceSearch(Files.D + SquareMapUtils.getRankContribution(movePiece.getSquare())));
-            pieces[rook.getSquare()] = null;
-            rook.move(Files.A + SquareMapUtils.getRankContribution(movePiece.getSquare()));
-            pieces[rook.getSquare()] = rook;
+        else if ((moveFlag & MoveFlags.KINGSIDE_CASTLE) == MoveFlags.KINGSIDE_CASTLE) {
+            rookDestinationSquare = ChessConstants.KINGSIDE_CASTLE_ROOK_FILE + rank;
+            rookSourceSquare = ChessConstants.KINGSIDE_ROOK_SOURCE_FILE + rank;
+            pieces[rookSourceSquare] = pieces[rookDestinationSquare];
+            pieces[rookDestinationSquare] = null;
+            pieces[rookSourceSquare].move(rookSourceSquare);
         }
     }
 

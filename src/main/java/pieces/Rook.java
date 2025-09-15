@@ -14,11 +14,11 @@ public class Rook extends LinearPiece{
     /**
      * Generates all the legal moves the rook can do.
      * @param position the position that we are searching for moves on.
-     * @return an array of all the squares the rook can move to as strings.
+     * @return an array of all the moves the rook can do.
      */
     @Override
-    public Move[] generateMoves(Position position) {
-        Move[] moves = new Move[ChessConstants.MAX_ROOK_MOVES];
+    public int[] generateMoves(Position position) {
+        int[] moves = new int[ChessConstants.MAX_ROOK_MOVES];
         int movesIndex = 0;
         movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT);
         movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT);

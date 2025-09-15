@@ -16,13 +16,13 @@ public class Pawn extends Piece{
     /**
      * Generates all the legal moves the pawn can do.
      * @param position the board that we are searching for moves on.
-     * @return an array of moves of all the squares the pawn can move.
+     * @return an array of all the moves the pawn can do.
      */
     @Override
-    public Move[] generateMoves(Position position) {
+    public int[] generateMoves(Position position) {
         int square = getSquare();
         int candidateMove = square;
-        Move[] moves = new Move[ChessConstants.MAX_PAWN_MOVES];
+        int[] moves = new int[ChessConstants.MAX_PAWN_MOVES];
         int moveDirection = (getColour() == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
         int movesIndex = 0;
         for (int i = 0; i < 2; i++) { //pawns can move forward either 1 or 2 squares
@@ -54,19 +54,15 @@ public class Pawn extends Piece{
      * @param moves         the array of moves.
      * @return updated value of movesIndex.
      */
-    private int addCaptureMove(Position position, int captureTarget, int movesIndex, Move[] moves) {
+    private int addCaptureMove(Position position, int captureTarget, int movesIndex, int[] moves) {
         Piece piece = position.getBoard().pieceSearch(captureTarget);
         if (piece != null && piece.getColour() != getColour()) {
-            movesIndex = addMove(position, moves, movesIndex, captureTarget);
+            return addMove(position, moves, movesIndex, captureTarget);
         }
         int enPassantTarget = position.getGameState().getEnPassantTarget();
         if (enPassantTarget != ChessConstants.NO_EN_PASSANT_TARGET) {
             if (enPassantTarget == captureTarget) {
-                int index = movesIndex;
-                movesIndex = addMove(position, moves, movesIndex, captureTarget);
-                if (movesIndex == index + 1) { //en passant move was added so we need to set it as such
-                    moves[movesIndex - 1].setEnPassant(true);
-                }
+                return addMove(position, moves, movesIndex, captureTarget);
             }
         }
         return movesIndex;
@@ -81,42 +77,21 @@ public class Pawn extends Piece{
      * @param destination where the piece is going to.
      * @return updated value of movesIndex.
      */
-    public int addMove(Position position, Move[] moves, int movesIndex, int destination) {
-        int rank = SquareMapUtils.getRank(destination);
-        Move move;
-        if ((getColour() == PieceColour.WHITE && rank == 8) || (getColour() == PieceColour.BLACK && rank == 1)) {
-            for (PieceType type : PieceType.values()) {
-                if (!canPromoteTo(type)) {
-                    continue;
-                }
-                move = Move.createIfLegal(position, this, destination);
-                if (move != null) {
-                    move.setPromotionType(type);
-                    moves[movesIndex] = move;
+    public int addMove(Position position, int[] moves, int movesIndex, int destination) {
+        int move = Move.createIfLegal(position, destination, getSquare());
+        if (move != MoveFlags.NO_MOVE) {
+            if (((move >> MoveFlags.FLAG_SHIFT) & MoveFlags.PROMOTION_BIT) == MoveFlags.PROMOTION_BIT) {
+                int[] promotionPieceFlags = {MoveFlags.QUEEN, MoveFlags.ROOK, MoveFlags.BISHOP, MoveFlags.KNIGHT};
+                for (int promotionPiece : promotionPieceFlags) {
+                    moves[movesIndex] = move | (promotionPiece << MoveFlags.FLAG_SHIFT);
                     movesIndex++;
-                } else {
-                    break;
                 }
-            }
-        } else {
-            moves[movesIndex] = Move.createIfLegal(position, this, destination);
-            if (moves[movesIndex] != null) {
+            } else {
+                moves[movesIndex] = move;
                 movesIndex++;
             }
         }
         return movesIndex;
-    }
-
-    /**
-     * Filters piece types based on whether they can be promoted to
-     * @param type the piece type
-     * @return true if the piece can be promoted to, false otherwise
-     */
-    public boolean canPromoteTo(PieceType type) {
-        return switch (type) {
-            case QUEEN, ROOK, BISHOP, KNIGHT -> true;
-            default -> false;
-        };
     }
 
     /**
