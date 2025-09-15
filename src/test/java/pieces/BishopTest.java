@@ -1,3 +1,4 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ class BishopTest {
         piece1 = new Bishop(PieceColour.WHITE, Squares.D4);
         piece2 = new Bishop(PieceColour.BLACK, Squares.E4);
         Position position = FENUtils.positionFromFEN("8/8/8/8/3Bb3/8/8/8 w - - 0 1");
+        IntArrayList moves = new IntArrayList(ChessConstants.MAX_BISHOP_MOVES);
         int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE | Squares.C5 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
                 MoveFlags.QUIET_MOVE | Squares.B6 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
                 MoveFlags.QUIET_MOVE | Squares.A7 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
@@ -42,6 +44,10 @@ class BishopTest {
                 MoveFlags.QUIET_MOVE | Squares.C3 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
                 MoveFlags.QUIET_MOVE | Squares.B2 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
                 MoveFlags.QUIET_MOVE | Squares.A1 << MoveFlags.DESTINATION_SHIFT | Squares.D4};
+        piece1.generateMoves(position, moves);
+        int[] piece1MovesActual = moves.toIntArray();
+        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+        moves = new IntArrayList(ChessConstants.MAX_BISHOP_MOVES);
         int[] piece2MovesExpected = {MoveFlags.QUIET_MOVE | Squares.D5 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
                 MoveFlags.QUIET_MOVE | Squares.C6 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
                 MoveFlags.QUIET_MOVE | Squares.B7 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
@@ -55,9 +61,8 @@ class BishopTest {
                 MoveFlags.QUIET_MOVE | Squares.D3 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
                 MoveFlags.QUIET_MOVE | Squares.C2 << MoveFlags.DESTINATION_SHIFT | Squares.E4,
                 MoveFlags.QUIET_MOVE | Squares.B1 << MoveFlags.DESTINATION_SHIFT | Squares.E4};
-        int[] piece1MovesActual = piece1.generateMoves(position);
-        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        int[] piece2MovesActual = piece2.generateMoves(position);
+        piece2.generateMoves(position, moves);
+        int[] piece2MovesActual = moves.toIntArray();
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 
@@ -68,6 +73,7 @@ class BishopTest {
         Board board = position.getBoard();
         piece1 = (Bishop) board.pieceSearch(Squares.F4);
         piece2 = (Bishop) board.pieceSearch(Squares.F5);
+        IntArrayList moves = new IntArrayList(ChessConstants.MAX_BISHOP_MOVES);
         int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE | Squares.E5 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
                 MoveFlags.QUIET_MOVE | Squares.D6 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
                 MoveFlags.QUIET_MOVE | Squares.C7 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
@@ -76,10 +82,11 @@ class BishopTest {
                 MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.H6 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
                 MoveFlags.QUIET_MOVE | Squares.E3 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
                 MoveFlags.QUIET_MOVE | Squares.D2 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
-                MoveFlags.QUIET_MOVE | Squares.C1 << MoveFlags.DESTINATION_SHIFT | Squares.F4,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        int[] piece1MovesActual = piece1.generateMoves(position);
+                MoveFlags.QUIET_MOVE | Squares.C1 << MoveFlags.DESTINATION_SHIFT | Squares.F4};
+        piece1.generateMoves(position, moves);
+        int[] piece1MovesActual = moves.toIntArray();
         assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+        moves = new IntArrayList(ChessConstants.MAX_BISHOP_MOVES);
         int[] piece2MovesExpected = {MoveFlags.QUIET_MOVE | Squares.E6 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
                 MoveFlags.QUIET_MOVE | Squares.D7 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
                 MoveFlags.QUIET_MOVE | Squares.C8 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
@@ -87,9 +94,9 @@ class BishopTest {
                 MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.H3 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
                 MoveFlags.QUIET_MOVE | Squares.E4 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
                 MoveFlags.QUIET_MOVE | Squares.D3 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
-                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.C2 << MoveFlags.DESTINATION_SHIFT | Squares.F5,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        int[] piece2MovesActual = piece2.generateMoves(position);
+                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.C2 << MoveFlags.DESTINATION_SHIFT | Squares.F5};
+        piece2.generateMoves(position, moves);
+        int[] piece2MovesActual = moves.toIntArray();
         assertArrayEquals(piece2MovesExpected, piece2MovesActual);
     }
 

@@ -1,3 +1,4 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,7 @@ class QueenTest {
         Board board = position.getBoard();
         piece1 = (Queen) board.pieceSearch(Squares.C4);
         piece2 = (Queen) board.pieceSearch(Squares.E5);
+        IntArrayList piece1MovesActual = new IntArrayList(ChessConstants.MAX_QUEEN_MOVES);
         int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE | Squares.C5 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.QUIET_MOVE | Squares.C6 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.QUIET_MOVE | Squares.C7 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
@@ -59,10 +61,10 @@ class QueenTest {
                 MoveFlags.QUIET_MOVE | Squares.B4 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.QUIET_MOVE | Squares.A4 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.QUIET_MOVE | Squares.B5 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
-                MoveFlags.QUIET_MOVE | Squares.A6 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        int[] piece1MovesActual = piece1.generateMoves(position);
-        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+                MoveFlags.QUIET_MOVE | Squares.A6 << MoveFlags.DESTINATION_SHIFT | Squares.C4};
+        piece1.generateMoves(position, piece1MovesActual);
+        assertArrayEquals(piece1MovesExpected, piece1MovesActual.toIntArray());
+        IntArrayList piece2MovesActual = new IntArrayList(ChessConstants.MAX_QUEEN_MOVES);
         int[] piece2MovesExpected = {MoveFlags.QUIET_MOVE | Squares.E6 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
                 MoveFlags.QUIET_MOVE | Squares.E7 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
                 MoveFlags.QUIET_MOVE | Squares.E8 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
@@ -90,8 +92,8 @@ class QueenTest {
                 MoveFlags.QUIET_MOVE | Squares.D6 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
                 MoveFlags.QUIET_MOVE | Squares.C7 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
                 MoveFlags.QUIET_MOVE | Squares.B8 << MoveFlags.DESTINATION_SHIFT | Squares.E5};
-        int[] piece2MovesActual = piece2.generateMoves(position);
-        assertArrayEquals(piece2MovesExpected, piece2MovesActual);
+        piece2.generateMoves(position, piece2MovesActual);
+        assertArrayEquals(piece2MovesExpected, piece2MovesActual.toIntArray());
     }
 
     @Test
@@ -101,6 +103,7 @@ class QueenTest {
         Board board = position.getBoard();
         piece1 = (Queen) board.pieceSearch(Squares.C4);
         piece2 = (Queen) board.pieceSearch(Squares.E5);
+        IntArrayList piece1MovesActual = new IntArrayList(ChessConstants.MAX_QUEEN_MOVES);
         int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE | Squares.C5 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.QUIET_MOVE | Squares.C6 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.QUIET_MOVE | Squares.D5 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
@@ -119,11 +122,10 @@ class QueenTest {
                 MoveFlags.QUIET_MOVE | Squares.B4 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.QUIET_MOVE | Squares.A4 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.QUIET_MOVE | Squares.B5 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
-                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.A6 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        int[] piece1MovesActual = piece1.generateMoves(position);
-        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.A6 << MoveFlags.DESTINATION_SHIFT | Squares.C4};
+        piece1.generateMoves(position, piece1MovesActual);
+        assertArrayEquals(piece1MovesExpected, piece1MovesActual.toIntArray());
+        IntArrayList piece2MovesActual = new IntArrayList(ChessConstants.MAX_QUEEN_MOVES);
         int[] piece2MovesExpected = {MoveFlags.QUIET_MOVE | Squares.E6 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
                 MoveFlags.QUIET_MOVE | Squares.E7 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
                 MoveFlags.QUIET_MOVE | Squares.E8 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
@@ -145,10 +147,9 @@ class QueenTest {
                 MoveFlags.QUIET_MOVE | Squares.B5 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
                 MoveFlags.QUIET_MOVE | Squares.A5 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
                 MoveFlags.QUIET_MOVE | Squares.D6 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
-                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.C7 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        int[] piece2MovesActual = piece2.generateMoves(position);
-        assertArrayEquals(piece2MovesExpected, piece2MovesActual);
+                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.C7 << MoveFlags.DESTINATION_SHIFT | Squares.E5};
+        piece2.generateMoves(position, piece2MovesActual);
+        assertArrayEquals(piece2MovesExpected, piece2MovesActual.toIntArray());
     }
 
     @Test

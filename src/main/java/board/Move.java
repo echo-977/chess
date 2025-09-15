@@ -1,14 +1,17 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 public class Move {
     /**
      * Static factory method to filter out illegal moves (moves that leave the king in check).
      * In the event that the move is illegal a null object is returned, otherwise the move is returned.
      *
-     * @param position  the position the move is played in.
+     * @param position          the position the move is played in.
+     * @param moves             the array list legal moves are added to.
      * @param destinationSquare the square the piece is moved to.
-     * @param sourceSquare  the square the piece is moved from.
-     * @return 0 if the move is illegal, otherwise the move integer.
+     * @param sourceSquare      the square the piece is moved from.
+     * @return true if the move was legal, false if not.
      */
-    public static int createIfLegal(Position position, int destinationSquare, int sourceSquare) {
+    public static boolean createIfLegal(Position position, IntArrayList moves, int destinationSquare, int sourceSquare) {
         int potentialMove = encodeMove(position, destinationSquare, sourceSquare);
         Board board = position.getBoard();
         PieceColour colour = board.pieceSearch(sourceSquare).getColour();
@@ -16,22 +19,18 @@ public class Move {
         King king = board.findKing(colour);
         if (king == null) { //only occurs in test positions in which case there is no check to worry about
             position.unDoMove(stateBeforeMove);
-            return potentialMove;
+            moves.add(potentialMove);
+            return true;
         }
         boolean[] threatMap = board.getThreatMap(colour.opponentColour());
         if (threatMap[king.getSquare()]) { //king is in check so move is invalid
             position.unDoMove(stateBeforeMove);
-            return 0;
+            return false;
         } else {
             position.unDoMove(stateBeforeMove);
-            return potentialMove;
+            moves.add(potentialMove);
+            return true;
         }
-    }
-
-    public static String toString(int move) {
-        int destination = (move & MoveFlags.DESTINATION_MASK) >>  MoveFlags.DESTINATION_SHIFT;
-        int source = move & MoveFlags.SOURCE_MASK;
-        return SquareMapUtils.mapIntToSquare(source) + SquareMapUtils.mapIntToSquare(destination);
     }
 
     /**
@@ -72,5 +71,15 @@ public class Move {
             }
         }
         return ((moveFlag << MoveFlags.FLAG_SHIFT) | (destinationSquare << MoveFlags.DESTINATION_SHIFT) | sourceSquare) & MoveFlags.FORCE_16_BIT;
+    }
+
+    /**
+     * Gets the string equivalent of a move.
+     * @param move the move we are converting to a string.
+     * @return the source square and destination square of the move.
+     */
+    public static String toString(int move) {
+        return SquareMapUtils.mapIntToSquare((move & MoveFlags.DESTINATION_MASK) >> MoveFlags.DESTINATION_SHIFT) +
+                SquareMapUtils.mapIntToSquare(move & MoveFlags.SOURCE_MASK);
     }
 }

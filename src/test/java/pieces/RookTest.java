@@ -1,3 +1,4 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ class RookTest {
         piece1.move(Squares.C4);
         piece2.move(Squares.E5);
         Position position = FENUtils.positionFromFEN("8/8/8/4r3/2R5/8/8/8 w - - 0 1");
+        IntArrayList piece1MovesActual = new IntArrayList(ChessConstants.MAX_ROOK_MOVES);
         int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE | Squares.B4 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.QUIET_MOVE | Squares.A4 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.QUIET_MOVE | Squares.D4 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
@@ -43,8 +45,9 @@ class RookTest {
                 MoveFlags.QUIET_MOVE | Squares.C3 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.QUIET_MOVE | Squares.C2 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.QUIET_MOVE | Squares.C1 << MoveFlags.DESTINATION_SHIFT | Squares.C4};
-        int[] piece1MovesActual = piece1.generateMoves(position);
-        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+        piece1.generateMoves(position, piece1MovesActual);
+        assertArrayEquals(piece1MovesExpected, piece1MovesActual.toIntArray());
+        IntArrayList piece2MovesActual = new IntArrayList(ChessConstants.MAX_ROOK_MOVES);
         int[] piece2MovesExpected = {MoveFlags.QUIET_MOVE | Squares.D5 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
                 MoveFlags.QUIET_MOVE | Squares.C5 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
                 MoveFlags.QUIET_MOVE | Squares.B5 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
@@ -59,8 +62,8 @@ class RookTest {
                 MoveFlags.QUIET_MOVE | Squares.E3 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
                 MoveFlags.QUIET_MOVE | Squares.E2 << MoveFlags.DESTINATION_SHIFT | Squares.E5,
                 MoveFlags.QUIET_MOVE | Squares.E1 << MoveFlags.DESTINATION_SHIFT | Squares.E5};
-        int[] piece2MovesActual = piece2.generateMoves(position);
-        assertArrayEquals(piece2MovesExpected, piece2MovesActual);
+        piece2.generateMoves(position, piece2MovesActual);
+        assertArrayEquals(piece2MovesExpected, piece2MovesActual.toIntArray());
     }
 
     @Test
@@ -70,6 +73,7 @@ class RookTest {
         Board board = position.getBoard();
         piece1 = (Rook) board.pieceSearch(Squares.D5);
         piece2 = (Rook) board.pieceSearch(Squares.B6);
+        IntArrayList piece1MovesActual = new IntArrayList(ChessConstants.MAX_ROOK_MOVES);
         int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE | Squares.C5 << MoveFlags.DESTINATION_SHIFT | Squares.D5,
                 MoveFlags.QUIET_MOVE | Squares.B5 << MoveFlags.DESTINATION_SHIFT | Squares.D5,
                 MoveFlags.QUIET_MOVE | Squares.A5 << MoveFlags.DESTINATION_SHIFT | Squares.D5,
@@ -79,10 +83,10 @@ class RookTest {
                 MoveFlags.QUIET_MOVE | Squares.D6 << MoveFlags.DESTINATION_SHIFT | Squares.D5,
                 MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.D7 << MoveFlags.DESTINATION_SHIFT | Squares.D5,
                 MoveFlags.QUIET_MOVE | Squares.D4 << MoveFlags.DESTINATION_SHIFT | Squares.D5,
-                MoveFlags.QUIET_MOVE | Squares.D3 << MoveFlags.DESTINATION_SHIFT | Squares.D5,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        int[] piece1MovesActual = piece1.generateMoves(position);
-        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+                MoveFlags.QUIET_MOVE | Squares.D3 << MoveFlags.DESTINATION_SHIFT | Squares.D5};
+        piece1.generateMoves(position, piece1MovesActual);
+        assertArrayEquals(piece1MovesExpected, piece1MovesActual.toIntArray());
+        IntArrayList piece2MovesActual = new IntArrayList(ChessConstants.MAX_ROOK_MOVES);
         int[] piece2MovesExpected = {MoveFlags.QUIET_MOVE | Squares.A6 << MoveFlags.DESTINATION_SHIFT | Squares.B6,
                 MoveFlags.QUIET_MOVE | Squares.C6 << MoveFlags.DESTINATION_SHIFT | Squares.B6,
                 MoveFlags.QUIET_MOVE | Squares.D6 << MoveFlags.DESTINATION_SHIFT | Squares.B6,
@@ -93,11 +97,9 @@ class RookTest {
                 MoveFlags.QUIET_MOVE | Squares.B5 << MoveFlags.DESTINATION_SHIFT | Squares.B6,
                 MoveFlags.QUIET_MOVE | Squares.B4 << MoveFlags.DESTINATION_SHIFT | Squares.B6,
                 MoveFlags.QUIET_MOVE | Squares.B3 << MoveFlags.DESTINATION_SHIFT | Squares.B6,
-                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.B2 << MoveFlags.DESTINATION_SHIFT | Squares.B6,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-
-        int[] piece2MovesActual = piece2.generateMoves(position);
-        assertArrayEquals(piece2MovesExpected, piece2MovesActual);
+                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.B2 << MoveFlags.DESTINATION_SHIFT | Squares.B6};
+        piece2.generateMoves(position, piece2MovesActual);
+        assertArrayEquals(piece2MovesExpected, piece2MovesActual.toIntArray());
     }
 
     @Test

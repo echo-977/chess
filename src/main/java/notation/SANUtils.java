@@ -1,3 +1,5 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 public class SANUtils {
     /**
      * Detects what disambiguation is required for a given move.
@@ -6,7 +8,7 @@ public class SANUtils {
      */
     private static String getDisambiguation(Position position, int move) {
         StringBuilder disambiguation = new StringBuilder();
-        int[] moves = MoveGenerator.generateMoves(position);
+        IntArrayList moves = MoveGenerator.generateMoves(position);
         int moveSourceSquare = move & MoveFlags.SOURCE_MASK;
         int moveDestinationSquare = (move & MoveFlags.DESTINATION_MASK) >> MoveFlags.DESTINATION_SHIFT;
         int moveSourceRank = SquareMapUtils.getRankContribution(moveSourceSquare);
@@ -102,7 +104,7 @@ public class SANUtils {
         State stateBeforeMove = position.doMove(move);
         PieceColour turn = position.getGameState().getTurn();
         if (board.getThreatMap(turn.opponentColour())[board.findKing(turn).getSquare()]) {
-            if (MoveGenerator.generateMoves(position).length == 0) { //king is in check without any moves
+            if (MoveGenerator.generateMoves(position).isEmpty()) { //king is in check without any moves
                 moveNotation.append(AlgebraicNotation.CHECKMATE);
             } else {
                 moveNotation.append(AlgebraicNotation.CHECK);

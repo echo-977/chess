@@ -1,3 +1,5 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 public class Rook extends LinearPiece{
 
     /**
@@ -14,17 +16,14 @@ public class Rook extends LinearPiece{
     /**
      * Generates all the legal moves the rook can do.
      * @param position the position that we are searching for moves on.
-     * @return an array of all the moves the rook can do.
+     * @param moves array list legal moves are to be added to.
      */
     @Override
-    public int[] generateMoves(Position position) {
-        int[] moves = new int[ChessConstants.MAX_ROOK_MOVES];
-        int movesIndex = 0;
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT);
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT);
-        movesIndex = linearMoveSearch(position, moves, movesIndex, ChessDirections.UP);
-        linearMoveSearch(position, moves, movesIndex, ChessDirections.DOWN);
-        return moves;
+    public void generateMoves(Position position, IntArrayList moves) {
+        linearMoveSearch(position, moves, ChessDirections.LEFT);
+        linearMoveSearch(position, moves, ChessDirections.RIGHT);
+        linearMoveSearch(position, moves, ChessDirections.UP);
+        linearMoveSearch(position, moves, ChessDirections.DOWN);
     }
 
     /**

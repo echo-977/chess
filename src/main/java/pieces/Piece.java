@@ -1,3 +1,5 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 /**
  * Abstract class representing a chess piece.
  * Contains common properties such as type, color, rank (row), and file (column).
@@ -75,9 +77,9 @@ public abstract class Piece{
      * Abstract method to generate all the legal moves the piece can do.
      * Concrete piece subclasses will implement this.
      * @param position the position that we are searching for moves on.
-     * @return a string array of all the legal moves.
+     * @param moves array list legal moves are to be added to.
      */
-    public abstract int[] generateMoves(Position position);
+    public abstract void generateMoves(Position position, IntArrayList moves);
 
     /**
      * Abstract method to check if a piece can capture a given square.

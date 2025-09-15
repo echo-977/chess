@@ -10,6 +10,7 @@
 		<testFolder url="file://$MODULE_DIR$/src/test/java/util"/>
 	</contentEntry>
 	<levels>
+		<level name="fastutil-8.5.16" value="project"/>
 		<level name="junit-platform-console-standalone-1.6.1" value="project"/>
 	</levels>
 </component>

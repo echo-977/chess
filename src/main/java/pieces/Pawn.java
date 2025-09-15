@@ -1,3 +1,5 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 public class Pawn extends Piece{
     private boolean moved;
 
@@ -16,19 +18,17 @@ public class Pawn extends Piece{
     /**
      * Generates all the legal moves the pawn can do.
      * @param position the board that we are searching for moves on.
-     * @return an array of all the moves the pawn can do.
+     * @param moves array list legal moves are to be added to.
      */
     @Override
-    public int[] generateMoves(Position position) {
+    public void generateMoves(Position position, IntArrayList moves) {
         int square = getSquare();
         int candidateMove = square;
-        int[] moves = new int[ChessConstants.MAX_PAWN_MOVES];
         int moveDirection = (getColour() == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
-        int movesIndex = 0;
         for (int i = 0; i < 2; i++) { //pawns can move forward either 1 or 2 squares
             candidateMove += moveDirection;
             if (isLegalMove(candidateMove) && position.getBoard().pieceSearch(candidateMove) == null) {
-                movesIndex = addMove(position, moves, movesIndex, candidateMove);
+                addMove(position, moves, candidateMove);
             } else {
                 break; //if single push is blocked then double push is blocked
             }
@@ -36,62 +36,53 @@ public class Pawn extends Piece{
         int captureTarget;
         if (SquareMapUtils.getFileContribution(square) > Files.A) { //pawns on the a-file cannot capture to the left
             captureTarget = square + ChessDirections.LEFT + moveDirection;
-            movesIndex = addCaptureMove(position, captureTarget, movesIndex, moves);
+            addCaptureMove(position, captureTarget, moves);
         }
         if (SquareMapUtils.getFileContribution(square) < Files.H) { //pawns on the h-file cannot capture to the right
             captureTarget = square + ChessDirections.RIGHT + moveDirection;
-            addCaptureMove(position, captureTarget, movesIndex, moves);
+            addCaptureMove(position, captureTarget, moves);
         }
-        return moves;
     }
 
     /**
      * Helper function for adding capture moves on either side of the pawn.
      *
-     * @param position      the position we are looking for moves in.
+     * @param position the position we are looking for moves in.
      * @param captureTarget the square the pawn can capture.
-     * @param movesIndex    the index of the next available space in the moves array.
-     * @param moves         the array of moves.
-     * @return updated value of movesIndex.
+     * @param moves array list legal moves are to be added to.
      */
-    private int addCaptureMove(Position position, int captureTarget, int movesIndex, int[] moves) {
+    private void addCaptureMove(Position position, int captureTarget, IntArrayList moves) {
         Piece piece = position.getBoard().pieceSearch(captureTarget);
         if (piece != null && piece.getColour() != getColour()) {
-            return addMove(position, moves, movesIndex, captureTarget);
+            addMove(position, moves, captureTarget);
+            return;
         }
         int enPassantTarget = position.getGameState().getEnPassantTarget();
         if (enPassantTarget != ChessConstants.NO_EN_PASSANT_TARGET) {
             if (enPassantTarget == captureTarget) {
-                return addMove(position, moves, movesIndex, captureTarget);
+               addMove(position, moves, captureTarget);
             }
         }
-        return movesIndex;
     }
 
     /**
      * Helper function to add moves for the generateMoves method.
      *
      * @param position    the position we are looking for moves in.
-     * @param moves       the array of moves from generateMoves.
-     * @param movesIndex  index of next available spot in moves.
+     * @param moves array list legal moves are to be added to.
      * @param destination where the piece is going to.
-     * @return updated value of movesIndex.
      */
-    public int addMove(Position position, int[] moves, int movesIndex, int destination) {
-        int move = Move.createIfLegal(position, destination, getSquare());
-        if (move != MoveFlags.NO_MOVE) {
-            if (((move >> MoveFlags.FLAG_SHIFT) & MoveFlags.PROMOTION_BIT) == MoveFlags.PROMOTION_BIT) {
+    public void addMove(Position position, IntArrayList moves, int destination) {
+        if (Move.createIfLegal(position, moves, destination, getSquare())) {
+            int lastIndex = moves.size() - 1;
+            if (((moves.getInt(lastIndex) >> MoveFlags.FLAG_SHIFT) & MoveFlags.PROMOTION_BIT) == MoveFlags.PROMOTION_BIT) {
+                int move = moves.removeInt(lastIndex);
                 int[] promotionPieceFlags = {MoveFlags.QUEEN, MoveFlags.ROOK, MoveFlags.BISHOP, MoveFlags.KNIGHT};
                 for (int promotionPiece : promotionPieceFlags) {
-                    moves[movesIndex] = move | (promotionPiece << MoveFlags.FLAG_SHIFT);
-                    movesIndex++;
+                    moves.add(move | (promotionPiece << MoveFlags.FLAG_SHIFT));
                 }
-            } else {
-                moves[movesIndex] = move;
-                movesIndex++;
             }
         }
-        return movesIndex;
     }
 
     /**

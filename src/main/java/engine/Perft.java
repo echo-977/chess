@@ -1,3 +1,5 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 public class Perft {
     /**
      * Returns the total number of possible positions that can arise at a given depth.
@@ -10,7 +12,7 @@ public class Perft {
             return 1;
         }
         long nodes = 0;
-        int[] moves = MoveGenerator.generateMoves(position);
+        IntArrayList moves = MoveGenerator.generateMoves(position);
         for (int move : moves) {
             if (move != MoveFlags.NO_MOVE) {
                 State stateBeforeMove = position.doMove(move);
@@ -42,7 +44,7 @@ public class Perft {
         }
         long nodes = 0;
         long count;
-        int[] moves = MoveGenerator.generateMoves(position);
+        IntArrayList moves = MoveGenerator.generateMoves(position);
         for (int move : moves) {
             if (move != MoveFlags.NO_MOVE) {
                 State stateBeforeMove = position.doMove(move);
@@ -81,8 +83,8 @@ public class Perft {
             }
         }
         int numCPUCores = Runtime.getRuntime().availableProcessors();
-        int[] moves = MoveGenerator.generateMoves(position);
-        int numThreadMoves = (moves.length + numCPUCores - 1) / numCPUCores;
+        IntArrayList moves = MoveGenerator.generateMoves(position);
+        int numThreadMoves = (moves.size() + numCPUCores - 1) / numCPUCores;
         final int[][] threadMoves = new int[numCPUCores][numThreadMoves];
         int threadMovesIndex;
         int index;
@@ -91,8 +93,8 @@ public class Perft {
         for (int threadIndex = 0; threadIndex < numCPUCores; threadIndex++) {
             index = threadIndex;
             threadMovesIndex = 0;
-            while (index < moves.length) {
-                threadMoves[threadIndex][threadMovesIndex] = moves[index];
+            while (index < moves.size()) {
+                threadMoves[threadIndex][threadMovesIndex] = moves.getInt(index);
                 threadMovesIndex++;
                 index += numCPUCores;
             }

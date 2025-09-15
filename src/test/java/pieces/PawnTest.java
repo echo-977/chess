@@ -1,3 +1,4 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,18 +32,16 @@ class PawnTest {
         Board board = position.getBoard();
         Piece piece1 = board.pieceSearch(Squares.A2);
         Piece piece2 = board.pieceSearch(Squares.D7);
+        IntArrayList piece1MovesActual = new IntArrayList(ChessConstants.MAX_PAWN_MOVES);
         int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE | Squares.A3 << MoveFlags.DESTINATION_SHIFT | Squares.A2,
-                MoveFlags.DOUBLE_PAWN_PUSH << MoveFlags.FLAG_SHIFT | Squares.A4 << MoveFlags.DESTINATION_SHIFT | Squares.A2,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,  MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
+                MoveFlags.DOUBLE_PAWN_PUSH << MoveFlags.FLAG_SHIFT | Squares.A4 << MoveFlags.DESTINATION_SHIFT | Squares.A2};
+        piece1.generateMoves(position, piece1MovesActual);
+        assertArrayEquals(piece1MovesExpected, piece1MovesActual.toIntArray());
+        IntArrayList piece2MovesActual = new IntArrayList(ChessConstants.MAX_PAWN_MOVES);
         int[] piece2MovesExpected = {MoveFlags.QUIET_MOVE | Squares.D6 << MoveFlags.DESTINATION_SHIFT | Squares.D7,
-                MoveFlags.DOUBLE_PAWN_PUSH << MoveFlags.FLAG_SHIFT | Squares.D5 << MoveFlags.DESTINATION_SHIFT | Squares.D7,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,  MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        int[] piece1MovesActual = piece1.generateMoves(position);
-        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        int[] piece2MovesActual = piece2.generateMoves(position);
-        assertArrayEquals(piece2MovesExpected, piece2MovesActual);
+                MoveFlags.DOUBLE_PAWN_PUSH << MoveFlags.FLAG_SHIFT | Squares.D5 << MoveFlags.DESTINATION_SHIFT | Squares.D7};
+        piece2.generateMoves(position, piece2MovesActual);
+        assertArrayEquals(piece2MovesExpected, piece2MovesActual.toIntArray());
     }
 
     @Test
@@ -52,17 +51,14 @@ class PawnTest {
         Board board = position.getBoard();
         Piece piece1 = board.pieceSearch(Squares.A2);
         Piece piece2 = board.pieceSearch(Squares.F7);
-        int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE | Squares.A3 << MoveFlags.DESTINATION_SHIFT | Squares.A2,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,  MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE};
-        int[] piece2MovesExpected = {MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        int[] piece1MovesActual = piece1.generateMoves(position);
-        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        int[] piece2MovesActual = piece2.generateMoves(position);
-        assertArrayEquals(piece2MovesExpected, piece2MovesActual);
+        IntArrayList piece1MovesActual = new IntArrayList(ChessConstants.MAX_PAWN_MOVES);
+        int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE | Squares.A3 << MoveFlags.DESTINATION_SHIFT | Squares.A2};
+        piece1.generateMoves(position, piece1MovesActual);
+        assertArrayEquals(piece1MovesExpected, piece1MovesActual.toIntArray());
+        IntArrayList piece2MovesActual = new IntArrayList(ChessConstants.MAX_PAWN_MOVES);
+        int[] piece2MovesExpected = {};
+        piece2.generateMoves(position, piece2MovesActual);
+        assertArrayEquals(piece2MovesExpected, piece2MovesActual.toIntArray());
     }
 
     @Test
@@ -72,19 +68,16 @@ class PawnTest {
         Board board = position.getBoard();
         Pawn piece1 = (Pawn) board.pieceSearch(Squares.C4);
         Pawn piece2 = (Pawn) board.pieceSearch(Squares.F6);
+        IntArrayList piece1MovesActual = new IntArrayList(ChessConstants.MAX_PAWN_MOVES);
         int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE| Squares.C5 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
                 MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.B5 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
-                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.D5 << MoveFlags.DESTINATION_SHIFT | Squares.C4,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        int[] piece1MovesActual = piece1.generateMoves(position);
-        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
-        int[] piece2MovesExpected = {MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.G5 << MoveFlags.DESTINATION_SHIFT | Squares.F6,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE};
-        int[] piece2MovesActual = piece2.generateMoves(position);
-        assertArrayEquals(piece2MovesExpected, piece2MovesActual);
+                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.D5 << MoveFlags.DESTINATION_SHIFT | Squares.C4};
+        piece1.generateMoves(position, piece1MovesActual);
+        assertArrayEquals(piece1MovesExpected, piece1MovesActual.toIntArray());
+        IntArrayList piece2MovesActual = new IntArrayList(ChessConstants.MAX_PAWN_MOVES);
+        int[] piece2MovesExpected = {MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.G5 << MoveFlags.DESTINATION_SHIFT | Squares.F6};
+        piece2.generateMoves(position, piece2MovesActual);
+        assertArrayEquals(piece2MovesExpected, piece2MovesActual.toIntArray());
     }
 
     @Test
@@ -94,18 +87,16 @@ class PawnTest {
         Board board = position.getBoard();
         piece1 = (Pawn) board.pieceSearch(Squares.D5);
         piece2 = (Pawn) board.pieceSearch(Squares.G4);
+        IntArrayList piece1MovesActual = new IntArrayList(ChessConstants.MAX_PAWN_MOVES);
         int[] piece1MovesExpected = {MoveFlags.QUIET_MOVE | Squares.D6 << MoveFlags.DESTINATION_SHIFT | Squares.D5,
-                (MoveFlags.CAPTURE_BIT | MoveFlags.EN_PASSANT) << MoveFlags.FLAG_SHIFT | Squares.C6 << MoveFlags.DESTINATION_SHIFT | Squares.D5,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        int[] piece1MovesActual = piece1.generateMoves(position);
-        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+                (MoveFlags.CAPTURE_BIT | MoveFlags.EN_PASSANT) << MoveFlags.FLAG_SHIFT | Squares.C6 << MoveFlags.DESTINATION_SHIFT | Squares.D5};
+        piece1.generateMoves(position, piece1MovesActual);
+        assertArrayEquals(piece1MovesExpected, piece1MovesActual.toIntArray());
+        IntArrayList piece2MovesActual = new IntArrayList(ChessConstants.MAX_PAWN_MOVES);
         int[] piece2MovesExpected = {MoveFlags.QUIET_MOVE | Squares.G3 << MoveFlags.DESTINATION_SHIFT | Squares.G4,
-                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.F3 << MoveFlags.DESTINATION_SHIFT | Squares.G4,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        int[] piece2MovesActual = piece2.generateMoves(position);
-        assertArrayEquals(piece2MovesExpected, piece2MovesActual);
+                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.F3 << MoveFlags.DESTINATION_SHIFT | Squares.G4};
+        piece2.generateMoves(position, piece2MovesActual);
+        assertArrayEquals(piece2MovesExpected, piece2MovesActual.toIntArray());
     }
 
     @Test
@@ -115,7 +106,8 @@ class PawnTest {
         Board board = position.getBoard();
         piece1 = (Pawn) board.pieceSearch(Squares.D7);
         piece2 = (Pawn) board.pieceSearch(Squares.D2);
-        int[] piece1MovesExpected = new int[ChessConstants.MAX_PAWN_MOVES];
+        IntArrayList piece1MovesActual = new IntArrayList(ChessConstants.MAX_PAWN_MOVES);
+        int[] piece1MovesExpected = new int[8];
         int[] promotionPieceFlags = {MoveFlags.QUEEN, MoveFlags.ROOK, MoveFlags.BISHOP, MoveFlags.KNIGHT};
         int index = 0;
         int move = MoveFlags.PROMOTION_BIT << MoveFlags.FLAG_SHIFT | Squares.D8 << MoveFlags.DESTINATION_SHIFT | Squares.D7;
@@ -128,8 +120,9 @@ class PawnTest {
             piece1MovesExpected[index] = move | (flag << MoveFlags.FLAG_SHIFT);
             index++;
         }
-        int[] piece1MovesActual = piece1.generateMoves(position);
-        assertArrayEquals(piece1MovesExpected, piece1MovesActual);
+        piece1.generateMoves(position, piece1MovesActual);
+        assertArrayEquals(piece1MovesExpected, piece1MovesActual.toIntArray());
+        IntArrayList piece2MovesActual = new IntArrayList(ChessConstants.MAX_PAWN_MOVES);
         int[] piece2MovesExpected = new int[ChessConstants.MAX_PAWN_MOVES];
         index = 0;
         move = MoveFlags.PROMOTION_BIT << MoveFlags.FLAG_SHIFT | Squares.D1 << MoveFlags.DESTINATION_SHIFT | Squares.D2;
@@ -147,8 +140,8 @@ class PawnTest {
             piece2MovesExpected[index] = move | (flag << MoveFlags.FLAG_SHIFT);
             index++;
         }
-        int[] piece2MovesActual = piece2.generateMoves(position);
-        assertArrayEquals(piece2MovesExpected, piece2MovesActual);
+        piece2.generateMoves(position, piece2MovesActual);
+        assertArrayEquals(piece2MovesExpected, piece2MovesActual.toIntArray());
     }
 
     @Test

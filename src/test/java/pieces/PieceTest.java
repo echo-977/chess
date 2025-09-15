@@ -1,3 +1,4 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,8 @@ class PieceTest {
     public static void init() {
         piece = new Piece(PieceType.PAWN, PieceColour.WHITE, Files.A + Ranks.TWO) {
             @Override
-            public int[] generateMoves(Position position) {
-                return new int[0]; // minimal implementation here to allow testing of concrete methods
+            public void generateMoves(Position position, IntArrayList moves) {
+                // minimal implementation here to allow testing of concrete methods
             }
 
             @Override
@@ -33,8 +34,8 @@ class PieceTest {
     void getSquareTest() {
         piece = new Piece(PieceType.PAWN, PieceColour.WHITE, Squares.A2) {
             @Override
-            public int[] generateMoves(Position position) {
-                return new int[0]; // minimal implementation here to allow testing of concrete methods
+            public void generateMoves(Position position, IntArrayList moves) {
+                // minimal implementation here to allow testing of concrete methods
             }
 
             @Override

@@ -1,3 +1,4 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,8 +12,8 @@ class LinearPieceTest {
     public void init() {
         piece = new LinearPiece(PieceType.QUEEN, PieceColour.WHITE, Squares.D4) {
             @Override
-            public int[] generateMoves(Position position) {
-                return new int[0]; //minimal implementation here to allow testing of concrete methods
+            public void generateMoves(Position position, IntArrayList moves) {
+                // minimal implementation here to allow testing of concrete methods
             }
 
             @Override
@@ -31,41 +32,34 @@ class LinearPieceTest {
     @DisplayName("Test linearMoveSearch without other piece")
     void testLinearMoveSearchNoOtherPieces() {
         Position position = FENUtils.positionFromFEN("8/8/8/8/3Q4/8/8/8 w - - 0 1");
-        int[] moves = new int[7];
-        int movesIndex = 0;
-        piece.linearMoveSearch(position, moves, movesIndex, ChessDirections.NONE + ChessDirections.UP);
+        IntArrayList actualMoves = new IntArrayList(4);
+        piece.linearMoveSearch(position, actualMoves, ChessDirections.NONE + ChessDirections.UP);
         int[] expectedMoves = {MoveFlags.QUIET_MOVE | Squares.D5 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
                 MoveFlags.QUIET_MOVE | Squares.D6 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
                 MoveFlags.QUIET_MOVE | Squares.D7 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
-                MoveFlags.QUIET_MOVE | Squares.D8 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        assertArrayEquals(expectedMoves, moves);
+                MoveFlags.QUIET_MOVE | Squares.D8 << MoveFlags.DESTINATION_SHIFT | Squares.D4};
+        assertArrayEquals(expectedMoves, actualMoves.toIntArray());
     }
 
     @Test
     @DisplayName("Test linearMoveSearch with other piece")
     void testLinearMoveSearchOtherPieces() {
         Position position = FENUtils.positionFromFEN("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
-        int[] moves = new int[7];
-        int movesIndex = 0;
-        piece.linearMoveSearch(position, moves, movesIndex, ChessDirections.LEFT + ChessDirections.UP);
-        int[] expectedMoves = {MoveFlags.QUIET_MOVE | Squares.C5 <<  MoveFlags.DESTINATION_SHIFT | Squares.D4,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE,
-                MoveFlags.NO_MOVE};
-                assertArrayEquals(expectedMoves, moves);
+        IntArrayList actualMoves = new IntArrayList(7);
+        piece.linearMoveSearch(position, actualMoves, ChessDirections.LEFT + ChessDirections.UP);
+        int[] expectedMoves = {MoveFlags.QUIET_MOVE | Squares.C5 <<  MoveFlags.DESTINATION_SHIFT | Squares.D4};
+                assertArrayEquals(expectedMoves, actualMoves.toIntArray());
     }
 
     @Test
     @DisplayName("Test linearMoveSearch with capture")
     void testLinearMoveSearchCapture() {
         Position position = FENUtils.positionFromFEN("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
-        int[] moves = new int[7];
-        int movesIndex = 0;
-        piece.linearMoveSearch(position, moves, movesIndex, ChessDirections.RIGHT + ChessDirections.UP);
+        IntArrayList actualMoves = new IntArrayList(7);
+        piece.linearMoveSearch(position, actualMoves, ChessDirections.RIGHT + ChessDirections.UP);
         int[] expectedMoves = {MoveFlags.QUIET_MOVE | Squares.E5 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
-                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.F6 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
-                MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE, MoveFlags.NO_MOVE};
-        assertArrayEquals(expectedMoves, moves);
+                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.F6 << MoveFlags.DESTINATION_SHIFT | Squares.D4};
+        assertArrayEquals(expectedMoves, actualMoves.toIntArray());
     }
 
     @Test

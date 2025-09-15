@@ -1,3 +1,5 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 public abstract class LinearPiece extends Piece {
 
     /**
@@ -17,17 +19,14 @@ public abstract class LinearPiece extends Piece {
      * Used in the move generation methods for rook, bishop and queen.
      *
      * @param position      the position we are searching for moves in.
-     * @param moves         the array of moves generated (legal moves are added to this).
-     * @param movesIndex    the index of the moves array.
+     * @param moves         array list legal moves are to be added to.
      * @param direction     the direction to go in.
-     * @return new index for the next available space in the moves array.
      */
-    public int linearMoveSearch(Position position, int[] moves, int movesIndex, int direction) {
+    public void linearMoveSearch(Position position, IntArrayList moves, int direction) {
         int square = getSquare();
-        int candidateMoveSquare = square;
-        int squareRank = SquareMapUtils.getRankContribution(candidateMoveSquare);
+        int candidateMoveSquare = square + direction;
+        int squareRank = SquareMapUtils.getRankContribution(square);
         Piece piece;
-        candidateMoveSquare += direction;
         while (candidateMoveSquare >= 0 && candidateMoveSquare <= 63) {
             if (direction == ChessDirections.LEFT || direction == ChessDirections.RIGHT) {
                 if (candidateMoveSquare < squareRank || candidateMoveSquare >= squareRank + ChessConstants.RANK_OFFSET) {
@@ -47,19 +46,12 @@ public abstract class LinearPiece extends Piece {
                     break;
                 }
             }
-
             if (isLegalMove(candidateMoveSquare)) {
                 piece = position.getBoard().pieceSearch(candidateMoveSquare);
                 if (piece == null) { //no piece so the move is legal
-                    moves[movesIndex] = Move.createIfLegal(position, candidateMoveSquare, square);
-                    if (moves[movesIndex] != MoveFlags.NO_MOVE) {
-                        movesIndex++;
-                    }
+                   Move.createIfLegal(position, moves, candidateMoveSquare, square);
                 } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    moves[movesIndex] = Move.createIfLegal(position, candidateMoveSquare, square);
-                    if (moves[movesIndex] != MoveFlags.NO_MOVE) {
-                        movesIndex++;
-                    }
+                    Move.createIfLegal(position, moves, candidateMoveSquare, square);
                     break;
                 } else { //same coloured piece
                     break;
@@ -67,7 +59,6 @@ public abstract class LinearPiece extends Piece {
             }
             candidateMoveSquare += direction;
         }
-        return movesIndex;
     }
 
     /**

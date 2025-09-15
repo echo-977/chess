@@ -1,3 +1,5 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 public class Knight extends DirectionalPiece{
 
     /**
@@ -13,11 +15,10 @@ public class Knight extends DirectionalPiece{
     /**
      * Generates all the legal moves the knight can do.
      * @param position the position that we are searching for moves on.
-     * @return an array of all the moves the knight can do.
+     * @param moves array list legal moves are to be added to.
      */
     @Override
-    public int[] generateMoves(Position position) {
-        int[] moves = new int[ChessConstants.MAX_KNIGHT_MOVES];
+    public void generateMoves(Position position, IntArrayList moves) {
         int[] directions = {
                 ChessDirections.RIGHT + 2 * ChessDirections.UP, 2 * ChessDirections.RIGHT + ChessDirections.UP,
                 2 * ChessDirections.RIGHT + ChessDirections.DOWN, ChessDirections.RIGHT + 2 * ChessDirections.DOWN,
@@ -25,7 +26,6 @@ public class Knight extends DirectionalPiece{
                 2 * ChessDirections.LEFT + ChessDirections.UP, ChessDirections.LEFT + 2 * ChessDirections.UP
         };
         directionalMoveSearch(position, moves, directions);
-        return moves;
     }
 
     /**

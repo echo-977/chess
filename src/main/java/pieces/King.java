@@ -1,3 +1,5 @@
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 public class King extends DirectionalPiece{
     private boolean check;
 
@@ -16,11 +18,10 @@ public class King extends DirectionalPiece{
     /**
      * Generates all the legal moves the king can do.
      * @param position the position that we are searching for moves on.
-     * @return an array of all the moves the king can do.
+     * @param moves array list legal moves are to be added to.
      */
     @Override
-    public int[] generateMoves(Position position) {
-        int[] moves = new int[ChessConstants.MAX_KING_MOVES];
+    public void generateMoves(Position position, IntArrayList moves) {
         int[] directions = {
                 ChessDirections.NONE + ChessDirections.UP, ChessDirections.RIGHT + ChessDirections.UP,
                 ChessDirections.RIGHT + ChessDirections.NONE, ChessDirections.RIGHT + ChessDirections.DOWN,
@@ -31,7 +32,6 @@ public class King extends DirectionalPiece{
         PieceColour colour = getColour();
         PieceColour enemyColour = colour.opponentColour();
         int castlingRights = position.getGameState().getCastlingRights();
-        int nextIndex = findNextIndex(moves);
         int square = getSquare();
         int rank = SquareMapUtils.getRankContribution(square);
         int kingsideCastleMask;
@@ -46,18 +46,14 @@ public class King extends DirectionalPiece{
         Board board = position.getBoard();
         if ((castlingRights & kingsideCastleMask) != 0 && !board.getThreatMap(enemyColour)[getSquare()]) {
             if (canCastleSearch(board, ChessConstants.KINGSIDE_CASTLE_FILE)) {
-                moves[nextIndex] = Move.createIfLegal(position, ChessConstants.KINGSIDE_CASTLE_FILE + rank, square);
-                if (moves[nextIndex] != MoveFlags.NO_MOVE) {
-                    nextIndex++;
-                }
+                Move.createIfLegal(position, moves, ChessConstants.KINGSIDE_CASTLE_FILE + rank, square);
             }
         }
         if ((castlingRights & queensideCastleMask) != 0 && !board.getThreatMap(enemyColour)[getSquare()]) {
             if (canCastleSearch(board, ChessConstants.QUEENSIDE_CASTLE_FILE) && board.pieceSearch(Files.B + rank) == null) {
-                moves[nextIndex] = Move.createIfLegal(position, ChessConstants.QUEENSIDE_CASTLE_FILE + rank, square);
+                Move.createIfLegal(position, moves, ChessConstants.QUEENSIDE_CASTLE_FILE + rank, square);
             }
         }
-        return moves;
     }
 
     /**
@@ -161,15 +157,14 @@ public class King extends DirectionalPiece{
      * Searches each given direction from the king, checking if it is valid to move to that square.
      * Updated to not allow moving to a square threatened by the opponent.
      * @param position the board the king is moving on.
-     * @param moves the current string of moves generated (legal moves are added to this).
+     * @param moves array list legal moves are to be added to.
      * @param directions array of 2d directions the king can go in.
      */
     @Override
-    public void directionalMoveSearch(Position position, int[] moves, int[] directions) {
+    public void directionalMoveSearch(Position position, IntArrayList moves, int[] directions) {
         int square = getSquare();
         int candidateMove;
         Piece piece;
-        int movesIndex = 0;
         Board board = position.getBoard();
         boolean[] threatMap = board.getThreatMap(getColour().opponentColour());
         for (int i = 0; i < ChessConstants.NUM_DIRECTIONS; i++) {
@@ -177,10 +172,7 @@ public class King extends DirectionalPiece{
             if (isLegalMove(candidateMove) && !threatMap[candidateMove]) {
                 piece = board.pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    moves[movesIndex] = Move.createIfLegal(position, candidateMove, square);
-                    if (moves[movesIndex] != MoveFlags.NO_MOVE) {
-                        movesIndex++;
-                    }
+                   Move.createIfLegal(position, moves, candidateMove, square);
                 }
             }
         }
