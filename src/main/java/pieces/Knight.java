@@ -19,13 +19,16 @@ public class Knight extends DirectionalPiece{
      */
     @Override
     public void generateMoves(Position position, IntArrayList moves) {
-        int[] directions = {
-                ChessDirections.RIGHT + 2 * ChessDirections.UP, 2 * ChessDirections.RIGHT + ChessDirections.UP,
-                2 * ChessDirections.RIGHT + ChessDirections.DOWN, ChessDirections.RIGHT + 2 * ChessDirections.DOWN,
-                ChessDirections.LEFT + 2 * ChessDirections.DOWN, 2 * ChessDirections.LEFT + ChessDirections.DOWN,
-                2 * ChessDirections.LEFT + ChessDirections.UP, ChessDirections.LEFT + 2 * ChessDirections.UP
-        };
-        directionalMoveSearch(position, moves, directions);
+        int square = getSquare();
+        Piece piece;
+        for (int candidateMove : MoveTables.knightMoves[square]) {
+            if (isLegalMove(candidateMove)) {
+                piece = position.getBoard().pieceSearch(candidateMove);
+                if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
+                    Move.createIfLegal(position, moves, candidateMove, square);
+                }
+            }
+        }
     }
 
     /**
