@@ -22,17 +22,21 @@ public class King extends DirectionalPiece{
      */
     @Override
     public void generateMoves(Position position, IntArrayList moves) {
-        int[] directions = {
-                ChessDirections.NONE + ChessDirections.UP, ChessDirections.RIGHT + ChessDirections.UP,
-                ChessDirections.RIGHT + ChessDirections.NONE, ChessDirections.RIGHT + ChessDirections.DOWN,
-                ChessDirections.NONE + ChessDirections.DOWN,  ChessDirections.LEFT + ChessDirections.DOWN,
-                ChessDirections.LEFT + ChessDirections.NONE, ChessDirections.LEFT + ChessDirections.UP
-        };
-        directionalMoveSearch(position, moves, directions);
+        int square = getSquare();
         PieceColour colour = getColour();
         PieceColour enemyColour = colour.opponentColour();
+        Piece piece;
+        Board board = position.getBoard();
+        boolean[] threatMap = board.getThreatMap(enemyColour);
+        for (int candidateMove : MoveTables.kingMoves[square]) {
+            if (isLegalMove(candidateMove) && !threatMap[candidateMove]) {
+                piece = board.pieceSearch(candidateMove);
+                if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
+                    Move.createIfLegal(position, moves, candidateMove, square);
+                }
+            }
+        }
         int castlingRights = position.getGameState().getCastlingRights();
-        int square = getSquare();
         int rank = SquareMapUtils.getRankContribution(square);
         int kingsideCastleMask;
         int queensideCastleMask;
@@ -43,7 +47,6 @@ public class King extends DirectionalPiece{
             kingsideCastleMask = FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
             queensideCastleMask = FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
         }
-        Board board = position.getBoard();
         if ((castlingRights & kingsideCastleMask) != 0 && !board.getThreatMap(enemyColour)[getSquare()]) {
             if (canCastleSearch(board, ChessConstants.KINGSIDE_CASTLE_FILE)) {
                 Move.createIfLegal(position, moves, ChessConstants.KINGSIDE_CASTLE_FILE + rank, square);
