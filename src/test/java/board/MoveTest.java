@@ -44,8 +44,8 @@ class MoveTest {
     void testIllegalMoveDetection2() {
         Position position = FENUtils.positionFromFEN("8/8/R4k2/2b5/8/3K4/8/8 w - - 0 1");
         Piece piece = position.getBoard().pieceSearch(Files.C + Ranks.FIVE);
-        int[] expectedMoves = {MoveFlags.QUIET_MOVE | (Squares.B6 << MoveFlags.DESTINATION_SHIFT) | Squares.C5,
-        MoveFlags.QUIET_MOVE | (Squares.D6 << MoveFlags.DESTINATION_SHIFT) | Squares.C5};
+        int[] expectedMoves = {MoveFlags.QUIET_MOVE | (Squares.D6 << MoveFlags.DESTINATION_SHIFT) | Squares.C5,
+                MoveFlags.QUIET_MOVE | (Squares.B6 << MoveFlags.DESTINATION_SHIFT) | Squares.C5};
         IntArrayList actualMoves = new IntArrayList(ChessConstants.MAX_BISHOP_MOVES);
         piece.generateMoves(position, actualMoves);
         assertArrayEquals(expectedMoves, actualMoves.toIntArray());

@@ -19,10 +19,22 @@ public class Bishop extends LinearPiece{
      */
     @Override
     public void generateMoves(Position position, IntArrayList moves) {
-        linearMoveSearch(position, moves, ChessDirections.LEFT + ChessDirections.UP);
-        linearMoveSearch(position, moves, ChessDirections.RIGHT + ChessDirections.UP);
-        linearMoveSearch(position, moves, ChessDirections.RIGHT + ChessDirections.DOWN);
-        linearMoveSearch(position, moves, ChessDirections.LEFT + ChessDirections.DOWN);
+        int square = getSquare();
+        int[][] bishopMoves = MoveTables.bishopMoves[square];
+        Piece piece;
+        for (int direction = 0; direction < ChessConstants.BISHOP_DIRECTIONS; direction++) {
+            for (int candidateMove : bishopMoves[direction]) {
+                piece = position.getBoard().pieceSearch(candidateMove);
+                if (piece == null) { //no piece so the move is legal
+                    Move.createIfLegal(position, moves, candidateMove, square);
+                } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
+                    Move.createIfLegal(position, moves, candidateMove, square);
+                    break;
+                } else { //same coloured piece
+                    break;
+                }
+            }
+        }
     }
 
     /**

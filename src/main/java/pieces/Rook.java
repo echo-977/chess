@@ -25,16 +25,14 @@ public class Rook extends LinearPiece{
         Piece piece;
         for (int direction = 0; direction < ChessConstants.ROOK_DIRECTIONS; direction++) {
             for (int candidateMove : rookMoves[direction]) {
-                if (isLegalMove(candidateMove)) {
-                    piece = position.getBoard().pieceSearch(candidateMove);
-                    if (piece == null) { //no piece so the move is legal
-                        Move.createIfLegal(position, moves, candidateMove, square);
-                    } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
-                        Move.createIfLegal(position, moves, candidateMove, square);
-                        break;
-                    } else { //same coloured piece
-                        break;
-                    }
+                piece = position.getBoard().pieceSearch(candidateMove);
+                if (piece == null) { //no piece so the move is legal
+                    Move.createIfLegal(position, moves, candidateMove, square);
+                } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
+                    Move.createIfLegal(position, moves, candidateMove, square);
+                    break;
+                } else { //same coloured piece
+                    break;
                 }
             }
         }

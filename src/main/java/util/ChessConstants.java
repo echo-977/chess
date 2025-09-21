@@ -33,4 +33,5 @@ public class ChessConstants {
     public static final int RANK_OFFSET = 8;
 
     public static final int ROOK_DIRECTIONS = 4;
+    public static final int BISHOP_DIRECTIONS = 4;
 }
