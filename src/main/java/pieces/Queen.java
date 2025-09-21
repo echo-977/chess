@@ -19,14 +19,8 @@ public class Queen extends LinearPiece{
      */
     @Override
     public void generateMoves(Position position, IntArrayList moves) {
-        linearMoveSearch(position, moves, ChessDirections.NONE + ChessDirections.UP);
-        linearMoveSearch(position, moves, ChessDirections.RIGHT + ChessDirections.UP);
-        linearMoveSearch(position, moves, ChessDirections.RIGHT + ChessDirections.NONE);
-        linearMoveSearch(position, moves, ChessDirections.RIGHT + ChessDirections.DOWN);
-        linearMoveSearch(position, moves, ChessDirections.NONE + ChessDirections.DOWN);
-        linearMoveSearch(position, moves, ChessDirections.LEFT + ChessDirections.DOWN);
-        linearMoveSearch(position, moves, ChessDirections.LEFT + ChessDirections.NONE);
-        linearMoveSearch(position, moves, ChessDirections.LEFT + ChessDirections.UP);
+        generateLinearMoves(position, moves, MoveTables.rookMoves[getSquare()], ChessConstants.ROOK_DIRECTIONS);
+        generateLinearMoves(position, moves, MoveTables.bishopMoves[getSquare()], ChessConstants.BISHOP_DIRECTIONS);
     }
 
     /**
