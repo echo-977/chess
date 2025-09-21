@@ -20,22 +20,7 @@ public class Rook extends LinearPiece{
      */
     @Override
     public void generateMoves(Position position, IntArrayList moves) {
-        int square = getSquare();
-        int[][] rookMoves = MoveTables.rookMoves[square];
-        Piece piece;
-        for (int direction = 0; direction < ChessConstants.ROOK_DIRECTIONS; direction++) {
-            for (int candidateMove : rookMoves[direction]) {
-                piece = position.getBoard().pieceSearch(candidateMove);
-                if (piece == null) { //no piece so the move is legal
-                    Move.createIfLegal(position, moves, candidateMove, square);
-                } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    Move.createIfLegal(position, moves, candidateMove, square);
-                    break;
-                } else { //same coloured piece
-                    break;
-                }
-            }
-        }
+        generateLinearMoves(position, moves, MoveTables.rookMoves[getSquare()], ChessConstants.ROOK_DIRECTIONS);
     }
 
     /**

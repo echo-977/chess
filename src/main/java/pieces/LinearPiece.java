@@ -116,4 +116,29 @@ public abstract class LinearPiece extends Piece {
         int rankDirection = (targetRank > squareRank) ? ChessDirections.UP : ChessDirections.DOWN;
         return fileDirection + rankDirection;
     }
+
+    /**
+     * Generates all the linear moves a given piece can do from a 2d array of potential squares.
+     * @param position the position the moves are for.
+     * @param moves IntArrayList that legal moves are added to.
+     * @param candidates 2d array of all the squares the piece could move to.
+     * @param numDirections number of directions the piece can move in (4 for bishop and rook, 8 for queen).
+     */
+    protected void generateLinearMoves(Position position, IntArrayList moves, int[][] candidates, int numDirections) {
+        int square = getSquare();
+        Piece piece;
+        for (int direction = 0; direction < numDirections; direction++) {
+            for (int candidateMove : candidates[direction]) {
+                piece = position.getBoard().pieceSearch(candidateMove);
+                if (piece == null) { //no piece so the move is legal
+                    Move.createIfLegal(position, moves, candidateMove, square);
+                } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
+                    Move.createIfLegal(position, moves, candidateMove, square);
+                    break;
+                } else { //same coloured piece
+                    break;
+                }
+            }
+        }
+    }
 }
