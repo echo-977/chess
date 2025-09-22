@@ -8,4 +8,6 @@ public class ChessDirections {
     public static final int DOWN_RIGHT = DOWN + RIGHT;
     public static final int DOWN_LEFT = DOWN + LEFT;
     public static final int NONE = 0;
+    public static final int[] ALL = {ChessDirections.UP, ChessDirections.RIGHT, ChessDirections.DOWN, ChessDirections.LEFT,
+            ChessDirections.UP_RIGHT, ChessDirections.DOWN_RIGHT, ChessDirections. DOWN_LEFT, ChessDirections.UP_LEFT};
 }

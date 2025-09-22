@@ -5,10 +5,12 @@ public class SANUtils {
      * Detects what disambiguation is required for a given move.
      * @param position move is to be disambiguated in.
      * @param move the move that needs to be checked for when disambiguation is required.
+     * @param moveGenerator the move generator object.
+     * @return the string value of the disambiguation needed.
      */
-    private static String getDisambiguation(Position position, int move) {
+    private static String getDisambiguation(Position position, int move, MoveGenerator moveGenerator) {
         StringBuilder disambiguation = new StringBuilder();
-        IntArrayList moves = MoveGenerator.generateMoves(position);
+        IntArrayList moves = moveGenerator.generateMoves(position);
         int moveSourceSquare = move & MoveFlags.SOURCE_MASK;
         int moveDestinationSquare = (move & MoveFlags.DESTINATION_MASK) >> MoveFlags.DESTINATION_SHIFT;
         int moveSourceRank = SquareMapUtils.getRankContribution(moveSourceSquare);
@@ -43,9 +45,11 @@ public class SANUtils {
      * @param moveFlag flag containing whether a move is a capture or en passant and other move information.
      * @param destinationSquare the destination of a move.
      * @param sourceSquare the square of the piece moving.
+     * @param moveGenerator the move generator object.
      * @return the move in standard algebraic notation as a String.
      */
-    public static String getAlgebraicNotation(Position position, int moveFlag, int destinationSquare, int sourceSquare) {
+    public static String getAlgebraicNotation(Position position, int moveFlag, int destinationSquare, int sourceSquare,
+                                              MoveGenerator moveGenerator) {
         StringBuilder moveNotation =  new StringBuilder();
         Board board = position.getBoard();
         Piece piece = board.pieceSearch(sourceSquare);
@@ -80,7 +84,7 @@ public class SANUtils {
         }
         int move = moveFlag << MoveFlags.FLAG_SHIFT | destinationSquare << MoveFlags.DESTINATION_SHIFT | sourceSquare;
         if (!castle) {
-            moveNotation.append(getDisambiguation(position, move));
+            moveNotation.append(getDisambiguation(position, move, moveGenerator));
             if ((moveFlag & MoveFlags.CAPTURE_BIT) == MoveFlags.CAPTURE_BIT) {
                 if (piece.getType() == PieceType.PAWN) {
                     moveNotation.append(SquareMapUtils.getFile(piece.getSquare()));
@@ -104,7 +108,7 @@ public class SANUtils {
         State stateBeforeMove = position.doMove(move);
         PieceColour turn = position.getGameState().getTurn();
         if (board.getThreatMap(turn.opponentColour())[board.findKing(turn).getSquare()]) {
-            if (MoveGenerator.generateMoves(position).isEmpty()) { //king is in check without any moves
+            if (moveGenerator.generateMoves(position).isEmpty()) { //king is in check without any moves
                 moveNotation.append(AlgebraicNotation.CHECKMATE);
             } else {
                 moveNotation.append(AlgebraicNotation.CHECK);
