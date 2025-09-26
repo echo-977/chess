@@ -63,7 +63,7 @@ public class FENUtils {
         GameState gameState = new GameState(turn, moveCount, halfMoveClock);
         gameState.setCastlingRights(parseCastlingRights(fen[FENConstants.CASTLING_FIELD]));
         if (fen[FENConstants.EN_PASSANT_FIELD].equals(FENConstants.NONE)) {
-            gameState.setEnPassantTarget(ChessConstants.NO_EN_PASSANT_TARGET);
+            gameState.setEnPassantTarget(Squares.NONE);
         } else {
             gameState.setEnPassantTarget(SquareMapUtils.mapSquareToInt(fen[FENConstants.EN_PASSANT_FIELD]));
         }
@@ -145,7 +145,7 @@ public class FENUtils {
             fen.append(FENConstants.NONE);
         }
         fen.append(FENConstants.SPACE);
-        if (gameState.getEnPassantTarget() == ChessConstants.NO_EN_PASSANT_TARGET) {
+        if (gameState.getEnPassantTarget() == Squares.NONE) {
             fen.append(FENConstants.NONE);
         } else {
             fen.append(SquareMapUtils.mapIntToSquare(gameState.getEnPassantTarget()));

@@ -44,4 +44,18 @@ public class SquareMapUtilsTest {
         assertEquals(Squares.A8, SquareMapUtils.getSquare('a', 8));
         assertEquals(Squares.H1, SquareMapUtils.getSquare('h', 1));
     }
+
+    @Test
+    @DisplayName("Test findDirection")
+    void testFindDirection() {
+        assertEquals(ChessDirections.UP, SquareMapUtils.findDirection(Squares.A5, Squares.A7));
+        assertEquals(ChessDirections.RIGHT, SquareMapUtils.findDirection(Squares.C7, Squares.H7));
+        assertEquals(ChessDirections.DOWN, SquareMapUtils.findDirection(Squares.D6, Squares.D3));
+        assertEquals(ChessDirections.LEFT, SquareMapUtils.findDirection(Squares.G4, Squares.B4));
+        assertEquals(ChessDirections.UP_RIGHT, SquareMapUtils.findDirection(Squares.C4, Squares.F7));
+        assertEquals(ChessDirections.DOWN_RIGHT, SquareMapUtils.findDirection(Squares.E6, Squares.H3));
+        assertEquals(ChessDirections.DOWN_LEFT, SquareMapUtils.findDirection(Squares.G2, Squares.F1));
+        assertEquals(ChessDirections.UP_LEFT, SquareMapUtils.findDirection(Squares.F3, Squares.A8));
+        assertEquals(ChessDirections.NONE, SquareMapUtils.findDirection(Squares.A5, Squares.D6));
+    }
 }

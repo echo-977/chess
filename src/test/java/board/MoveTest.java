@@ -27,28 +27,5 @@ class MoveTest {
         moveFlag = ((Move.encodeMove(position, Squares.C8, Squares.E8) >> MoveFlags.FLAG_SHIFT) & MoveFlags.QUEENSIDE_CASTLE);
         assertEquals(MoveFlags.QUEENSIDE_CASTLE, moveFlag);
     }
-
-    @Test
-    @DisplayName("Test illegalMoveDetection (pin)")
-    void testIllegalMoveDetection() {
-        Position position = FENUtils.positionFromFEN("8/8/R2b1k2/8/8/8/8/8 w - - 0 1");
-        Piece piece = position.getBoard().pieceSearch(Squares.D6);
-        int[] expectedMoves = new int[0];
-        IntArrayList actualMoves = new IntArrayList(ChessConstants.MAX_BISHOP_MOVES);
-        piece.generateMoves(position, actualMoves);
-        assertArrayEquals(expectedMoves, actualMoves.toIntArray());
-    }
-
-    @Test
-    @DisplayName("Test illegalMoveDetection (blocking check)")
-    void testIllegalMoveDetection2() {
-        Position position = FENUtils.positionFromFEN("8/8/R4k2/2b5/8/3K4/8/8 w - - 0 1");
-        Piece piece = position.getBoard().pieceSearch(Files.C + Ranks.FIVE);
-        int[] expectedMoves = {MoveFlags.QUIET_MOVE | (Squares.D6 << MoveFlags.DESTINATION_SHIFT) | Squares.C5,
-                MoveFlags.QUIET_MOVE | (Squares.B6 << MoveFlags.DESTINATION_SHIFT) | Squares.C5};
-        IntArrayList actualMoves = new IntArrayList(ChessConstants.MAX_BISHOP_MOVES);
-        piece.generateMoves(position, actualMoves);
-        assertArrayEquals(expectedMoves, actualMoves.toIntArray());
-    }
 }
 

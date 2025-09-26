@@ -26,9 +26,6 @@ public class ChessConstants {
     public static final int BLACK_KINGSIDE_ROOK_SQUARE = Squares.H8;
     public static final int BLACK_QUEENSIDE_ROOK_SQUARE = Squares.A8;
 
-
-    public static final int NO_EN_PASSANT_TARGET = -1;
-
     public static final int FILE_OFFSET = 1;
     public static final int RANK_OFFSET = 8;
 

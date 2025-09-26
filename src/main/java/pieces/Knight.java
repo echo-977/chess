@@ -25,7 +25,7 @@ public class Knight extends DirectionalPiece{
             if (isLegalMove(candidateMove)) {
                 piece = position.getBoard().pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    Move.createIfLegal(position, moves, candidateMove, square);
+                    moves.add(Move.encodeMove(position, candidateMove, square));
                 }
             }
         }

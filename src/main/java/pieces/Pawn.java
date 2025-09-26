@@ -58,7 +58,7 @@ public class Pawn extends Piece{
             return;
         }
         int enPassantTarget = position.getGameState().getEnPassantTarget();
-        if (enPassantTarget != ChessConstants.NO_EN_PASSANT_TARGET) {
+        if (enPassantTarget != Squares.NONE) {
             if (enPassantTarget == captureTarget) {
                addMove(position, moves, captureTarget);
             }
@@ -73,14 +73,13 @@ public class Pawn extends Piece{
      * @param destination where the piece is going to.
      */
     public void addMove(Position position, IntArrayList moves, int destination) {
-        if (Move.createIfLegal(position, moves, destination, getSquare())) {
-            int lastIndex = moves.size() - 1;
-            if (((moves.getInt(lastIndex) >> MoveFlags.FLAG_SHIFT) & MoveFlags.PROMOTION_BIT) == MoveFlags.PROMOTION_BIT) {
-                int move = moves.removeInt(lastIndex);
-                int[] promotionPieceFlags = {MoveFlags.QUEEN, MoveFlags.ROOK, MoveFlags.BISHOP, MoveFlags.KNIGHT};
-                for (int promotionPiece : promotionPieceFlags) {
-                    moves.add(move | (promotionPiece << MoveFlags.FLAG_SHIFT));
-                }
+        moves.add(Move.encodeMove(position, destination, getSquare()));
+        int lastIndex = moves.size() - 1;
+        if (((moves.getInt(lastIndex) >> MoveFlags.FLAG_SHIFT) & MoveFlags.PROMOTION_BIT) == MoveFlags.PROMOTION_BIT) {
+            int move = moves.removeInt(lastIndex);
+            int[] promotionPieceFlags = {MoveFlags.QUEEN, MoveFlags.ROOK, MoveFlags.BISHOP, MoveFlags.KNIGHT};
+            for (int promotionPiece : promotionPieceFlags) {
+                moves.add(move | (promotionPiece << MoveFlags.FLAG_SHIFT));
             }
         }
     }

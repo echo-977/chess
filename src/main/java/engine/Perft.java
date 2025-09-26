@@ -13,7 +13,7 @@ public class Perft {
             return 1;
         }
         long nodes = 0;
-        IntArrayList moves = moveGen.generateMoves(position);
+        IntArrayList moves = moveGen.generateLegalMoves(position);
         for (int move : moves) {
             if (move != MoveFlags.NO_MOVE) {
                 State stateBeforeMove = position.doMove(move);
@@ -22,7 +22,7 @@ public class Perft {
                     position.unDoMove(stateBeforeMove);
                 } catch (Exception e) {
                     position.unDoMove(stateBeforeMove);
-                    System.out.println("Error with move: " + Move.toString(move));
+                    System.out.println("Error with move: " + Move.toUCIString(move));
                     System.out.println("On board: " + FENUtils.getFEN(position));
                     position.doMove(move);
                     throw e;
@@ -46,18 +46,18 @@ public class Perft {
         }
         long nodes = 0;
         long count;
-        IntArrayList moves = moveGen.generateMoves(position);
+        IntArrayList moves = moveGen.generateLegalMoves(position);
         for (int move : moves) {
             if (move != MoveFlags.NO_MOVE) {
                 State stateBeforeMove = position.doMove(move);
                 try {
                     count = Perft(position, depth - 1, moveGen);
                     position.unDoMove(stateBeforeMove);
-                    System.out.println(Move.toString(move) + ": " + count);
+                    System.out.println(Move.toUCIString(move) + ": " + count);
                     nodes += count;
                 } catch (Exception e) {
                     position.unDoMove(stateBeforeMove);
-                    System.out.println("Error when doing move: " + Move.toString(move));
+                    System.out.println("Error when doing move: " + Move.toUCIString(move));
                     System.out.println("On board: " + FENUtils.getFEN(position));
                     position.doMove(move);
                     throw e;
@@ -86,7 +86,7 @@ public class Perft {
         }
         int numCPUCores = Runtime.getRuntime().availableProcessors();
         MoveGenerator moveGen = new MoveGenerator();
-        IntArrayList moves = moveGen.generateMoves(position);
+        IntArrayList moves = moveGen.generateLegalMoves(position);
         int numThreadMoves = (moves.size() + numCPUCores - 1) / numCPUCores;
         final int[][] threadMoves = new int[numCPUCores][numThreadMoves];
         int threadMovesIndex;
@@ -111,7 +111,7 @@ public class Perft {
                         positionCopy.doMove(move);
                         if (doDivide) {
                             count = Perft(positionCopy, depth - 1, new MoveGenerator());
-                            System.out.println(Move.toString(move) + ": " + count);
+                            System.out.println(Move.toUCIString(move) + ": " + count);
                             nodes += count;
                         } else {
                             nodes += Perft(positionCopy, depth - 1, new MoveGenerator());

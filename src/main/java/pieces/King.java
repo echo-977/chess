@@ -32,7 +32,7 @@ public class King extends DirectionalPiece{
             if (isLegalMove(candidateMove) && !threatMap[candidateMove]) {
                 piece = board.pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    Move.createIfLegal(position, moves, candidateMove, square);
+                    moves.add(Move.encodeMove(position, candidateMove, square));
                 }
             }
         }
@@ -49,12 +49,12 @@ public class King extends DirectionalPiece{
         }
         if ((castlingRights & kingsideCastleMask) != 0 && !board.getThreatMap(enemyColour)[getSquare()]) {
             if (canCastleSearch(board, ChessConstants.KINGSIDE_CASTLE_FILE)) {
-                Move.createIfLegal(position, moves, ChessConstants.KINGSIDE_CASTLE_FILE + rank, square);
+                moves.add(Move.encodeMove(position, ChessConstants.KINGSIDE_CASTLE_FILE + rank, square));
             }
         }
         if ((castlingRights & queensideCastleMask) != 0 && !board.getThreatMap(enemyColour)[getSquare()]) {
             if (canCastleSearch(board, ChessConstants.QUEENSIDE_CASTLE_FILE) && board.pieceSearch(Files.B + rank) == null) {
-                Move.createIfLegal(position, moves, ChessConstants.QUEENSIDE_CASTLE_FILE + rank, square);
+                moves.add(Move.encodeMove(position, ChessConstants.QUEENSIDE_CASTLE_FILE + rank, square));
             }
         }
     }

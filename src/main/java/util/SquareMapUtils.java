@@ -85,4 +85,30 @@ public class SquareMapUtils {
     public static int getRankContribution(int square) {
         return square - (square % ChessConstants.NUM_FILES);
     }
+
+    /**
+     * Finds the direction from the source square to the destination square.
+     * @param source the source square.
+     * @param destination the destination square.
+     * @return the direction to reach the destination from the source.
+     */
+    public static int findDirection(int source, int destination) {
+        int directionOffset = destination - source;
+        if (directionOffset % ChessDirections.UP == 0) {
+            return (directionOffset >= 0) ? ChessDirections.DOWN : ChessDirections.UP;
+        }
+        if (directionOffset % ChessDirections.UP_RIGHT == 0) {
+            if (SquareMapUtils.getRank(source) == SquareMapUtils.getRank(destination)) {
+                return (directionOffset >= 0) ? ChessDirections.RIGHT : ChessDirections.LEFT;
+            }
+            return (directionOffset >= 0) ? ChessDirections.DOWN_LEFT : ChessDirections.UP_RIGHT;
+        }
+        if (directionOffset % ChessDirections.DOWN_RIGHT == 0) {
+            return (directionOffset >= 0) ? ChessDirections.DOWN_RIGHT : ChessDirections.UP_LEFT;
+        }
+        if (getRankContribution(source) == getRankContribution(destination)) {
+            return (directionOffset >= 0) ? ChessDirections.RIGHT : ChessDirections.LEFT;
+        }
+        return ChessDirections.NONE;
+    }
 }

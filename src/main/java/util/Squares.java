@@ -63,4 +63,5 @@ public class Squares {
     public static final int F1 = Files.F + Ranks.ONE;
     public static final int G1 = Files.G + Ranks.ONE;
     public static final int H1 = Files.H + Ranks.ONE;
+    public static final int NONE = -1;
 }
