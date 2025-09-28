@@ -22,8 +22,8 @@ public class Move {
             moves.add(potentialMove);
             return true;
         }
-        boolean[] threatMap = board.getThreatMap(colour.opponentColour());
-        if (threatMap[king.getSquare()]) { //king is in check so move is invalid
+        long threatMap = board.getThreatMap(colour.opponentColour());
+        if (((threatMap >> king.getSquare()) & 1L) == 1) { //king is in check so move is invalid
             position.unDoMove(stateBeforeMove);
             return false;
         } else {

@@ -107,7 +107,7 @@ public class SANUtils {
         }
         State stateBeforeMove = position.doMove(move);
         PieceColour turn = position.getGameState().getTurn();
-        if (board.getThreatMap(turn.opponentColour())[board.findKing(turn).getSquare()]) {
+        if (((board.getThreatMap(turn.opponentColour()) >> board.findKing(turn).getSquare()) & 1L) == 1) {
             if (moveGenerator.generateLegalMoves(position).isEmpty()) { //king is in check without any moves
                 moveNotation.append(AlgebraicNotation.CHECKMATE);
             } else {

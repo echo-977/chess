@@ -59,7 +59,7 @@ public class FENUtils {
 
 
         }
-        Board board = new Board(pieces, new boolean[64], new boolean[64]);
+        Board board = new Board(pieces, 0L, 0L);
         GameState gameState = new GameState(turn, moveCount, halfMoveClock);
         gameState.setCastlingRights(parseCastlingRights(fen[FENConstants.CASTLING_FIELD]));
         if (fen[FENConstants.EN_PASSANT_FIELD].equals(FENConstants.NONE)) {
