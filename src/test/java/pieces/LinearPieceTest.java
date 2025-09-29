@@ -29,40 +29,6 @@ class LinearPieceTest {
     }
 
     @Test
-    @DisplayName("Test linearMoveSearch without other piece")
-    void testLinearMoveSearchNoOtherPieces() {
-        Position position = FENUtils.positionFromFEN("8/8/8/8/3Q4/8/8/8 w - - 0 1");
-        IntArrayList actualMoves = new IntArrayList(4);
-        piece.linearMoveSearch(position, actualMoves, ChessDirections.NONE + ChessDirections.UP);
-        int[] expectedMoves = {MoveFlags.QUIET_MOVE | Squares.D5 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
-                MoveFlags.QUIET_MOVE | Squares.D6 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
-                MoveFlags.QUIET_MOVE | Squares.D7 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
-                MoveFlags.QUIET_MOVE | Squares.D8 << MoveFlags.DESTINATION_SHIFT | Squares.D4};
-        assertArrayEquals(expectedMoves, actualMoves.toIntArray());
-    }
-
-    @Test
-    @DisplayName("Test linearMoveSearch with other piece")
-    void testLinearMoveSearchOtherPieces() {
-        Position position = FENUtils.positionFromFEN("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
-        IntArrayList actualMoves = new IntArrayList(7);
-        piece.linearMoveSearch(position, actualMoves, ChessDirections.LEFT + ChessDirections.UP);
-        int[] expectedMoves = {MoveFlags.QUIET_MOVE | Squares.C5 <<  MoveFlags.DESTINATION_SHIFT | Squares.D4};
-                assertArrayEquals(expectedMoves, actualMoves.toIntArray());
-    }
-
-    @Test
-    @DisplayName("Test linearMoveSearch with capture")
-    void testLinearMoveSearchCapture() {
-        Position position = FENUtils.positionFromFEN("8/8/1P3n2/8/3Q4/8/8/8 w - - 0 1");
-        IntArrayList actualMoves = new IntArrayList(7);
-        piece.linearMoveSearch(position, actualMoves, ChessDirections.RIGHT + ChessDirections.UP);
-        int[] expectedMoves = {MoveFlags.QUIET_MOVE | Squares.E5 << MoveFlags.DESTINATION_SHIFT | Squares.D4,
-                MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.F6 << MoveFlags.DESTINATION_SHIFT | Squares.D4};
-        assertArrayEquals(expectedMoves, actualMoves.toIntArray());
-    }
-
-    @Test
     @DisplayName("Test recursiveCaptureCheck")
     void testRecursiveCaptureCheck() {
         Board board = FENUtils.positionFromFEN("8/8/8/3q2P1/8/8/8/8 w - - 0 1").getBoard();

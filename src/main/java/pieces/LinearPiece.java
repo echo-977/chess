@@ -15,53 +15,6 @@ public abstract class LinearPiece extends Piece {
     }
 
     /**
-     * Searches out in a given direction from the piece, checking if it is valid to move to that square.
-     * Used in the move generation methods for rook, bishop and queen.
-     *
-     * @param position      the position we are searching for moves in.
-     * @param moves         array list legal moves are to be added to.
-     * @param direction     the direction to go in.
-     */
-    public void linearMoveSearch(Position position, IntArrayList moves, int direction) {
-        int square = getSquare();
-        int candidateMoveSquare = square + direction;
-        int squareRank = SquareMapUtils.getRankContribution(square);
-        Piece piece;
-        while (candidateMoveSquare >= 0 && candidateMoveSquare <= 63) {
-            if (direction == ChessDirections.LEFT || direction == ChessDirections.RIGHT) {
-                if (candidateMoveSquare < squareRank || candidateMoveSquare >= squareRank + ChessConstants.RANK_OFFSET) {
-                    break;
-                }
-            }
-            int prevFile = SquareMapUtils.getFileContribution(candidateMoveSquare - direction);
-            int prevRank = SquareMapUtils.getRankContribution(candidateMoveSquare - direction);
-            int currentFile = SquareMapUtils.getFileContribution(candidateMoveSquare);
-            int currentRank = SquareMapUtils.getRankContribution(candidateMoveSquare);
-            if (direction == ChessDirections.LEFT + ChessDirections.UP ||
-                    direction == ChessDirections.RIGHT + ChessDirections.UP ||
-                    direction == ChessDirections.LEFT + ChessDirections.DOWN ||
-                    direction == ChessDirections.RIGHT + ChessDirections.DOWN) {
-                if (Math.abs(currentFile - prevFile) != ChessConstants.FILE_OFFSET ||
-                        Math.abs(currentRank - prevRank) != ChessConstants.RANK_OFFSET) {
-                    break;
-                }
-            }
-            if (isLegalMove(candidateMoveSquare)) {
-                piece = position.getBoard().pieceSearch(candidateMoveSquare);
-                if (piece == null) { //no piece so the move is legal
-                   Move.createIfLegal(position, moves, candidateMoveSquare, square);
-                } else if (piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    Move.createIfLegal(position, moves, candidateMoveSquare, square);
-                    break;
-                } else { //same coloured piece
-                    break;
-                }
-            }
-            candidateMoveSquare += direction;
-        }
-    }
-
-    /**
      * Recursive function to move from a certain square towards the piece, checking that each square is empty.
      *
      * @param board the board we are searching on.

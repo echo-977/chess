@@ -4,4 +4,5 @@
 //TODO write evaluation function
 //TODO change threat map updates to only consider effected squares
 //TODO move to bitboard based system
-//TODO do the setting of special move flags (castle, promotion etc) when the move is generated rather than during encoding
+//TODO do the setting of special move flags (castle, promotion etc) where the move is generated rather than during encoding
+//TODO add method to compute whether a specific square is targeted

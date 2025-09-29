@@ -1,6 +1,6 @@
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-public class Knight extends DirectionalPiece{
+public class Knight extends Piece {
 
     /**
      * Constructs a knight with the specified name, color, rank, and file.

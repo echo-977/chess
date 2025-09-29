@@ -120,17 +120,6 @@ class KingTest {
     }
 
     @Test
-    @DisplayName("Test findNextIndex")
-    void testFindNextIndex() {
-        Position position = FENUtils.positionFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        Board board = position.getBoard();
-        int[] moves = new int[8];
-        moves[0] = 4; //arbitrary non zero number
-        King king = board.findKing(PieceColour.WHITE);
-        assertEquals(1, king.findNextIndex(moves));
-    }
-
-    @Test
     @DisplayName("Test generateMoves with castling")
     void testGenerateMovesWithCastling() {
         Position position = FENUtils.positionFromFEN("r3k2r/8/5R2/8/8/8/2b5/R3K2R w KQkq - 0 1");

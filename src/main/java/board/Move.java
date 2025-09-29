@@ -1,38 +1,4 @@
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-
 public class Move {
-    /**
-     * Static factory method to filter out illegal moves (moves that leave the king in check).
-     * In the event that the move is illegal a null object is returned, otherwise the move is returned.
-     *
-     * @param position          the position the move is played in.
-     * @param moves             the array list legal moves are added to.
-     * @param destinationSquare the square the piece is moved to.
-     * @param sourceSquare      the square the piece is moved from.
-     * @return true if the move was legal, false if not.
-     */
-    public static boolean createIfLegal(Position position, IntArrayList moves, int destinationSquare, int sourceSquare) {
-        int potentialMove = encodeMove(position, destinationSquare, sourceSquare);
-        Board board = position.getBoard();
-        PieceColour colour = board.pieceSearch(sourceSquare).getColour();
-        State stateBeforeMove = position.doMove(potentialMove);
-        King king = board.findKing(colour);
-        if (king == null) { //only occurs in test positions in which case there is no check to worry about
-            position.unDoMove(stateBeforeMove);
-            moves.add(potentialMove);
-            return true;
-        }
-        long threatMap = board.getThreatMap(colour.opponentColour());
-        if (((threatMap >> king.getSquare()) & 1L) == 1) { //king is in check so move is invalid
-            position.unDoMove(stateBeforeMove);
-            return false;
-        } else {
-            position.unDoMove(stateBeforeMove);
-            moves.add(potentialMove);
-            return true;
-        }
-    }
-
     /**
      * Returns the unique integer to represent a move from the source to destination.
      * The leftmost 4 bits are flags used to contain move data.

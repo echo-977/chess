@@ -1,6 +1,6 @@
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-public class King extends DirectionalPiece{
+public class King extends Piece {
     private boolean check;
 
     /**
@@ -116,20 +116,6 @@ public class King extends DirectionalPiece{
     }
 
     /**
-     * Utility function to find the next available empty slot for a move.
-     * @param moves the array of moves.
-     * @return index of first empty slot in the array.
-     */
-    public int findNextIndex(int[] moves) {
-        for (int i = 0; i < moves.length; i++) {
-            if (moves[i] == 0) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
      * Checks whether a king can castle to a given file without passing through or ending up in check.
      * @param board the board in play.
      * @param targetFile the target file for the king to castle in.
@@ -154,31 +140,6 @@ public class King extends DirectionalPiece{
             }
         }
         return true;
-    }
-
-    /**
-     * Searches each given direction from the king, checking if it is valid to move to that square.
-     * Updated to not allow moving to a square threatened by the opponent.
-     * @param position the board the king is moving on.
-     * @param moves array list legal moves are to be added to.
-     * @param directions array of 2d directions the king can go in.
-     */
-    @Override
-    public void directionalMoveSearch(Position position, IntArrayList moves, int[] directions) {
-        int square = getSquare();
-        int candidateMove;
-        Piece piece;
-        Board board = position.getBoard();
-        long threatMap = board.getThreatMap(getColour().opponentColour());
-        for (int i = 0; i < ChessConstants.NUM_DIRECTIONS; i++) {
-            candidateMove = square + directions[i];
-            if (isLegalMove(candidateMove) && ((threatMap >> candidateMove) & 1L) == 0) {
-                piece = board.pieceSearch(candidateMove);
-                if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
-                   Move.createIfLegal(position, moves, candidateMove, square);
-                }
-            }
-        }
     }
 
     @Override

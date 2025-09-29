@@ -1,19 +1,9 @@
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class MoveTest {
-    @Test
-    @DisplayName("Test moveConstructor")
-    void testMove() {
-        Position position = FENUtils.positionFromFEN("8/5k2/8/3r4/8/8/8/4K3 w - - 0 1");
-        IntArrayList moves = new IntArrayList(1);
-        Move.createIfLegal(position, moves, Squares.E5, Squares.D5);
-        assertNotEquals(MoveFlags.NO_MOVE, moves.getInt(0));
-    }
-
     @Test
     @DisplayName("Test castling detection")
     void testCastlingDetection() {
