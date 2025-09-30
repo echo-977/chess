@@ -49,12 +49,14 @@ public class King extends Piece {
         }
         if ((castlingRights & kingsideCastleMask) != 0 && ((threatMap >> square) & 1L) == 0) {
             if (canCastleSearch(board, ChessConstants.KINGSIDE_CASTLE_FILE)) {
-                moves.add(Move.encodeMove(position, ChessConstants.KINGSIDE_CASTLE_FILE + rank, square));
+                moves.add(MoveFlags.KINGSIDE_CASTLE << MoveFlags.FLAG_SHIFT |
+                        Move.encodeMove(position, ChessConstants.KINGSIDE_CASTLE_FILE + rank, square));
             }
         }
         if ((castlingRights & queensideCastleMask) != 0 && ((threatMap >> square) & 1L) == 0) {
             if (canCastleSearch(board, ChessConstants.QUEENSIDE_CASTLE_FILE) && board.pieceSearch(Files.B + rank) == null) {
-                moves.add(Move.encodeMove(position, ChessConstants.QUEENSIDE_CASTLE_FILE + rank, square));
+                moves.add(MoveFlags.QUEENSIDE_CASTLE << MoveFlags.FLAG_SHIFT |
+                        Move.encodeMove(position, ChessConstants.QUEENSIDE_CASTLE_FILE + rank, square));
             }
         }
     }

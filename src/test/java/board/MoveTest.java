@@ -5,17 +5,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MoveTest {
     @Test
-    @DisplayName("Test castling detection")
-    void testCastlingDetection() {
-        Position position = FENUtils.positionFromFEN("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
-        int moveFlag = ((Move.encodeMove(position, Squares.G1, Squares.E1) >> MoveFlags.FLAG_SHIFT) & MoveFlags.KINGSIDE_CASTLE);
-        assertEquals(MoveFlags.KINGSIDE_CASTLE, moveFlag);
-        moveFlag = ((Move.encodeMove(position, Squares.C1, Squares.E1) >> MoveFlags.FLAG_SHIFT) & MoveFlags.QUEENSIDE_CASTLE);
-        assertEquals(MoveFlags.QUEENSIDE_CASTLE, moveFlag);
-        moveFlag = ((Move.encodeMove(position, Squares.G8, Squares.E8) >> MoveFlags.FLAG_SHIFT) & MoveFlags.KINGSIDE_CASTLE);
-        assertEquals(MoveFlags.KINGSIDE_CASTLE, moveFlag);
-        moveFlag = ((Move.encodeMove(position, Squares.C8, Squares.E8) >> MoveFlags.FLAG_SHIFT) & MoveFlags.QUEENSIDE_CASTLE);
-        assertEquals(MoveFlags.QUEENSIDE_CASTLE, moveFlag);
+    @DisplayName("Test move encoding (quiet)")
+    void testQuietMoveEncoding() {
+        Position position = FENUtils.positionFromFEN("8/8/8/2R5/8/8/8/8 w - - 0 1");
+        int move = Move.encodeMove(position, Squares.D5, Squares.C5);
+        assertEquals(Squares.D5 << MoveFlags.DESTINATION_SHIFT | Squares.C5, move);
+    }
+
+    @Test
+    @DisplayName("Test move encoding (capture)")
+    void testCaptureMoveEncoding() {
+        Position position = FENUtils.positionFromFEN("8/8/8/2Rp4/8/8/8/8 w - - 0 1");
+        int move = Move.encodeMove(position, Squares.D5, Squares.C5);
+        assertEquals(MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.D5 << MoveFlags.DESTINATION_SHIFT | Squares.C5, move);
     }
 }
 
