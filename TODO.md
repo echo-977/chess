@@ -2,5 +2,6 @@
 //TODO set check move to put king in check and remove check detection from constructor
 //TODO move clears whether the king was in check
 //TODO write evaluation function
-//TODO change threat map updates to only consider effected squares
+//TODO change threat map updates to only consider effected squares 
+(ATKFR/ATKTO system with a setup method and an update method that also takes the move as input)
 //TODO move to bitboard based system
