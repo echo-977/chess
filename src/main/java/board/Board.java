@@ -6,6 +6,8 @@ public class Board {
     private King blackKing;
     private long whiteThreatMap;
     private long blackThreatMap;
+    private long[] ATKTO;
+    private long[] ATKFR;
 
     /**
      * Constructs a board based on all the boards attributes.
@@ -33,6 +35,9 @@ public class Board {
                 }
             }
         }
+        ATKTO = new long[ChessConstants.NUM_SQUARES];
+        ATKFR = new long[ChessConstants.NUM_SQUARES];
+        ThreatMapGenerator.setUpAttackTables(this);
     }
 
     /**
@@ -211,5 +216,31 @@ public class Board {
     public void resetThreatMaps(long whiteThreatMap, long blackThreatMap) {
         this.whiteThreatMap = whiteThreatMap;
         this.blackThreatMap = blackThreatMap;
+    }
+
+    /**
+     * Simple getter for the attack from table.
+     * @return long for each square of the board where each bit denotes a piece attacking the square.
+     */
+    public long[] getATKFR() {
+        return ATKFR;
+    }
+
+    /**
+     * Simple getter for the attack to table.
+     * @return long for each square of the board where each bit denotes a square the piece there can attack.
+     */
+    public long[] getATKTO() {
+        return ATKTO;
+    }
+
+    /**
+     * Simple setter for the attack from and attack to tables.
+     * @param ATKFR table of all squares each square is attacked by.
+     * @param ATKTO table of all squares the each square attacks.
+     */
+    public void setAttackTables(long[] ATKFR, long[] ATKTO) {
+        this.ATKFR = ATKFR;
+        this.ATKTO = ATKTO;
     }
 }
