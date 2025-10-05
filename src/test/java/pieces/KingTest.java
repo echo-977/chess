@@ -143,4 +143,12 @@ class KingTest {
         assertArrayEquals(expectedMovesBlack, piece2MovesActual.toIntArray());
     }
 
+    @Test
+    @DisplayName("Test getAttackMask")
+    void testGetAttackMask() {
+        long expectedAttackMask = 0b00000010_00000011_00000000_00000000_00000000_00000000_00000000_00000000L;
+        assertEquals(expectedAttackMask, piece1.getAttackMask(null));
+        expectedAttackMask = 0b00000000_00000000_00000000_00011100_00010100_00011100_00000000_00000000L;
+        assertEquals(expectedAttackMask, piece2.getAttackMask(null));
+    }
 }

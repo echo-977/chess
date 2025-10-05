@@ -2,9 +2,11 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 public class Pawn extends Piece{
     private boolean moved;
+    private final int moveDirection;
 
     /**
      * Constructs a pawn with the specified name, color, rank, and file.
+     * Stores the direction the pawn moves in.
      *
      * @param colour the colour of the pawn ("White" or "Black")
      * @param square the square the pawn is on.
@@ -13,6 +15,7 @@ public class Pawn extends Piece{
     public Pawn(PieceColour colour, int square, boolean moved) {
         super(PieceType.PAWN, colour, square);
         this.moved = moved;
+        this.moveDirection = (colour == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
     }
 
     /**
@@ -24,7 +27,6 @@ public class Pawn extends Piece{
     public void generateMoves(Position position, IntArrayList moves) {
         int square = getSquare();
         int candidateMove = square;
-        int moveDirection = (getColour() == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
         for (int i = 0; i < 2; i++) { //pawns can move forward either 1 or 2 squares
             candidateMove += moveDirection;
             if (isLegalMove(candidateMove) && position.getBoard().pieceSearch(candidateMove) == null) {
@@ -104,7 +106,6 @@ public class Pawn extends Piece{
         int squareRank = SquareMapUtils.getRankContribution(square);
         int moveFile = SquareMapUtils.getFileContribution(move);
         int moveRank = SquareMapUtils.getRankContribution(move);
-        int moveDirection = (getColour() == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
         if (squareRank + moveDirection == moveRank && squareFile == moveFile) {
             return true;
         }
@@ -139,7 +140,6 @@ public class Pawn extends Piece{
         }
         int square = getSquare();
         int squareFile = SquareMapUtils.getFileContribution(square);
-        int moveDirection = (getColour() == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
         boolean leftCapture = false;
         boolean rightCapture = false;
         if (squareFile > Files.A) { //when on the A file the pawn cannot capture left
@@ -184,6 +184,26 @@ public class Pawn extends Piece{
             return other.moved == this.moved;
         }
         return false;
+    }
+
+    /**
+     * Gets a bitmask of all the squares the pawn attacks.
+     * @return long where each bit represents whether the pawn attacks that square or not.
+     */
+    @Override
+    public long getAttackMask(Board board) {
+        long attackMask = 0L;
+        int square = getSquare();
+        int file = SquareMapUtils.getFileContribution(square);
+        if (file > Files.A && file < Files.H) { //pawn can attack on either side
+            attackMask |= 1L << (square + moveDirection + ChessDirections.LEFT);
+            attackMask |= 1L << (square + moveDirection + ChessDirections.RIGHT);
+        } else if (file > Files.A) { //pawn can attack on left only
+            attackMask |= 1L << (square + moveDirection + ChessDirections.LEFT);
+        } else { //pawn can attack on right only
+            attackMask |= 1L << (square + moveDirection + ChessDirections.RIGHT);
+        }
+        return attackMask;
     }
 }
 

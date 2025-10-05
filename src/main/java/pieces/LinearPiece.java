@@ -94,4 +94,25 @@ public abstract class LinearPiece extends Piece {
             }
         }
     }
+
+    /**
+     * Returns a mask of all the squares attacked in a given direction.
+     * @param board the board to look on.
+     * @param squares 2d array of all the squares the piece could capture.
+     * @param numDirections number of directions the piece can move in (4 for bishop and rook, 8 for queen).
+     * @return long where each bit represents whether the linear piece attacks that square or not.
+     */
+    public long getLinearAttackMask(Board board, int[][] squares, int numDirections){
+        long attackMask = 0L;
+        Piece[] pieces = board.getPieces();
+        for (int direction = 0; direction < numDirections; direction++) {
+            for (int square : squares[direction]) {
+                attackMask |= 1L << square;
+                if (pieces[square] != null) { //attacks are blocked so stop searching in that direction
+                    break;
+                }
+            }
+        }
+        return attackMask;
+    }
 }

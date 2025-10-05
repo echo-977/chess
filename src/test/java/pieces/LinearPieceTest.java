@@ -18,12 +18,17 @@ class LinearPieceTest {
 
             @Override
             public boolean canCaptureSquare(Board board, int targetSquare) {
-                return false; //minimal implementation here to allow testing of concrete methods
+                return false;
             }
 
             @Override
             public Piece copyToSquare(int square) {
                 return null;
+            }
+
+            @Override
+            public long getAttackMask(Board board) {
+                return 0L;
             }
         };
     }
@@ -89,5 +94,15 @@ class LinearPieceTest {
         targetRank = SquareMapUtils.getRankContribution(Squares.A7);
         direction = piece.getDiagonalDirection(squareFile, squareRank, targetFile, targetRank);
         assertEquals(ChessDirections.RIGHT + ChessDirections.DOWN, direction);
+    }
+
+    @Test
+    @DisplayName("Test getDirectionalAttackMap")
+    void testGetDirectionalAttackMap() {
+        Board board = FENUtils.positionFromFEN("8/8/8/8/3q2P1/8/8/8 w - - 0 1").getBoard();
+        long expectedAttackMask = 0b01000001_00100010_00010100_00000000_00010100_00100010_01000001_10000000L;
+        assertEquals(expectedAttackMask, piece.getLinearAttackMask(board, MoveTables.bishopMoves[piece.getSquare()], ChessConstants.BISHOP_DIRECTIONS));
+        expectedAttackMask = 0b00001000_00001000_00001000_01110111_00001000_00001000_00001000_00001000L;
+        assertEquals(expectedAttackMask, piece.getLinearAttackMask(board, MoveTables.rookMoves[piece.getSquare()], ChessConstants.ROOK_DIRECTIONS));
     }
 }

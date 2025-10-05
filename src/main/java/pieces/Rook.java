@@ -68,4 +68,13 @@ public class Rook extends LinearPiece{
     public Piece copyToSquare(int square) {
         return new Rook(getColour(), square);
     }
+
+    /**
+     * Gets a bitmask of all the squares the rook attacks.
+     * @return long where each bit represents whether the rook attacks that square or not.
+     */
+    @Override
+    public long getAttackMask(Board board) {
+        return getLinearAttackMask(board, MoveTables.rookMoves[getSquare()], ChessConstants.ROOK_DIRECTIONS);
+    }
 }

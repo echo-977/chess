@@ -153,6 +153,19 @@ public class King extends Piece {
             return false;
         }
     }
+
+    /**
+     * Gets a bitmask of all the squares the king attacks.
+     * @return long where each bit represents whether the king attacks that square or not.
+     */
+    @Override
+    public long getAttackMask(Board board) {
+        long attackMask = 0L;
+        for (int square : MoveTables.kingMoves[getSquare()]) {
+            attackMask |= 1L << square;
+        }
+        return attackMask;
+    }
 }
 
 

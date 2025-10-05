@@ -6,3 +6,4 @@
 (ATKFR/ATKTO system with a setup method and an update method that also takes the move as input)
 //TODO move to bitboard based system
 //TODO add method to compute whether a specific square is targeted
+//TODO store attack mask as a piece attribute and update on move in some way (needs to update on other piece moves too potentially)

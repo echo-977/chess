@@ -183,4 +183,12 @@ class QueenTest {
         assertEquals(Squares.D8, test.getSquare());
         assertEquals(piece1.getColour(), test.getColour());
     }
+
+    @Test
+    @DisplayName("Test getAttackMask")
+    void testGetAttackMask() {
+        Board board = FENUtils.positionFromFEN("8/5B2/8/3q4/8/3R4/8/8 w - - 0 1").getBoard();
+        long expectedAttackMask = 0b10000000_01000001_00101010_00011100_11110111_00011100_00101010_00001001L;
+        assertEquals(expectedAttackMask, piece2.getAttackMask(board));
+    }
 }

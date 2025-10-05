@@ -79,4 +79,14 @@ public class Queen extends LinearPiece{
     public Piece copyToSquare(int square) {
         return new Queen(getColour(), square);
     }
+
+    /**
+     * Gets a bitmask of all the squares the queen attacks.
+     * @return long where each bit represents whether the queen attacks that square or not.
+     */
+    @Override
+    public long getAttackMask(Board board) {
+        return getLinearAttackMask(board, MoveTables.rookMoves[getSquare()], ChessConstants.ROOK_DIRECTIONS) |
+                getLinearAttackMask(board, MoveTables.bishopMoves[getSquare()], ChessConstants.BISHOP_DIRECTIONS);
+    }
 }

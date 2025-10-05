@@ -125,4 +125,12 @@ class RookTest {
         assertEquals(Squares.D8, test.getSquare());
         assertEquals(piece1.getColour(), test.getColour());
     }
+
+    @Test
+    @DisplayName("Test getAttackMask")
+    void testGetAttackMask() {
+        Board board = FENUtils.positionFromFEN("8/2p5/8/2r2P2/2Q5/8/8/8 w - - 0 1").getBoard();
+        long expectedAttackMask = 0b00000000_00000000_00000000_00000100_00111011_00000100_00000100_00000000L;
+        assertEquals(expectedAttackMask, piece2.getAttackMask(board));
+    }
 }

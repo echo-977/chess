@@ -19,12 +19,17 @@ class PieceTest {
 
             @Override
             public boolean canCaptureSquare(Board board, int square) {
-                return false; // minimal implementation here to allow testing of concrete methods
+                return false;
             }
 
             @Override
             public Piece copyToSquare(int square) {
                 return null;
+            }
+
+            @Override
+            public long getAttackMask(Board board) {
+                return 0L;
             }
         };
     }
@@ -46,6 +51,11 @@ class PieceTest {
             @Override
             public Piece copyToSquare(int square) {
                 return null;
+            }
+
+            @Override
+            public long getAttackMask(Board board) {
+                return 0L;
             }
         };
         assertEquals(Squares.A2, piece.getSquare());

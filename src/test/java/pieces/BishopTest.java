@@ -123,4 +123,12 @@ class BishopTest {
         assertEquals(Squares.D8, test.getSquare());
         assertEquals(piece1.getColour(), test.getColour());
     }
+
+    @Test
+    @DisplayName("Test getAttackMask")
+    void testGetAttackMask() {
+        Board board = FENUtils.positionFromFEN("8/5p2/8/3b4/2Q5/8/8/8 w - - 0 1").getBoard();
+        long expectedAttackMask = 0b10000000_01000000_00100000_00010100_00000000_00010100_00100010_00000001L;
+        assertEquals(expectedAttackMask, piece2.getAttackMask(board));
+    }
 }

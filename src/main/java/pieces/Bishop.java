@@ -75,4 +75,13 @@ public class Bishop extends LinearPiece{
     public Piece copyToSquare(int square) {
         return new Bishop(getColour(), square);
     }
+
+    /**
+     * Gets a bitmask of all the squares the bishop attacks.
+     * @return long where each bit represents whether the bishop attacks that square or not.
+     */
+    @Override
+    public long getAttackMask(Board board) {
+        return getLinearAttackMask(board, MoveTables.bishopMoves[getSquare()], ChessConstants.BISHOP_DIRECTIONS);
+    }
 }

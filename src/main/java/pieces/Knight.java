@@ -1,6 +1,6 @@
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-public class Knight extends Piece {
+public class Knight extends Piece  {
 
     /**
      * Constructs a knight with the specified name, color, rank, and file.
@@ -73,6 +73,19 @@ public class Knight extends Piece {
     @Override
     public Piece copyToSquare(int square) {
         return new Knight(getColour(), square);
+    }
+
+    /**
+     * Gets a bitmask of all the squares the knight attacks.
+     * @return long where each bit represents whether the knight attacks that square or not.
+     */
+    @Override
+    public long getAttackMask(Board board) {
+        long attackMask = 0L;
+        for (int square : MoveTables.knightMoves[getSquare()]) {
+            attackMask |= 1L << square;
+        }
+        return attackMask;
     }
 }
 

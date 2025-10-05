@@ -91,4 +91,13 @@ class KnightTest {
         assertEquals(Files.D + Ranks.EIGHT, test.getSquare());
         assertEquals(piece1.getColour(), test.getColour());
     }
+
+    @Test
+    @DisplayName("Test getAttackMask")
+    void testGetAttackMask() {
+        long expectedAttackMask = 0b00000000_00000100_00000010_00000000_00000000_00000000_00000000_00000000L;
+        assertEquals(expectedAttackMask, piece1.getAttackMask(null));
+        expectedAttackMask = 0b00000000_00000000_00010100_00100010_00000000_00100010_00010100_00000000L;
+        assertEquals(expectedAttackMask, piece2.getAttackMask(null));
+    }
 }

@@ -125,4 +125,13 @@ public abstract class Piece{
     public String toString() {
         return SquareMapUtils.mapIntToSquare(square);
     }
+
+    /**
+     * Abstract method to get a long value for the squares the piece attacks.
+     * Concrete subclasses will implement this.
+     * @param board linear pieces need to see the board in order to stop searching in a direction,
+     *              other pieces can just be passed null.
+     * @return long value where each bit represents if a square is attacked.
+     */
+    public abstract long getAttackMask(Board board);
 }

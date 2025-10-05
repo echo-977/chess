@@ -175,4 +175,13 @@ class PawnTest {
         assertEquals(piece1.getColour(), test.getColour());
         assertEquals(piece1.getMoved(), test.getMoved());
     }
+
+    @Test
+    @DisplayName("Test getAttackMask")
+    void testGetAttackMask() {
+        long expectedAttackMask = 0b00000000_00000010_00000000_00000000_00000000_00000000_00000000_00000000L;
+        assertEquals(expectedAttackMask, piece1.getAttackMask(null));
+        expectedAttackMask = 0b00000000_00000000_00000000_00010100_00000000_00000000_00000000_00000000L;
+        assertEquals(expectedAttackMask, piece2.getAttackMask(null));
+    }
 }
