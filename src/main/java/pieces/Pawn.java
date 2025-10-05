@@ -28,7 +28,12 @@ public class Pawn extends Piece{
         for (int i = 0; i < 2; i++) { //pawns can move forward either 1 or 2 squares
             candidateMove += moveDirection;
             if (isLegalMove(candidateMove) && position.getBoard().pieceSearch(candidateMove) == null) {
-                addMove(position, moves, candidateMove);
+                if (i == 1) { //this is a double pawn push
+                    moves.add(Move.encodeMove(position, candidateMove, square) |
+                            MoveFlags.DOUBLE_PAWN_PUSH << MoveFlags.FLAG_SHIFT);
+                } else {
+                    addMove(position, moves, candidateMove);
+                }
             } else {
                 break; //if single push is blocked then double push is blocked
             }
@@ -58,10 +63,9 @@ public class Pawn extends Piece{
             return;
         }
         int enPassantTarget = position.getGameState().getEnPassantTarget();
-        if (enPassantTarget != ChessConstants.NO_EN_PASSANT_TARGET) {
-            if (enPassantTarget == captureTarget) {
-               addMove(position, moves, captureTarget);
-            }
+        if (enPassantTarget != Squares.NONE && enPassantTarget == captureTarget) {
+            int moveFlag = (MoveFlags.CAPTURE_BIT | MoveFlags.EN_PASSANT) << MoveFlags.FLAG_SHIFT;
+            moves.add(moveFlag | Move.encodeMove(position, captureTarget, getSquare()));
         }
     }
 
@@ -73,15 +77,15 @@ public class Pawn extends Piece{
      * @param destination where the piece is going to.
      */
     public void addMove(Position position, IntArrayList moves, int destination) {
-        if (Move.createIfLegal(position, moves, destination, getSquare())) {
-            int lastIndex = moves.size() - 1;
-            if (((moves.getInt(lastIndex) >> MoveFlags.FLAG_SHIFT) & MoveFlags.PROMOTION_BIT) == MoveFlags.PROMOTION_BIT) {
-                int move = moves.removeInt(lastIndex);
-                int[] promotionPieceFlags = {MoveFlags.QUEEN, MoveFlags.ROOK, MoveFlags.BISHOP, MoveFlags.KNIGHT};
-                for (int promotionPiece : promotionPieceFlags) {
-                    moves.add(move | (promotionPiece << MoveFlags.FLAG_SHIFT));
-                }
+        PieceColour colour = getColour();
+        if (destination < Ranks.SEVEN && colour == PieceColour.WHITE || destination >= Ranks.ONE && colour == PieceColour.BLACK) {
+            int move = Move.encodeMove(position, destination, getSquare());
+            int[] promotionPieceFlags = {MoveFlags.QUEEN, MoveFlags.ROOK, MoveFlags.BISHOP, MoveFlags.KNIGHT};
+            for (int promotionPiece : promotionPieceFlags) {
+                moves.add(move | ((promotionPiece | MoveFlags.PROMOTION_BIT) << MoveFlags.FLAG_SHIFT));
             }
+        } else {
+            moves.add(Move.encodeMove(position, destination, getSquare()));
         }
     }
 

@@ -5,3 +5,4 @@
 //TODO change threat map updates to only consider effected squares 
 (ATKFR/ATKTO system with a setup method and an update method that also takes the move as input)
 //TODO move to bitboard based system
+//TODO add method to compute whether a specific square is targeted

@@ -20,10 +20,7 @@ public class Rook extends LinearPiece{
      */
     @Override
     public void generateMoves(Position position, IntArrayList moves) {
-        linearMoveSearch(position, moves, ChessDirections.LEFT);
-        linearMoveSearch(position, moves, ChessDirections.RIGHT);
-        linearMoveSearch(position, moves, ChessDirections.UP);
-        linearMoveSearch(position, moves, ChessDirections.DOWN);
+        generateLinearMoves(position, moves, MoveTables.rookMoves[getSquare()], ChessConstants.ROOK_DIRECTIONS);
     }
 
     /**

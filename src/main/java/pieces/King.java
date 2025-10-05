@@ -1,6 +1,6 @@
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-public class King extends DirectionalPiece{
+public class King extends Piece {
     private boolean check;
 
     /**
@@ -27,12 +27,12 @@ public class King extends DirectionalPiece{
         PieceColour enemyColour = colour.opponentColour();
         Piece piece;
         Board board = position.getBoard();
-        boolean[] threatMap = board.getThreatMap(enemyColour);
+        long threatMap = board.getThreatMap(enemyColour);
         for (int candidateMove : MoveTables.kingMoves[square]) {
-            if (isLegalMove(candidateMove) && !threatMap[candidateMove]) {
+            if (isLegalMove(candidateMove) && ((threatMap >> candidateMove) & 1L) == 0) {
                 piece = board.pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
-                    Move.createIfLegal(position, moves, candidateMove, square);
+                    moves.add(Move.encodeMove(position, candidateMove, square));
                 }
             }
         }
@@ -47,14 +47,16 @@ public class King extends DirectionalPiece{
             kingsideCastleMask = FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
             queensideCastleMask = FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
         }
-        if ((castlingRights & kingsideCastleMask) != 0 && !board.getThreatMap(enemyColour)[getSquare()]) {
+        if ((castlingRights & kingsideCastleMask) != 0 && ((threatMap >> square) & 1L) == 0) {
             if (canCastleSearch(board, ChessConstants.KINGSIDE_CASTLE_FILE)) {
-                Move.createIfLegal(position, moves, ChessConstants.KINGSIDE_CASTLE_FILE + rank, square);
+                moves.add(MoveFlags.KINGSIDE_CASTLE << MoveFlags.FLAG_SHIFT |
+                        Move.encodeMove(position, ChessConstants.KINGSIDE_CASTLE_FILE + rank, square));
             }
         }
-        if ((castlingRights & queensideCastleMask) != 0 && !board.getThreatMap(enemyColour)[getSquare()]) {
+        if ((castlingRights & queensideCastleMask) != 0 && ((threatMap >> square) & 1L) == 0) {
             if (canCastleSearch(board, ChessConstants.QUEENSIDE_CASTLE_FILE) && board.pieceSearch(Files.B + rank) == null) {
-                Move.createIfLegal(position, moves, ChessConstants.QUEENSIDE_CASTLE_FILE + rank, square);
+                moves.add(MoveFlags.QUEENSIDE_CASTLE << MoveFlags.FLAG_SHIFT |
+                        Move.encodeMove(position, ChessConstants.QUEENSIDE_CASTLE_FILE + rank, square));
             }
         }
     }
@@ -116,27 +118,13 @@ public class King extends DirectionalPiece{
     }
 
     /**
-     * Utility function to find the next available empty slot for a move.
-     * @param moves the array of moves.
-     * @return index of first empty slot in the array.
-     */
-    public int findNextIndex(int[] moves) {
-        for (int i = 0; i < moves.length; i++) {
-            if (moves[i] == 0) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
      * Checks whether a king can castle to a given file without passing through or ending up in check.
      * @param board the board in play.
      * @param targetFile the target file for the king to castle in.
      * @return boolean for if it is legal to castle.
      */
     public boolean canCastleSearch(Board board, int targetFile) {
-        boolean[] threatMap = board.getThreatMap(getColour().opponentColour());
+        long threatMap = board.getThreatMap(getColour().opponentColour());
         int square = getSquare();
         int squareRank = SquareMapUtils.getRankContribution(square);
         int squareFile = SquareMapUtils.getFileContribution(square);
@@ -149,36 +137,11 @@ public class King extends DirectionalPiece{
             end = square + ChessDirections.LEFT;
         }
         for (int squareCheck = start; squareCheck <= end; squareCheck++ ) {
-            if (threatMap[squareCheck] || board.pieceSearch(squareCheck) != null) {
+            if (((threatMap >> squareCheck) & 1L) == 1 || board.pieceSearch(squareCheck) != null) {
                 return false;
             }
         }
         return true;
-    }
-
-    /**
-     * Searches each given direction from the king, checking if it is valid to move to that square.
-     * Updated to not allow moving to a square threatened by the opponent.
-     * @param position the board the king is moving on.
-     * @param moves array list legal moves are to be added to.
-     * @param directions array of 2d directions the king can go in.
-     */
-    @Override
-    public void directionalMoveSearch(Position position, IntArrayList moves, int[] directions) {
-        int square = getSquare();
-        int candidateMove;
-        Piece piece;
-        Board board = position.getBoard();
-        boolean[] threatMap = board.getThreatMap(getColour().opponentColour());
-        for (int i = 0; i < ChessConstants.NUM_DIRECTIONS; i++) {
-            candidateMove = square + directions[i];
-            if (isLegalMove(candidateMove) && !threatMap[candidateMove]) {
-                piece = board.pieceSearch(candidateMove);
-                if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
-                   Move.createIfLegal(position, moves, candidateMove, square);
-                }
-            }
-        }
     }
 
     @Override

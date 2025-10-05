@@ -4,17 +4,17 @@ public class Board {
     private final Piece[] pieces;
     private King whiteKing;
     private King blackKing;
-    private boolean[] whiteThreatMap;
-    private boolean[] blackThreatMap;
+    private long whiteThreatMap;
+    private long blackThreatMap;
 
     /**
      * Constructs a board based on all the boards attributes.
      *
      * @param pieces         length 64 array of all the pieces on the board.
-     * @param whiteThreatMap a boolean array of all squares white threatens.
-     * @param blackThreatMap a boolean array of all squares black threatens.
+     * @param whiteThreatMap long of all squares white threatens.
+     * @param blackThreatMap long of all squares black threatens.
      */
-    public Board(Piece[] pieces, boolean[] whiteThreatMap, boolean[] blackThreatMap) {
+    public Board(Piece[] pieces, long whiteThreatMap, long blackThreatMap) {
         this.pieces = pieces;
         this.whiteThreatMap = whiteThreatMap;
         this.blackThreatMap = blackThreatMap;
@@ -140,9 +140,9 @@ public class Board {
      * Returns the current cached threat map for the colour.
      *
      * @param colour the threat map required.
-     * @return boolean array of whether the given colour threatens each square.
+     * @return long of whether the given colour threatens each square.
      */
-    public boolean[] getThreatMap(PieceColour colour) {
+    public long getThreatMap(PieceColour colour) {
         if (colour == PieceColour.WHITE) {
             return whiteThreatMap;
         } else {
@@ -162,7 +162,7 @@ public class Board {
                 clonedPieces[squareIndex] = pieces[squareIndex].copyToSquare(squareIndex);
             }
         }
-        return new Board(clonedPieces, whiteThreatMap.clone(), blackThreatMap.clone());
+        return new Board(clonedPieces, whiteThreatMap, blackThreatMap);
     }
 
     @Override
@@ -175,8 +175,8 @@ public class Board {
         if (!(object instanceof Board other)) {
             return false;
         }
-        return Arrays.equals(other.pieces, this.pieces) && Arrays.equals(other.whiteThreatMap, this.whiteThreatMap) &&
-                Arrays.equals(other.blackThreatMap, this.blackThreatMap);
+        return Arrays.equals(other.pieces, this.pieces) && other.whiteThreatMap == this.whiteThreatMap &&
+                other.blackThreatMap == this.blackThreatMap;
     }
 
     /**
@@ -205,10 +205,10 @@ public class Board {
 
     /**
      * Resets the threat maps to given threat maps to avoid having to recompute them when undoing a move.
-     * @param whiteThreatMap boolean array for all pieces capturable by white.
-     * @param blackThreatMap boolean array for all pieces capturable by black.
+     * @param whiteThreatMap long for all squares threatened by white.
+     * @param blackThreatMap long for all squares threatened by black.
      */
-    public void resetThreatMaps(boolean[] whiteThreatMap, boolean[] blackThreatMap) {
+    public void resetThreatMaps(long whiteThreatMap, long blackThreatMap) {
         this.whiteThreatMap = whiteThreatMap;
         this.blackThreatMap = blackThreatMap;
     }

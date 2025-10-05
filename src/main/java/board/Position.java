@@ -49,7 +49,7 @@ public class Position {
                 board.getThreatMap(PieceColour.BLACK));
         Piece[] pieces = board.getPieces();
         Piece movePiece = pieces[sourceSquare];
-        gameState.setEnPassantTarget(ChessConstants.NO_EN_PASSANT_TARGET);
+        gameState.setEnPassantTarget(Squares.NONE);
         if ((moveFlag & MoveFlags.PROMOTION_BIT) == MoveFlags.PROMOTION_BIT) {
             board.handlePromotion(moveFlag, destinationSquare, sourceSquare);
         } else {

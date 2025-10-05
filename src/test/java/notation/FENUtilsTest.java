@@ -58,7 +58,7 @@ public class FENUtilsTest {
         int castlingRights = FENConstants.WHITE_KINGSIDE_CASTLE_MASK | FENConstants.WHITE_QUEENSIDE_CASTLE_MASK |
                 FENConstants.BLACK_KINGSIDE_CASTLE_MASK | FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
         assertEquals(castlingRights, gameState.getCastlingRights());
-        assertEquals(ChessConstants.NO_EN_PASSANT_TARGET, gameState.getEnPassantTarget());
+        assertEquals(Squares.NONE, gameState.getEnPassantTarget());
     }
 
     @Test
@@ -285,7 +285,7 @@ public class FENUtilsTest {
         assertEquals(9, gameState.getMoveCount());
         int castlingRights = FENConstants.NO_CASTLING_MASK;
         assertEquals(castlingRights, gameState.getCastlingRights());
-        assertEquals(ChessConstants.NO_EN_PASSANT_TARGET, gameState.getEnPassantTarget());
+        assertEquals(Squares.NONE, gameState.getEnPassantTarget());
     }
 
     @Test

@@ -5,6 +5,6 @@ public record State(
         int castlingRights,
         int halfMoveClock,
         int moveCount,
-        boolean[] whiteThreatMap,
-        boolean[] blackThreatMap
+        long whiteThreatMap,
+        long blackThreatMap
 ) {}
