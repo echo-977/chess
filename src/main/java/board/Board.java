@@ -243,4 +243,26 @@ public class Board {
         this.ATKFR = ATKFR;
         this.ATKTO = ATKTO;
     }
+
+    /**
+     * Checks to see if a square is attacked by a piece of the given colour.
+     * @param square the square to check.
+     * @param colour the colour to look for attacks from.
+     * @return true if the colour attacks the square, otherwise false.
+     */
+    public boolean isAttackedBy(int square, PieceColour colour) {
+        if (ATKTO[square] == 0) { //no attacks
+            return false;
+        }
+        long attackedBy = ATKTO[square];
+        int checkAttackSquare;
+        while (attackedBy != 0) { //for each bit in the attacks to the square we look to see the colour of the piece
+            checkAttackSquare = Long.numberOfTrailingZeros(attackedBy);
+            if (pieces[checkAttackSquare].getColour() == colour) {
+                return true;
+            }
+            attackedBy &= attackedBy - 1;
+        }
+        return false;
+    }
 }

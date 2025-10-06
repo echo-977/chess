@@ -106,4 +106,16 @@ class BoardTest {
         Board board2 = board.copy();
         assertEquals(board, board2);
     }
+
+    @Test
+    @DisplayName("Test isAttackedBy")
+    void testIsAttackedBy() {
+        Position position = FENUtils.positionFromFEN("8/8/2b5/5Pp1/8/8/6R1/8 w - g6 0 1");
+        Board board = position.getBoard();
+        assertTrue(board.isAttackedBy(Squares.G2, PieceColour.BLACK));
+        assertFalse(board.isAttackedBy(Squares.H1, PieceColour.BLACK));
+        assertTrue(board.isAttackedBy(Squares.G3, PieceColour.WHITE));
+        position.doMove(Move.encodeMove(position, Squares.G2, Squares.C6));
+        assertFalse(board.isAttackedBy(Squares.G3, PieceColour.WHITE));
+    }
 }
