@@ -273,17 +273,13 @@ public class Board {
     public boolean isAttackedBy(int square, PieceColour colour) {
         if (ATKTO[square] == 0) { //no attacks
             return false;
-        }
-        long attackedBy = ATKTO[square];
-        int attackSourceSquare;
-        while (attackedBy != 0) { //for each bit in the attacks to the square we look to see the colour of the piece
-            attackSourceSquare = Long.numberOfTrailingZeros(attackedBy);
-            if (pieces[attackSourceSquare].getColour() == colour) {
-                return true;
+        } else {
+            if (colour == PieceColour.WHITE) {
+                return (ATKTO[square] & whiteBitboard) != 0; //white piece matching square that attacks the given square
+            } else {
+                return (ATKTO[square] & blackBitboard) != 0;
             }
-            attackedBy &= attackedBy - 1;
         }
-        return false;
     }
 
     /**
