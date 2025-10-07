@@ -37,7 +37,7 @@ public class Board {
         }
         ATKTO = new long[ChessConstants.NUM_SQUARES];
         ATKFR = new long[ChessConstants.NUM_SQUARES];
-        ThreatMapGenerator.setUpAttackTables(this);
+        AttackTables.setUpAttackTables(this);
     }
 
     /**
@@ -181,7 +181,8 @@ public class Board {
             return false;
         }
         return Arrays.equals(other.pieces, this.pieces) && other.whiteThreatMap == this.whiteThreatMap &&
-                other.blackThreatMap == this.blackThreatMap;
+                other.blackThreatMap == this.blackThreatMap && Arrays.equals(other.ATKFR, this.ATKFR) &&
+                Arrays.equals(other.ATKTO, this.ATKTO);
     }
 
     /**
@@ -255,10 +256,10 @@ public class Board {
             return false;
         }
         long attackedBy = ATKTO[square];
-        int checkAttackSquare;
+        int attackSourceSquare;
         while (attackedBy != 0) { //for each bit in the attacks to the square we look to see the colour of the piece
-            checkAttackSquare = Long.numberOfTrailingZeros(attackedBy);
-            if (pieces[checkAttackSquare].getColour() == colour) {
+            attackSourceSquare = Long.numberOfTrailingZeros(attackedBy);
+            if (pieces[attackSourceSquare].getColour() == colour) {
                 return true;
             }
             attackedBy &= attackedBy - 1;

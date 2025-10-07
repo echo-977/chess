@@ -109,7 +109,12 @@ public abstract class LinearPiece extends Piece {
             for (int square : squares[direction]) {
                 attackMask |= 1L << square;
                 if (pieces[square] != null) { //attacks are blocked so stop searching in that direction
-                    break;
+                    if (pieces[square].getType() != PieceType.KING) {
+                        break; //in the case of the king it will have to move (it currently must be in check) so we can attack squares behind it
+                    }
+                    if (pieces[square].getColour() == getColour()) {
+                        break; //king is the same colour so does block attacks
+                    }
                 }
             }
         }

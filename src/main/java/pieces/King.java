@@ -27,9 +27,9 @@ public class King extends Piece {
         PieceColour enemyColour = colour.opponentColour();
         Piece piece;
         Board board = position.getBoard();
-        long threatMap = board.getThreatMap(enemyColour);
+        //long threatMap = board.getThreatMap(enemyColour);
         for (int candidateMove : MoveTables.kingMoves[square]) {
-            if (isLegalMove(candidateMove) && ((threatMap >> candidateMove) & 1L) == 0) {
+            if (isLegalMove(candidateMove) && !board.isAttackedBy(candidateMove, enemyColour)) {
                 piece = board.pieceSearch(candidateMove);
                 if (piece == null || piece.getColour() != getColour()) { //opposite coloured piece so capture
                     moves.add(Move.encodeMove(position, candidateMove, square));
@@ -47,13 +47,13 @@ public class King extends Piece {
             kingsideCastleMask = FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
             queensideCastleMask = FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
         }
-        if ((castlingRights & kingsideCastleMask) != 0 && ((threatMap >> square) & 1L) == 0) {
+        if ((castlingRights & kingsideCastleMask) != 0 && !board.isAttackedBy(square, enemyColour)) {
             if (canCastleSearch(board, ChessConstants.KINGSIDE_CASTLE_FILE)) {
                 moves.add(MoveFlags.KINGSIDE_CASTLE << MoveFlags.FLAG_SHIFT |
                         Move.encodeMove(position, ChessConstants.KINGSIDE_CASTLE_FILE + rank, square));
             }
         }
-        if ((castlingRights & queensideCastleMask) != 0 && ((threatMap >> square) & 1L) == 0) {
+        if ((castlingRights & queensideCastleMask) != 0 && !board.isAttackedBy(square, enemyColour)) {
             if (canCastleSearch(board, ChessConstants.QUEENSIDE_CASTLE_FILE) && board.pieceSearch(Files.B + rank) == null) {
                 moves.add(MoveFlags.QUEENSIDE_CASTLE << MoveFlags.FLAG_SHIFT |
                         Move.encodeMove(position, ChessConstants.QUEENSIDE_CASTLE_FILE + rank, square));
@@ -124,7 +124,7 @@ public class King extends Piece {
      * @return boolean for if it is legal to castle.
      */
     public boolean canCastleSearch(Board board, int targetFile) {
-        long threatMap = board.getThreatMap(getColour().opponentColour());
+        PieceColour opponentColour = getColour().opponentColour();
         int square = getSquare();
         int squareRank = SquareMapUtils.getRankContribution(square);
         int squareFile = SquareMapUtils.getFileContribution(square);
@@ -137,7 +137,7 @@ public class King extends Piece {
             end = square + ChessDirections.LEFT;
         }
         for (int squareCheck = start; squareCheck <= end; squareCheck++ ) {
-            if (((threatMap >> squareCheck) & 1L) == 1 || board.pieceSearch(squareCheck) != null) {
+            if (board.isAttackedBy(squareCheck, opponentColour) || board.pieceSearch(squareCheck) != null) {
                 return false;
             }
         }

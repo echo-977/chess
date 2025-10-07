@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Position {
     private final Board board;
     private final GameState gameState;
@@ -46,7 +48,7 @@ public class Position {
         }
         State stateBeforeMove = new State(move, capturedPiece, gameState.getEnPassantTarget(), castlingRights,
                 gameState.getHalfMoveClock(), gameState.getMoveCount(), board.getThreatMap(PieceColour.WHITE),
-                board.getThreatMap(PieceColour.BLACK));
+                board.getThreatMap(PieceColour.BLACK), board.getATKFR().clone(), board.getATKTO().clone());
         Piece[] pieces = board.getPieces();
         Piece movePiece = pieces[sourceSquare];
         gameState.setEnPassantTarget(Squares.NONE);
@@ -75,8 +77,9 @@ public class Position {
         }
         gameState.incrementMoveClocks(movePiece, moveFlag);
         gameState.changeTurn();
-        board.updateThreatMap(PieceColour.WHITE);
-        board.updateThreatMap(PieceColour.BLACK);
+        AttackTables.updateAttackTables(board, sourceSquare, destinationSquare, moveFlag, capturedPiece);
+        //board.updateThreatMap(PieceColour.WHITE);
+        //board.updateThreatMap(PieceColour.BLACK);
         return stateBeforeMove;
     }
 
@@ -133,7 +136,8 @@ public class Position {
         if (pieces[sourceSquare].getType() == PieceType.PAWN && (sourceRank == Ranks.TWO || sourceRank == Ranks.SEVEN)) {
             ((Pawn) pieces[sourceSquare]).setMoved(false);
         }
-        board.resetThreatMaps(state.whiteThreatMap(), state.blackThreatMap());
+        //board.resetThreatMaps(state.whiteThreatMap(), state.blackThreatMap());
+        board.setAttackTables(state.ATKFR(), state.ATKTO());
         gameState.resetState(state);
     }
 
@@ -157,5 +161,9 @@ public class Position {
             return false;
         }
         return board.equals(other.board) && gameState.equals(other.gameState);
+    }
+
+    public String toString() {
+        return Arrays.toString(board.getATKTO());
     }
 }

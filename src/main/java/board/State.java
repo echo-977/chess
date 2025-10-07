@@ -6,5 +6,7 @@ public record State(
         int halfMoveClock,
         int moveCount,
         long whiteThreatMap,
-        long blackThreatMap
+        long blackThreatMap,
+        long[] ATKFR,
+        long[] ATKTO
 ) {}
