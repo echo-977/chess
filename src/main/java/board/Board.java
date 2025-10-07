@@ -8,6 +8,8 @@ public class Board {
     private long blackThreatMap;
     private long[] ATKTO;
     private long[] ATKFR;
+    private long whiteBitboard;
+    private long blackBitboard;
 
     /**
      * Constructs a board based on all the boards attributes.
@@ -20,17 +22,19 @@ public class Board {
         this.pieces = pieces;
         this.whiteThreatMap = whiteThreatMap;
         this.blackThreatMap = blackThreatMap;
+        this.whiteBitboard = 0L;
+        this.blackBitboard = 0L;
         for (Piece piece : pieces) {
-            if (piece != null && piece.getType() == PieceType.KING) {
+            if (piece != null) {
                 if (piece.getColour() == PieceColour.WHITE) {
-                    whiteKing = (King) piece;
-                    if (blackKing != null) {
-                        break;
+                    this.whiteBitboard |= 1L << piece.getSquare();
+                    if (piece.getType() == PieceType.KING) {
+                        whiteKing = (King) piece;
                     }
                 } else {
-                    blackKing = (King) piece;
-                    if (whiteKing != null) {
-                        break;
+                    this.blackBitboard |= 1L << piece.getSquare();
+                    if (piece.getType() == PieceType.KING) {
+                        blackKing = (King) piece;
                     }
                 }
             }
@@ -97,19 +101,14 @@ public class Board {
     public void handleCastleMovement(int moveFlag, int destinationSquare) {
         int rank = SquareMapUtils.getRankContribution(destinationSquare);
         int rookSourceSquare, rookDestinationSquare;
-        if ((moveFlag & MoveFlags.QUEENSIDE_CASTLE) == MoveFlags.QUEENSIDE_CASTLE) {
+        if ((moveFlag & MoveFlags.QUEENSIDE_CASTLE) == MoveFlags.QUEENSIDE_CASTLE) { //queenside castle
             rookSourceSquare = ChessConstants.QUEENSIDE_ROOK_SOURCE_FILE + rank;
             rookDestinationSquare = ChessConstants.QUEENSIDE_CASTLE_ROOK_FILE + rank;
-            pieces[rookDestinationSquare] = pieces[rookSourceSquare];
-            pieces[rookSourceSquare] = null;
-            pieces[rookDestinationSquare].move(rookDestinationSquare);
-        } else if ((moveFlag & MoveFlags.KINGSIDE_CASTLE) == MoveFlags.KINGSIDE_CASTLE) {
+        } else { //kingside castle
             rookSourceSquare = ChessConstants.KINGSIDE_ROOK_SOURCE_FILE + rank;
             rookDestinationSquare = ChessConstants.KINGSIDE_CASTLE_ROOK_FILE + rank;
-            pieces[rookDestinationSquare] = pieces[rookSourceSquare];
-            pieces[rookSourceSquare] = null;
-            pieces[rookDestinationSquare].move(rookDestinationSquare);
         }
+        movePiece(rookSourceSquare, rookDestinationSquare);
     }
 
     /**
@@ -125,7 +124,31 @@ public class Board {
             case MoveFlags.BISHOP -> new Bishop(pieces[sourceSquare].getColour(), destinationSquare);
             default -> new Knight(pieces[sourceSquare].getColour(), destinationSquare); //knight flag is equal to 0 so this is our base case
         };
+        if (destinationSquare < Ranks.SEVEN) { //white is promoting
+            whiteBitboard &= ~(1L << sourceSquare);
+            whiteBitboard |= (1L << destinationSquare);
+        } else {
+            blackBitboard &= ~(1L << sourceSquare);
+            blackBitboard |= (1L << destinationSquare);
+        }
         pieces[sourceSquare] = null; //take the pawn off the board
+    }
+
+    /**
+     * Undoes a promotion move.
+     * @param destinationSquare the destination of the promotion move.
+     * @param sourceSquare the source of the promotion move.
+     */
+    public void unDoPromotion(int destinationSquare, int sourceSquare) {
+        pieces[sourceSquare] = new Pawn(pieces[destinationSquare].getColour(), sourceSquare, true);
+        pieces[destinationSquare] = null;
+        if (destinationSquare < Ranks.SEVEN) { //white is promoting
+            whiteBitboard &= ~(1L << destinationSquare);
+            whiteBitboard |= (1L << sourceSquare);
+        } else {
+            blackBitboard &= ~(1L << destinationSquare);
+            blackBitboard |= (1L << sourceSquare);
+        }
     }
 
     /**
@@ -182,7 +205,8 @@ public class Board {
         }
         return Arrays.equals(other.pieces, this.pieces) && other.whiteThreatMap == this.whiteThreatMap &&
                 other.blackThreatMap == this.blackThreatMap && Arrays.equals(other.ATKFR, this.ATKFR) &&
-                Arrays.equals(other.ATKTO, this.ATKTO);
+                Arrays.equals(other.ATKTO, this.ATKTO) && this.whiteBitboard == other.whiteBitboard &&
+                this.blackBitboard == other.blackBitboard;
     }
 
     /**
@@ -193,20 +217,15 @@ public class Board {
     public void unDoCastleMovement(int moveFlag, int destinationSquare) {
         int rank  = SquareMapUtils.getRankContribution(destinationSquare);
         int rookSourceSquare, rookDestinationSquare;
-        if ((moveFlag & MoveFlags.QUEENSIDE_CASTLE) ==  MoveFlags.QUEENSIDE_CASTLE) {
+        if ((moveFlag & MoveFlags.QUEENSIDE_CASTLE) ==  MoveFlags.QUEENSIDE_CASTLE) { //queenside castle
             rookDestinationSquare = ChessConstants.QUEENSIDE_CASTLE_ROOK_FILE + rank;
             rookSourceSquare = ChessConstants.QUEENSIDE_ROOK_SOURCE_FILE + rank;
-            pieces[rookSourceSquare] = pieces[rookDestinationSquare];
-            pieces[rookDestinationSquare] = null;
-            pieces[rookSourceSquare].move(rookSourceSquare);
         }
-        else if ((moveFlag & MoveFlags.KINGSIDE_CASTLE) == MoveFlags.KINGSIDE_CASTLE) {
+        else { //kingside castle
             rookDestinationSquare = ChessConstants.KINGSIDE_CASTLE_ROOK_FILE + rank;
             rookSourceSquare = ChessConstants.KINGSIDE_ROOK_SOURCE_FILE + rank;
-            pieces[rookSourceSquare] = pieces[rookDestinationSquare];
-            pieces[rookDestinationSquare] = null;
-            pieces[rookSourceSquare].move(rookSourceSquare);
         }
+        movePiece(rookDestinationSquare, rookSourceSquare);
     }
 
     /**
@@ -265,5 +284,69 @@ public class Board {
             attackedBy &= attackedBy - 1;
         }
         return false;
+    }
+
+    /**
+     * Simple helper method to take a piece off of the board.
+     * @param square the square of the piece to be removed.
+     * @return the piece (so it can be added back if needed).
+     */
+    public Piece removePiece(int square) {
+        Piece piece = pieces[square];
+        pieces[square] = null;
+        if (piece.getColour() == PieceColour.WHITE) {
+            whiteBitboard &= ~(1L << square);
+        } else {
+            blackBitboard &= ~(1L << square);
+        }
+        return piece;
+    }
+
+    /**
+     * Simple helper method to add a piece to the board.
+     * @param square the square of the piece to be added.
+     * @param piece the piece to be added.
+     */
+    public void addPiece(int square, Piece piece) {
+        pieces[square] = piece;
+        if (piece.getColour() == PieceColour.WHITE) {
+            whiteBitboard |= (1L << square);
+        } else {
+            blackBitboard |= (1L << square);
+        }
+    }
+
+    /**
+     * Simple helper method to move a piece from one square to another.
+     * @param sourceSquare where the piece is moved from.
+     * @param destinationSquare where the piece is moved to.
+     */
+    public void movePiece(int sourceSquare, int destinationSquare) {
+        pieces[sourceSquare].move(destinationSquare);
+        pieces[destinationSquare] = pieces[sourceSquare];
+        pieces[sourceSquare] = null;
+        if (pieces[destinationSquare].getColour() == PieceColour.WHITE) {
+            whiteBitboard &= ~(1L << sourceSquare);
+            whiteBitboard |= (1L << destinationSquare);
+        } else {
+            blackBitboard &= ~(1L << sourceSquare);
+            blackBitboard |= (1L << destinationSquare);
+        }
+    }
+
+    /**
+     * Simple getter for the white bit board.
+     * @return long where each bit equal to 1 is a white piece.
+     */
+    public long getWhiteBitboard() {
+        return whiteBitboard;
+    }
+
+    /**
+     * Simple getter for the black bit board.
+     * @return long where each bit equal to 1 is a black piece.
+     */
+    public long getBlackBitboard() {
+        return blackBitboard;
     }
 }

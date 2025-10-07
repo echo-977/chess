@@ -46,6 +46,7 @@ class BoardTest {
         assertEquals(FENConstants.NO_CASTLING_MASK, (position.getGameState().getCastlingRights() & FENConstants.WHITE_KINGSIDE_CASTLE_MASK));
         Piece piece = board.pieceSearch(Squares.F1);
         assertEquals(PieceType.ROOK, piece.getType());
+        assertEquals(0b01100001_00000000_00000000_00000000_00000000_00000000_00000000_00000000L, board.getWhiteBitboard());
         position = FENUtils.positionFromFEN("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 1 1");
         board = position.getBoard();
         moveFlag = MoveFlags.QUEENSIDE_CASTLE;
@@ -53,6 +54,7 @@ class BoardTest {
         assertEquals(FENConstants.NO_CASTLING_MASK, (position.getGameState().getCastlingRights() & FENConstants.WHITE_QUEENSIDE_CASTLE_MASK));
         piece = board.pieceSearch(Squares.D1);
         assertEquals(PieceType.ROOK, piece.getType());
+        assertEquals(0b10001100_00000000_00000000_00000000_00000000_00000000_00000000_00000000L, board.getWhiteBitboard());
         position = FENUtils.positionFromFEN("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 1 1");
         board = position.getBoard();
         moveFlag = MoveFlags.KINGSIDE_CASTLE;
@@ -60,6 +62,7 @@ class BoardTest {
         assertEquals(FENConstants.NO_CASTLING_MASK, (position.getGameState().getCastlingRights() & FENConstants.BLACK_KINGSIDE_CASTLE_MASK));
         piece = board.pieceSearch(Squares.F8);
         assertEquals(PieceType.ROOK, piece.getType());
+        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_01100001L, board.getBlackBitboard());
         position = FENUtils.positionFromFEN("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 1 1");
         board = position.getBoard();
         moveFlag = MoveFlags.QUEENSIDE_CASTLE;
@@ -67,6 +70,7 @@ class BoardTest {
         assertEquals(FENConstants.NO_CASTLING_MASK, (position.getGameState().getCastlingRights() & FENConstants.BLACK_QUEENSIDE_CASTLE_MASK));
         piece = board.pieceSearch(Squares.D8);
         assertEquals(PieceType.ROOK, piece.getType());
+        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_10001100L, board.getBlackBitboard());
     }
 
     @Test
@@ -78,25 +82,33 @@ class BoardTest {
         position.doMove(moveFlag << MoveFlags.FLAG_SHIFT | Squares.D8 << MoveFlags.DESTINATION_SHIFT | Squares.D7);
         Piece promotion = board.pieceSearch(Squares.D8);
         assertEquals(PieceType.ROOK, promotion.getType());
+        assertEquals(0b00001000_00000000_00000000_00000000_00000000_00000000_00000000_00001000L, board.getWhiteBitboard());
+        assertEquals(0b00000000_00010000_00000000_00000000_00000000_00000000_00000000_00010000L, board.getBlackBitboard());
         position = FENUtils.positionFromFEN("4n3/3P4/8/8/8/8/4p3/3N4 w - - 0 1");
         board = position.getBoard();
         moveFlag = MoveFlags.PROMOTION_BIT | MoveFlags.BISHOP | MoveFlags.CAPTURE_BIT;
         position.doMove(moveFlag << MoveFlags.FLAG_SHIFT | Squares.E8 << MoveFlags.DESTINATION_SHIFT | Squares.D7);
         promotion = board.pieceSearch(Squares.E8);
         assertEquals(PieceType.BISHOP, promotion.getType());
+        assertEquals(0b00001000_00000000_00000000_00000000_00000000_00000000_00000000_00010000L, board.getWhiteBitboard());
+        assertEquals(0b00000000_00010000_00000000_00000000_00000000_00000000_00000000_00000000L, board.getBlackBitboard());
         position = FENUtils.positionFromFEN("4n3/3P4/8/8/8/8/4p3/3N4 w - - 0 1");
         board = position.getBoard();
         moveFlag = MoveFlags.PROMOTION_BIT | MoveFlags.QUEEN;
         position.doMove(moveFlag << MoveFlags.FLAG_SHIFT | Squares.E1 << MoveFlags.DESTINATION_SHIFT | Squares.E2);
         promotion = board.pieceSearch(Squares.E1);
         assertEquals(PieceType.QUEEN, promotion.getType());
+        assertEquals(0b00001000_00000000_00000000_00000000_00000000_00000000_00001000_00000000L, board.getWhiteBitboard());
+        assertEquals(0b00010000_00000000_00000000_00000000_00000000_00000000_00000000_00010000L, board.getBlackBitboard());
         position = FENUtils.positionFromFEN("4n3/3P4/8/8/8/8/4p3/3N4 w - - 0 1");
         board = position.getBoard();
-        moveFlag = MoveFlags.PROMOTION_BIT | MoveFlags.KNIGHT;
+        moveFlag = MoveFlags.PROMOTION_BIT | MoveFlags.KNIGHT | MoveFlags.CAPTURE_BIT;
         position.doMove(moveFlag << MoveFlags.FLAG_SHIFT | Squares.D1 << MoveFlags.DESTINATION_SHIFT | Squares.E2);
         promotion = board.pieceSearch(Squares.D1);
         assertEquals(PieceType.KNIGHT, promotion.getType());
         assertEquals(PieceColour.BLACK, promotion.getColour());
+        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00000000_00001000_00000000L, board.getWhiteBitboard());
+        assertEquals(0b00001000_00000000_00000000_00000000_00000000_00000000_00000000_00010000L, board.getBlackBitboard());
     }
 
     @Test

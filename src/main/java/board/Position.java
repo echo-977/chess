@@ -49,8 +49,7 @@ public class Position {
         State stateBeforeMove = new State(move, capturedPiece, gameState.getEnPassantTarget(), castlingRights,
                 gameState.getHalfMoveClock(), gameState.getMoveCount(), board.getThreatMap(PieceColour.WHITE),
                 board.getThreatMap(PieceColour.BLACK), board.getATKFR().clone(), board.getATKTO().clone());
-        Piece[] pieces = board.getPieces();
-        Piece movePiece = pieces[sourceSquare];
+        Piece movePiece = board.pieceSearch(sourceSquare);
         gameState.setEnPassantTarget(Squares.NONE);
         if ((moveFlag & MoveFlags.PROMOTION_BIT) == MoveFlags.PROMOTION_BIT) {
             board.handlePromotion(moveFlag, destinationSquare, sourceSquare);
@@ -71,9 +70,7 @@ public class Position {
             if (movePieceType == PieceType.KING || movePieceType == PieceType.ROOK) {
                 gameState.removeCastlingRights(movePiece);
             }
-            movePiece.move(destinationSquare);
-            pieces[destinationSquare] = movePiece;
-            pieces[sourceSquare] = null;
+            board.movePiece(sourceSquare, destinationSquare);
         }
         gameState.incrementMoveClocks(movePiece, moveFlag);
         gameState.changeTurn();
@@ -93,7 +90,7 @@ public class Position {
      */
     public Piece handleCaptureMove(int moveFlag, int destinationSquare, int sourceSquare) {
         int captureDestination = board.getCaptureDestination(moveFlag, destinationSquare, sourceSquare);
-        Piece capturedPiece = board.pieceSearch(captureDestination);
+        Piece capturedPiece = board.removePiece(captureDestination);
         if (capturedPiece.getType() == PieceType.ROOK) {
             int castlingRights = gameState.getCastlingRights();
             switch(capturedPiece.getSquare()) {
@@ -104,7 +101,6 @@ public class Position {
             }
             gameState.setCastlingRights(castlingRights);
         }
-        board.getPieces()[captureDestination] = null;
         return capturedPiece;
     }
 
@@ -119,18 +115,16 @@ public class Position {
         int sourceSquare = move & MoveFlags.SOURCE_MASK;
         Piece[] pieces = board.getPieces();
         if ((moveFlag & MoveFlags.PROMOTION_BIT) ==  MoveFlags.PROMOTION_BIT) {
-            pieces[sourceSquare] = new Pawn(pieces[destinationSquare].getColour(), sourceSquare, true);
+            board.unDoPromotion(destinationSquare, sourceSquare);
         } else {
-            pieces[destinationSquare].move(sourceSquare);
-            pieces[sourceSquare] = pieces[destinationSquare];
+            board.movePiece(destinationSquare, sourceSquare);
             if (((moveFlag & MoveFlags.QUEENSIDE_CASTLE) == MoveFlags.QUEENSIDE_CASTLE) ||
                     ((moveFlag & MoveFlags.KINGSIDE_CASTLE) == MoveFlags.KINGSIDE_CASTLE)) {
                 board.unDoCastleMovement(moveFlag, destinationSquare);
             }
         }
-        pieces[destinationSquare] = null;
         if (state.capturedPiece() != null) {
-            pieces[state.capturedPiece().getSquare()] = state.capturedPiece();
+            board.addPiece(state.capturedPiece().getSquare(), state.capturedPiece());
         }
         int sourceRank = SquareMapUtils.getRankContribution(sourceSquare);
         if (pieces[sourceSquare].getType() == PieceType.PAWN && (sourceRank == Ranks.TWO || sourceRank == Ranks.SEVEN)) {
