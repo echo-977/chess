@@ -6,5 +6,6 @@ public record State(
         int halfMoveClock,
         int moveCount,
         long[] ATKFR,
-        long[] ATKTO
+        long[] ATKTO,
+        long zobristKey
 ) {}

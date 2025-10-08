@@ -1,6 +1,7 @@
 public class Position {
     private final Board board;
     private final GameState gameState;
+    private long zobristKey;
 
     /**
      * Creates a position with the given board and game state.
@@ -10,6 +11,7 @@ public class Position {
     public Position(Board board, GameState gameState) {
         this.board = board;
         this.gameState = gameState;
+        this.zobristKey = Zobrist.computeKey(board, gameState);
     }
 
     /**
@@ -39,28 +41,50 @@ public class Position {
         int sourceSquare = move & MoveFlags.SOURCE_MASK;
         Piece capturedPiece;
         int castlingRights = gameState.getCastlingRights();
+        long keyBefore = zobristKey;
+        zobristKey ^= Zobrist.CASTLING_KEYS[castlingRights]; //remove old castling rights from key (add new rights later)
         if ((moveFlag & MoveFlags.CAPTURE_BIT) != 0) { //capture
             capturedPiece = handleCaptureMove(moveFlag, destinationSquare, sourceSquare);
+            zobristKey ^= Zobrist.PIECE_KEYS[capturedPiece.getColour().ordinal()][capturedPiece.getType().ordinal()][capturedPiece.getSquare()];
         } else {
             capturedPiece = null;
         }
         State stateBeforeMove = new State(move, capturedPiece, gameState.getEnPassantTarget(), castlingRights,
-                gameState.getHalfMoveClock(), gameState.getMoveCount(), board.getATKFR().clone(), board.getATKTO().clone());
+                gameState.getHalfMoveClock(), gameState.getMoveCount(), board.getATKFR().clone(),
+                board.getATKTO().clone(), keyBefore);
         Piece movePiece = board.pieceSearch(sourceSquare);
-        gameState.setEnPassantTarget(Squares.NONE);
+        int movePieceColourOrdinal = movePiece.getColour().ordinal();
+        int movePieceTypeOrdinal = movePiece.getType().ordinal();
+        int enPassantTarget = gameState.getEnPassantTarget();
+        if (enPassantTarget != Squares.NONE) {
+            zobristKey ^= Zobrist.EN_PASSANT_KEYS[SquareMapUtils.getFileContribution(enPassantTarget)];
+            gameState.setEnPassantTarget(Squares.NONE);
+        }
         if ((moveFlag & MoveFlags.PROMOTION_BIT) == MoveFlags.PROMOTION_BIT) {
             board.handlePromotion(moveFlag, destinationSquare, sourceSquare);
+            zobristKey ^= Zobrist.PIECE_KEYS[movePieceColourOrdinal][movePieceTypeOrdinal][sourceSquare];
+            Piece promotedPiece = board.pieceSearch(destinationSquare);
+            zobristKey ^= Zobrist.PIECE_KEYS[promotedPiece.getColour().ordinal()][promotedPiece.getType().ordinal()][sourceSquare];
         } else {
             if ((moveFlag & MoveFlags.QUEENSIDE_CASTLE) == MoveFlags.QUEENSIDE_CASTLE) {
                 board.handleCastleMovement(moveFlag, destinationSquare);
+                zobristKey ^= Zobrist.PIECE_KEYS[movePieceColourOrdinal][PieceType.ROOK.ordinal()][
+                        ChessConstants.KINGSIDE_ROOK_SOURCE_FILE + SquareMapUtils.getRankContribution(sourceSquare)];
+                zobristKey ^= Zobrist.PIECE_KEYS[movePieceColourOrdinal][PieceType.ROOK.ordinal()][
+                        ChessConstants.KINGSIDE_CASTLE_ROOK_FILE + SquareMapUtils.getRankContribution(sourceSquare)];
             } else if ((moveFlag & MoveFlags.KINGSIDE_CASTLE) == MoveFlags.KINGSIDE_CASTLE) {
                 board.handleCastleMovement(moveFlag, destinationSquare);
+                zobristKey ^= Zobrist.PIECE_KEYS[movePieceColourOrdinal][PieceType.ROOK.ordinal()][
+                        ChessConstants.QUEENSIDE_ROOK_SOURCE_FILE + SquareMapUtils.getRankContribution(sourceSquare)];
+                zobristKey ^= Zobrist.PIECE_KEYS[movePieceColourOrdinal][PieceType.ROOK.ordinal()][
+                        ChessConstants.QUEENSIDE_CASTLE_ROOK_FILE + SquareMapUtils.getRankContribution(sourceSquare)];
             } else {
                 if (((moveFlag & MoveFlags.CAPTURE_BIT) != MoveFlags.CAPTURE_BIT) &&
                         ((moveFlag & MoveFlags.DOUBLE_PAWN_PUSH) == MoveFlags.DOUBLE_PAWN_PUSH)) {
                     int direction = (gameState.getTurn() == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
-                    int enPassantTarget = sourceSquare + direction;
+                    enPassantTarget = sourceSquare + direction;
                     gameState.setEnPassantTarget(enPassantTarget);
+                    zobristKey ^= Zobrist.EN_PASSANT_KEYS[SquareMapUtils.getFileContribution(enPassantTarget)];
                 }
             }
             PieceType movePieceType = movePiece.getType();
@@ -68,9 +92,13 @@ public class Position {
                 gameState.removeCastlingRights(movePiece);
             }
             board.movePiece(sourceSquare, destinationSquare);
+            zobristKey ^= Zobrist.PIECE_KEYS[movePieceColourOrdinal][movePieceTypeOrdinal][sourceSquare];
+            zobristKey ^= Zobrist.PIECE_KEYS[movePieceColourOrdinal][movePieceTypeOrdinal][destinationSquare];
         }
         gameState.incrementMoveClocks(movePiece, moveFlag);
         gameState.changeTurn();
+        zobristKey ^= Zobrist.CASTLING_KEYS[gameState.getCastlingRights()];
+        zobristKey ^= Zobrist.TURN_KEY;
         AttackTables.updateAttackTables(board, sourceSquare, destinationSquare, moveFlag, capturedPiece);
         return stateBeforeMove;
     }
@@ -127,6 +155,7 @@ public class Position {
         }
         board.setAttackTables(state.ATKFR(), state.ATKTO());
         gameState.resetState(state);
+        zobristKey = state.zobristKey();
     }
 
     /**
@@ -158,5 +187,13 @@ public class Position {
      */
     public State doMove(String UCI) {
         return doMove(UCIUtils.UCItoEncodedMove(this, UCI));
+    }
+
+    /**
+     * Simple getter for the Zobrist key.
+     * @return long value that is practically unique for each position.
+     */
+    public long getZobristKey() {
+        return zobristKey;
     }
 }
