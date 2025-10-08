@@ -17,27 +17,4 @@ public class Move {
         }
         return ((moveFlag << MoveFlags.FLAG_SHIFT) | (destinationSquare << MoveFlags.DESTINATION_SHIFT) | sourceSquare) & MoveFlags.FORCE_16_BIT;
     }
-
-    /**
-     * Gets the uci string equivalent of a move.
-     * @param move the move we are converting to a string.
-     * @return the source square and destination square of the move.
-     */
-    public static String toUCIString(int move) {
-        String name = SquareMapUtils.mapIntToSquare(move & MoveFlags.SOURCE_MASK) +
-                SquareMapUtils.mapIntToSquare((move & MoveFlags.DESTINATION_MASK) >> MoveFlags.DESTINATION_SHIFT);
-        int flag = move >> MoveFlags.FLAG_SHIFT;
-        if ((flag & MoveFlags.PROMOTION_BIT) == MoveFlags.PROMOTION_BIT) {
-            if ((flag & MoveFlags.QUEEN) == MoveFlags.QUEEN) {
-                name += FENConstants.QUEEN_CHAR;
-            } else if ((flag & MoveFlags.ROOK) == MoveFlags.ROOK) {
-                name += FENConstants.ROOK_CHAR;
-            } else if ((flag & MoveFlags.BISHOP) == MoveFlags.BISHOP) {
-                name += FENConstants.BISHOP_CHAR;
-            } else {
-                name += FENConstants.KNIGHT_CHAR;
-            }
-        }
-        return name;
-    }
 }

@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class Position {
     private final Board board;
     private final GameState gameState;
@@ -153,7 +151,12 @@ public class Position {
         return board.equals(other.board) && gameState.equals(other.gameState);
     }
 
-    public String toString() {
-        return Arrays.toString(board.getATKTO());
+    /**
+     * Plays a given move on the board.
+     * @param UCI the move in UCI format.
+     * @return the state of the board before the move.
+     */
+    public State doMove(String UCI) {
+        return doMove(UCIUtils.UCItoEncodedMove(this, UCI));
     }
 }

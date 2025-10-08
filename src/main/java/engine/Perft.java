@@ -22,7 +22,7 @@ public class Perft {
                     position.unDoMove(stateBeforeMove);
                 } catch (Exception e) {
                     position.unDoMove(stateBeforeMove);
-                    System.out.println("Error with move: " + Move.toUCIString(move));
+                    System.out.println("Error with move: " + UCIUtils.moveToUCIString(move));
                     System.out.println("On board: " + FENUtils.getFEN(position));
                     position.doMove(move);
                     throw e;
@@ -53,11 +53,11 @@ public class Perft {
                 try {
                     count = Perft(position, depth - 1, moveGen);
                     position.unDoMove(stateBeforeMove);
-                    System.out.println(Move.toUCIString(move) + ": " + count);
+                    System.out.println(UCIUtils.moveToUCIString(move) + ": " + count);
                     nodes += count;
                 } catch (Exception e) {
                     position.unDoMove(stateBeforeMove);
-                    System.out.println("Error when doing move: " + Move.toUCIString(move));
+                    System.out.println("Error when doing move: " + UCIUtils.moveToUCIString(move));
                     System.out.println("On board: " + FENUtils.getFEN(position));
                     position.doMove(move);
                     throw e;
@@ -111,7 +111,7 @@ public class Perft {
                         positionCopy.doMove(move);
                         if (doDivide) {
                             count = Perft(positionCopy, depth - 1, new MoveGenerator());
-                            System.out.println(Move.toUCIString(move) + ": " + count);
+                            System.out.println(UCIUtils.moveToUCIString(move) + ": " + count);
                             nodes += count;
                         } else {
                             nodes += Perft(positionCopy, depth - 1, new MoveGenerator());
