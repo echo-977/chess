@@ -5,21 +5,20 @@ public class ThreatMapGenerator {
      * @param colour the colour of squares we want.
      * @return long with a 1 for which squares can be captured by the colour.
      */
-    public static long getThreatMap(Board board, PieceColour colour) {
-        Piece[] pieces = board.getPieces();
+    public static long computeThreatMap(Board board, PieceColour colour) {
+        if (colour == PieceColour.WHITE) {
+            return computeThreatMap(board, board.getWhiteBitboard());
+        } else {
+            return computeThreatMap(board, board.getBlackBitboard());
+        }
+    }
+
+    public static long computeThreatMap(Board board, long pieceBitboard) {
         long threatMap = 0L;
-        for (int squareIndex = 0; squareIndex < ChessConstants.NUM_SQUARES; squareIndex++) {
-            for (Piece piece : pieces) {
-                if (piece == null) {
-                    continue;
-                }
-                if (piece.getColour() != colour) {
-                    continue;
-                }
-                if (piece.canCaptureSquare(board, squareIndex)) {
-                    threatMap |= (1L << squareIndex);
-                    break;
-                }
+        long[] ATKTO = board.getATKTO();
+        for (int square = 0; square < ChessConstants.NUM_SQUARES; square++) {
+            if ((ATKTO[square] & pieceBitboard) != 0) {
+                threatMap |= 1L << square;
             }
         }
         return threatMap;

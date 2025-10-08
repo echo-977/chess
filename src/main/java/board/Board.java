@@ -4,8 +4,6 @@ public class Board {
     private final Piece[] pieces;
     private King whiteKing;
     private King blackKing;
-    private long whiteThreatMap;
-    private long blackThreatMap;
     private long[] ATKTO;
     private long[] ATKFR;
     private long whiteBitboard;
@@ -14,14 +12,10 @@ public class Board {
     /**
      * Constructs a board based on all the boards attributes.
      *
-     * @param pieces         length 64 array of all the pieces on the board.
-     * @param whiteThreatMap long of all squares white threatens.
-     * @param blackThreatMap long of all squares black threatens.
+     * @param pieces length 64 array of all the pieces on the board.
      */
-    public Board(Piece[] pieces, long whiteThreatMap, long blackThreatMap) {
+    public Board(Piece[] pieces) {
         this.pieces = pieces;
-        this.whiteThreatMap = whiteThreatMap;
-        this.blackThreatMap = blackThreatMap;
         this.whiteBitboard = 0L;
         this.blackBitboard = 0L;
         for (Piece piece : pieces) {
@@ -152,33 +146,6 @@ public class Board {
     }
 
     /**
-     * Update the saved threat map with a new one.
-     *
-     * @param colour the colour of the threat map to be updated.
-     */
-    public void updateThreatMap(PieceColour colour) {
-        if (colour == PieceColour.WHITE) {
-            whiteThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.WHITE);
-        } else {
-            blackThreatMap = ThreatMapGenerator.getThreatMap(this, PieceColour.BLACK);
-        }
-    }
-
-    /**
-     * Returns the current cached threat map for the colour.
-     *
-     * @param colour the threat map required.
-     * @return long of whether the given colour threatens each square.
-     */
-    public long getThreatMap(PieceColour colour) {
-        if (colour == PieceColour.WHITE) {
-            return whiteThreatMap;
-        } else {
-            return blackThreatMap;
-        }
-    }
-
-    /**
      * Returns a copy of the board in the same position.
      *
      * @return a functionally identical board.
@@ -190,7 +157,7 @@ public class Board {
                 clonedPieces[squareIndex] = pieces[squareIndex].copyToSquare(squareIndex);
             }
         }
-        return new Board(clonedPieces, whiteThreatMap, blackThreatMap);
+        return new Board(clonedPieces);
     }
 
     @Override
@@ -203,8 +170,7 @@ public class Board {
         if (!(object instanceof Board other)) {
             return false;
         }
-        return Arrays.equals(other.pieces, this.pieces) && other.whiteThreatMap == this.whiteThreatMap &&
-                other.blackThreatMap == this.blackThreatMap && Arrays.equals(other.ATKFR, this.ATKFR) &&
+        return Arrays.equals(other.pieces, this.pieces) && Arrays.equals(other.ATKFR, this.ATKFR) &&
                 Arrays.equals(other.ATKTO, this.ATKTO) && this.whiteBitboard == other.whiteBitboard &&
                 this.blackBitboard == other.blackBitboard;
     }
@@ -226,16 +192,6 @@ public class Board {
             rookSourceSquare = ChessConstants.KINGSIDE_ROOK_SOURCE_FILE + rank;
         }
         movePiece(rookDestinationSquare, rookSourceSquare);
-    }
-
-    /**
-     * Resets the threat maps to given threat maps to avoid having to recompute them when undoing a move.
-     * @param whiteThreatMap long for all squares threatened by white.
-     * @param blackThreatMap long for all squares threatened by black.
-     */
-    public void resetThreatMaps(long whiteThreatMap, long blackThreatMap) {
-        this.whiteThreatMap = whiteThreatMap;
-        this.blackThreatMap = blackThreatMap;
     }
 
     /**

@@ -56,10 +56,8 @@ public class FENUtils {
                 }
                 square += FENConstants.SQUARE_OFFSET;
             }
-
-
         }
-        Board board = new Board(pieces, 0L, 0L);
+        Board board = new Board(pieces);
         GameState gameState = new GameState(turn, moveCount, halfMoveClock);
         gameState.setCastlingRights(parseCastlingRights(fen[FENConstants.CASTLING_FIELD]));
         if (fen[FENConstants.EN_PASSANT_FIELD].equals(FENConstants.NONE)) {
@@ -67,8 +65,6 @@ public class FENUtils {
         } else {
             gameState.setEnPassantTarget(SquareMapUtils.mapSquareToInt(fen[FENConstants.EN_PASSANT_FIELD]));
         }
-        board.updateThreatMap(PieceColour.WHITE);
-        board.updateThreatMap(PieceColour.BLACK);
         return new Position(board, gameState);
     }
 
