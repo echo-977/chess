@@ -271,14 +271,10 @@ public class Board {
      * @return true if the colour attacks the square, otherwise false.
      */
     public boolean isAttackedBy(int square, PieceColour colour) {
-        if (ATKTO[square] == 0) { //no attacks
-            return false;
+        if (colour == PieceColour.WHITE) {
+            return (ATKTO[square] & whiteBitboard) != 0; //white piece matching square that attacks the given square
         } else {
-            if (colour == PieceColour.WHITE) {
-                return (ATKTO[square] & whiteBitboard) != 0; //white piece matching square that attacks the given square
-            } else {
-                return (ATKTO[square] & blackBitboard) != 0;
-            }
+            return (ATKTO[square] & blackBitboard) != 0;
         }
     }
 
