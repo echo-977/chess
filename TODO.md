@@ -2,6 +2,4 @@
 //TODO set check move to put king in check and remove check detection from constructor
 //TODO move clears whether the king was in check
 //TODO write evaluation function
-//TODO move to bitboard based system
-//TODO add UCI move parsing (convert UCI move to encoded move)
-//TODO implement zobrist hashing
+//TODO move to bitboard based system //TODO implement zobrist hashing
