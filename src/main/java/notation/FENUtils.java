@@ -19,7 +19,6 @@ public class FENUtils {
         int square = 0;
         PieceColour colour;
         Piece[] pieces = new Piece[ChessConstants.NUM_SQUARES];
-        boolean moved;
         for (char fenCharacter : fen[FENConstants.PIECE_FIELD].toCharArray()) {
             if (Character.isDigit(fenCharacter)) {
                 square += (fenCharacter - '0');
@@ -46,12 +45,7 @@ public class FENUtils {
                         pieces[square] = new Rook(colour, square);
                         break;
                     case FENConstants.PAWN_CHAR:
-                        if (square >= Files.A + Ranks.SEVEN && square <= Files.H + Ranks.SEVEN && colour == PieceColour.BLACK) {
-                            moved = false;
-                        } else {
-                            moved = !(square >= Files.A + Ranks.TWO && square <= Files.H + Ranks.TWO && colour == PieceColour.WHITE);
-                        }
-                        pieces[square] = new Pawn(colour, square, moved);
+                        pieces[square] = new Pawn(colour, square);
                         break;
                 }
                 square += FENConstants.SQUARE_OFFSET;

@@ -1,8 +1,8 @@
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 public class Pawn extends Piece{
-    private boolean moved;
     private final int moveDirection;
+    private final int sourceRank;
 
     /**
      * Constructs a pawn with the specified name, color, rank, and file.
@@ -10,12 +10,16 @@ public class Pawn extends Piece{
      *
      * @param colour the colour of the pawn ("White" or "Black")
      * @param square the square the pawn is on.
-     * @param moved  whether the pawn has moved
      */
-    public Pawn(PieceColour colour, int square, boolean moved) {
+    public Pawn(PieceColour colour, int square) {
         super(PieceType.PAWN, colour, square);
-        this.moved = moved;
-        this.moveDirection = (colour == PieceColour.WHITE) ? ChessDirections.UP : ChessDirections.DOWN;
+        if (colour == PieceColour.WHITE) {
+            this.sourceRank = Ranks.TWO;
+            this.moveDirection = ChessDirections.UP;
+        } else {
+            this.sourceRank = Ranks.SEVEN;
+            this.moveDirection = ChessDirections.DOWN;
+        }
     }
 
     /**
@@ -102,28 +106,15 @@ public class Pawn extends Piece{
             return false;
         }
         int square = getSquare();
-        int squareFile = SquareMapUtils.getFileContribution(square);
-        int squareRank = SquareMapUtils.getRankContribution(square);
-        int moveFile = SquareMapUtils.getFileContribution(move);
-        int moveRank = SquareMapUtils.getRankContribution(move);
-        if (squareRank + moveDirection == moveRank && squareFile == moveFile) {
+        if (square + moveDirection == move) {
             return true;
+        } else {
+            if (SquareMapUtils.getRankContribution(square) != sourceRank) {
+                return false;
+            } else {
+                return (square + 2 * moveDirection == move);
+            }
         }
-        else {
-            return (!getMoved() && squareRank + 2 * moveDirection == moveRank && squareFile == moveFile);
-        }
-    }
-
-    /**
-     * Overrides the move method in the piece class to update the moved flag.
-     * @param move the square to move the piece to.
-     */
-    @Override
-    public void move(int move) {
-        if (!moved) {
-            moved = true;
-        }
-        super.move(move);
     }
 
     /**
@@ -152,38 +143,13 @@ public class Pawn extends Piece{
     }
 
     /**
-     * Simple getter for the boolean moved
-     * @return the moved boolean
-     */
-    public boolean getMoved() {
-        return moved;
-    }
-
-    /**
      * Creates a copy of the pawn at a given square.
      * @param square the square the piece copy will be at.
      * @return a pawn object at the given square with the same properties.
      */
     @Override
     public Piece copyToSquare(int square) {
-        return new Pawn(getColour(), square, getMoved());
-    }
-
-    /**
-     * Simple setter for the moved boolean.
-     * @param moved value moved will be set to.
-     */
-    public void setMoved(boolean moved) {
-        this.moved = moved;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (super.equals(object)) {
-            Pawn other = (Pawn) object;
-            return other.moved == this.moved;
-        }
-        return false;
+        return new Pawn(getColour(), square);
     }
 
     /**

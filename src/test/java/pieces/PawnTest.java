@@ -11,17 +11,18 @@ class PawnTest {
 
     @BeforeEach
     public void init() {
-        piece1 = new Pawn(PieceColour.WHITE, Squares.A1, false);
-        piece2 = new Pawn(PieceColour.BLACK, Squares.D5, false);
+        piece1 = new Pawn(PieceColour.WHITE, Squares.A1);
+        piece2 = new Pawn(PieceColour.BLACK, Squares.D5);
     }
 
     @Test
     @DisplayName("Test isLegalMove")
     void testLegalMove() {
-        assertTrue(piece1.isLegalMove(Squares.A2));
+        piece1 = new Pawn(PieceColour.WHITE, Squares.A2);
+        assertTrue(piece1.isLegalMove(Squares.A4));
+        assertTrue(piece1.isLegalMove(Squares.A3));
+        assertFalse(piece1.isLegalMove(Squares.A1));
         assertTrue(piece2.isLegalMove(Squares.D4));
-        assertTrue(piece2.isLegalMove(Squares.D3));
-        assertFalse(piece1.isLegalMove(Squares.B1));
         assertFalse(piece2.isLegalMove(Squares.C5));
     }
 
@@ -145,14 +146,6 @@ class PawnTest {
     }
 
     @Test
-    @DisplayName("Test moved")
-    void testMoved() {
-        assertFalse(piece1.getMoved());
-        piece1.move(Squares.A2);
-        assertTrue(piece1.getMoved());
-    }
-
-    @Test
     @DisplayName("Test canCaptureSquare")
     void testCanCaptureSquare() {
         Position position = FENUtils.positionFromFEN("8/8/8/3p4/8/8/8/PK6 w - - 0 1");
@@ -173,7 +166,6 @@ class PawnTest {
         Pawn test = (Pawn) piece1.copyToSquare(Squares.D8);
         assertEquals(Squares.D8, test.getSquare());
         assertEquals(piece1.getColour(), test.getColour());
-        assertEquals(piece1.getMoved(), test.getMoved());
     }
 
     @Test

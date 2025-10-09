@@ -136,7 +136,6 @@ public class Position {
         int moveFlag = move >> MoveFlags.FLAG_SHIFT;
         int destinationSquare = (move & MoveFlags.DESTINATION_MASK) >> MoveFlags.DESTINATION_SHIFT;
         int sourceSquare = move & MoveFlags.SOURCE_MASK;
-        Piece[] pieces = board.getPieces();
         if ((moveFlag & MoveFlags.PROMOTION_BIT) ==  MoveFlags.PROMOTION_BIT) {
             board.unDoPromotion(destinationSquare, sourceSquare);
         } else {
@@ -148,10 +147,6 @@ public class Position {
         }
         if (state.capturedPiece() != null) {
             board.addPiece(state.capturedPiece().getSquare(), state.capturedPiece());
-        }
-        int sourceRank = SquareMapUtils.getRankContribution(sourceSquare);
-        if (pieces[sourceSquare].getType() == PieceType.PAWN && (sourceRank == Ranks.TWO || sourceRank == Ranks.SEVEN)) {
-            ((Pawn) pieces[sourceSquare]).setMoved(false);
         }
         board.setAttackTables(state.ATKFR(), state.ATKTO());
         gameState.resetState(state);

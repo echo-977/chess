@@ -134,7 +134,7 @@ public class Board {
      * @param sourceSquare the source of the promotion move.
      */
     public void unDoPromotion(int destinationSquare, int sourceSquare) {
-        pieces[sourceSquare] = new Pawn(pieces[destinationSquare].getColour(), sourceSquare, true);
+        pieces[sourceSquare] = new Pawn(pieces[destinationSquare].getColour(), sourceSquare);
         pieces[destinationSquare] = null;
         if (destinationSquare < Ranks.SEVEN) { //white is promoting
             whiteBitboard &= ~(1L << destinationSquare);
