@@ -34,4 +34,9 @@ public class ChessConstants {
 
     public static final int NO_TRANSPOSITION = -1;
     public static final int PERFT_TABLE_SIZE = 2^24;
+
+    public static final int NUM_OCCUPANCIES = 3;
+    public static final int WHITE_BITBOARD = 0;
+    public static final int BLACK_BITBOARD = 1;
+    public static final int BOTH_BITBOARD = 2;
 }

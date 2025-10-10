@@ -56,8 +56,10 @@ public class FENUtilsTest {
                 FENConstants.BLACK_KINGSIDE_CASTLE_MASK | FENConstants.BLACK_QUEENSIDE_CASTLE_MASK;
         assertEquals(castlingRights, gameState.getCastlingRights());
         assertEquals(Squares.NONE, gameState.getEnPassantTarget());
-        assertEquals(0b11111111_11111111_00000000_00000000_00000000_00000000_00000000_00000000L, board.getWhiteBitboard());
-        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00000000_11111111_11111111L, board.getBlackBitboard());
+        assertEquals(0b11111111_11111111_00000000_00000000_00000000_00000000_00000000_00000000L,
+                board.getOccupancyBitboard(ChessConstants.WHITE_BITBOARD));
+        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00000000_11111111_11111111L,
+                board.getOccupancyBitboard(ChessConstants.BLACK_BITBOARD));
     }
 
     @Test
@@ -154,8 +156,10 @@ public class FENUtilsTest {
         int castlingRights = FENConstants.BLACK_KINGSIDE_CASTLE_MASK;
         assertEquals(castlingRights, gameState.getCastlingRights());
         assertEquals(Squares.G6, gameState.getEnPassantTarget());
-        assertEquals(0b01100010_11011111_00100100_00101000_00110000_00000000_00000000_00000000L, board.getWhiteBitboard());
-        assertEquals(0b00000000_00000000_00000000_00000000_11001100_00000111_10001001_10110001L, board.getBlackBitboard());
+        assertEquals(0b01100010_11011111_00100100_00101000_00110000_00000000_00000000_00000000L,
+                board.getOccupancyBitboard(ChessConstants.WHITE_BITBOARD));
+        assertEquals(0b00000000_00000000_00000000_00000000_11001100_00000111_10001001_10110001L,
+                board.getOccupancyBitboard(ChessConstants.BLACK_BITBOARD));
     }
 
     @Test
@@ -257,8 +261,10 @@ public class FENUtilsTest {
         int castlingRights = FENConstants.NO_CASTLING_MASK;
         assertEquals(castlingRights, gameState.getCastlingRights());
         assertEquals(Squares.NONE, gameState.getEnPassantTarget());
-        assertEquals(0b01101101_11111011_00110100_00001000_00000000_00000000_00000000_00000000L, board.getWhiteBitboard());
-        assertEquals(0b00000000_00000000_00000000_00000010_00011000_00100100_11100111_01101101L, board.getBlackBitboard());
+        assertEquals(0b01101101_11111011_00110100_00001000_00000000_00000000_00000000_00000000L,
+                board.getOccupancyBitboard(ChessConstants.WHITE_BITBOARD));
+        assertEquals(0b00000000_00000000_00000000_00000010_00011000_00100100_11100111_01101101L,
+                board.getOccupancyBitboard(ChessConstants.BLACK_BITBOARD));
     }
 
     @Test

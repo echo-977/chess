@@ -16,8 +16,10 @@ public class PositionTest {
         State beforeMove = position.doMove(move);
         assertEquals(capturedPiece, beforeMove.capturedPiece());
         assertEquals(piece, board.pieceSearch(Squares.G6));
-        assertEquals(0b00000000_01000000_00000000_00000000_00000000_01000000_00000000_00000000L, board.getWhiteBitboard());
-        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00000100_00000000_00000000L, board.getBlackBitboard());
+        assertEquals(0b00000000_01000000_00000000_00000000_00000000_01000000_00000000_00000000L,
+                board.getOccupancyBitboard(ChessConstants.WHITE_BITBOARD));
+        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00000100_00000000_00000000L,
+                board.getOccupancyBitboard(ChessConstants.BLACK_BITBOARD));
         position = FENUtils.positionFromFEN("8/8/2b5/5Pp1/8/8/6R1/8 w - g6 0 1");
         board = position.getBoard();
         moveFlag = MoveFlags.CAPTURE_BIT;
@@ -27,8 +29,10 @@ public class PositionTest {
         beforeMove = position.doMove(move);
         assertEquals(capturedPiece, beforeMove.capturedPiece());
         assertEquals(piece, board.pieceSearch(Squares.G5));
-        assertEquals(0b00000000_00000000_00000000_00000000_01100000_00000000_00000000_00000000L, board.getWhiteBitboard());
-        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00000100_00000000_00000000L, board.getBlackBitboard());
+        assertEquals(0b00000000_00000000_00000000_00000000_01100000_00000000_00000000_00000000L,
+                board.getOccupancyBitboard(ChessConstants.WHITE_BITBOARD));
+        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00000100_00000000_00000000L,
+                board.getOccupancyBitboard(ChessConstants.BLACK_BITBOARD));
         position = FENUtils.positionFromFEN("8/8/2b5/5Pp1/8/8/6R1/8 w - g6 0 1");
         board = position.getBoard();
         move = moveFlag << MoveFlags.FLAG_SHIFT | Squares.G2 << MoveFlags.DESTINATION_SHIFT | Squares.C6;
@@ -37,8 +41,10 @@ public class PositionTest {
         beforeMove = position.doMove(move);
         assertEquals(capturedPiece, beforeMove.capturedPiece());
         assertEquals(piece, board.pieceSearch(Squares.G2));
-        assertEquals(0b00000000_00000000_00000000_00000000_00100000_00000000_00000000_00000000L, board.getWhiteBitboard());
-        assertEquals(0b00000000_01000000_00000000_00000000_01000000_00000000_00000000_00000000L, board.getBlackBitboard());
+        assertEquals(0b00000000_00000000_00000000_00000000_00100000_00000000_00000000_00000000L,
+                board.getOccupancyBitboard(ChessConstants.WHITE_BITBOARD));
+        assertEquals(0b00000000_01000000_00000000_00000000_01000000_00000000_00000000_00000000L,
+                board.getOccupancyBitboard(ChessConstants.BLACK_BITBOARD));
     }
 
     @Test
@@ -47,20 +53,26 @@ public class PositionTest {
         Position position = FENUtils.positionFromFEN("8/8/5r2/8/8/3Q4/8/8 w - - 0 1");
         int move = MoveFlags.QUIET_MOVE << MoveFlags.FLAG_SHIFT | Squares.G6 << MoveFlags.DESTINATION_SHIFT | Squares.D3;
         Piece piece = position.getBoard().pieceSearch(Squares.D3);
-        assertEquals(0b00000000_00000000_00001000_00000000_00000000_00000000_00000000_00000000L, position.getBoard().getWhiteBitboard());
-        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00100000_00000000_00000000L, position.getBoard().getBlackBitboard());
+        assertEquals(0b00000000_00000000_00001000_00000000_00000000_00000000_00000000_00000000L,
+                position.getBoard().getOccupancyBitboard(ChessConstants.WHITE_BITBOARD));
+        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00100000_00000000_00000000L,
+                position.getBoard().getOccupancyBitboard(ChessConstants.BLACK_BITBOARD));
         position.doMove(move);
         assertEquals(Squares.G6, piece.getSquare());
         assertEquals(1, position.getGameState().getHalfMoveClock());
         assertEquals(1, position.getGameState().getMoveCount());
-        assertEquals(0b00000000_00000000_00000000_00000000_00000000_01000000_00000000_00000000L, position.getBoard().getWhiteBitboard());
-        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00100000_00000000_00000000L, position.getBoard().getBlackBitboard());
+        assertEquals(0b00000000_00000000_00000000_00000000_00000000_01000000_00000000_00000000L,
+                position.getBoard().getOccupancyBitboard(ChessConstants.WHITE_BITBOARD));
+        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00100000_00000000_00000000L,
+                position.getBoard().getOccupancyBitboard(ChessConstants.BLACK_BITBOARD));
         move = MoveFlags.CAPTURE_BIT << MoveFlags.FLAG_SHIFT | Squares.G6 << MoveFlags.DESTINATION_SHIFT | Squares.F6;
         position.doMove(move);
         assertEquals(0, position.getGameState().getHalfMoveClock());
         assertEquals(2, position.getGameState().getMoveCount());
-        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000L, position.getBoard().getWhiteBitboard());
-        assertEquals(0b00000000_00000000_00000000_00000000_00000000_01000000_00000000_00000000L, position.getBoard().getBlackBitboard());
+        assertEquals(0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000L,
+                position.getBoard().getOccupancyBitboard(ChessConstants.WHITE_BITBOARD));
+        assertEquals(0b00000000_00000000_00000000_00000000_00000000_01000000_00000000_00000000L,
+                position.getBoard().getOccupancyBitboard(ChessConstants.BLACK_BITBOARD));
     }
 
     @Test

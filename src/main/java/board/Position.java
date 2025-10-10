@@ -95,6 +95,7 @@ public class Position {
             zobristKey ^= Zobrist.PIECE_KEYS[movePieceColourOrdinal][movePieceTypeOrdinal][sourceSquare];
             zobristKey ^= Zobrist.PIECE_KEYS[movePieceColourOrdinal][movePieceTypeOrdinal][destinationSquare];
         }
+        board.updateCombinedOccupancyBitboard();
         gameState.incrementMoveClocks(movePiece, moveFlag);
         gameState.changeTurn();
         zobristKey ^= Zobrist.CASTLING_KEYS[gameState.getCastlingRights()];
@@ -148,6 +149,7 @@ public class Position {
         if (state.capturedPiece() != null) {
             board.addPiece(state.capturedPiece().getSquare(), state.capturedPiece());
         }
+        board.updateCombinedOccupancyBitboard();
         board.setAttackTables(state.ATKFR(), state.ATKTO());
         gameState.resetState(state);
         zobristKey = state.zobristKey();

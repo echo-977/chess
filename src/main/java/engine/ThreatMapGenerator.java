@@ -7,9 +7,11 @@ public class ThreatMapGenerator {
      */
     public static long computeThreatMap(Board board, PieceColour colour) {
         if (colour == PieceColour.WHITE) {
-            return computeThreatMap(board, board.getWhiteBitboard());
+            return computeThreatMap(board,
+                    board.getOccupancyBitboard(ChessConstants.WHITE_BITBOARD));
         } else {
-            return computeThreatMap(board, board.getBlackBitboard());
+            return computeThreatMap(board,
+                    board.getOccupancyBitboard(ChessConstants.BLACK_BITBOARD));
         }
     }
 
