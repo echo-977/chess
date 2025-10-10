@@ -4,10 +4,10 @@
 		<testFolder url="file://$MODULE_DIR$/src/test/java"/>
 		<testFolder url="file://$MODULE_DIR$/src/test/java/board"/>
 		<testFolder url="file://$MODULE_DIR$/src/test/java/engine"/>
-		<testFolder url="file://$MODULE_DIR$/src/test/java/model"/>
 		<testFolder url="file://$MODULE_DIR$/src/test/java/notation"/>
 		<testFolder url="file://$MODULE_DIR$/src/test/java/pieces"/>
 		<testFolder url="file://$MODULE_DIR$/src/test/java/util"/>
+		<testFolder url="file://$MODULE_DIR$/src/test/java/search"/>
 	</contentEntry>
 	<levels>
 		<level name="fastutil-8.5.16" value="project"/>
