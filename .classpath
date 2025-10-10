@@ -14,6 +14,7 @@
 	<classpathentry kind="src" path="src/test/java/notation"/>
 	<classpathentry kind="src" path="src/test/java/pieces"/>
 	<classpathentry kind="src" path="src/test/java/util"/>
+	<classpathentry kind="src" path="src/main/java/evaluation"/>
 	<classpathentry kind="src" path="src/main/java/search"/>
 	<classpathentry kind="src" path="src/test/java/search"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/fastutil-8.5.16"/>
