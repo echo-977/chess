@@ -31,4 +31,7 @@ public class ChessConstants {
 
     public static final int ROOK_DIRECTIONS = 4;
     public static final int BISHOP_DIRECTIONS = 4;
+
+    public static final int NO_TRANSPOSITION = -1;
+    public static final int PERFT_TABLE_SIZE = 2^24;
 }

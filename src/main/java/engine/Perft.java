@@ -4,29 +4,30 @@ public class Perft {
     /**
      * Returns the total number of possible positions that can arise at a given depth.
      * @param position the position to find the positions on.
-     * @param depth the depth in ply (half-moves) to go to.
      * @param moveGen the move generator object.
+     * @param transpositionTable the transposition table.
+     * @param depth the depth in ply (half-moves) to go to.
      * @return number of possible positions after depth ply.
      */
-    public static long Perft(Position position, int depth, MoveGenerator moveGen) {
+    public static long Perft(Position position, MoveGenerator moveGen, PerftTT transpositionTable, int depth) {
         if (depth == 0) {
             return 1;
         }
         long nodes = 0;
+        long nodeCount;
         IntArrayList moves = moveGen.generateLegalMoves(position);
         for (int move : moves) {
             if (move != MoveFlags.NO_MOVE) {
                 State stateBeforeMove = position.doMove(move);
-                try {
-                    nodes += Perft(position, depth - 1, moveGen);
-                    position.unDoMove(stateBeforeMove);
-                } catch (Exception e) {
-                    position.unDoMove(stateBeforeMove);
-                    System.out.println("Error with move: " + UCIUtils.moveToUCIString(move));
-                    System.out.println("On board: " + FENUtils.getFEN(position));
-                    position.doMove(move);
-                    throw e;
+                long ttEntry = transpositionTable.lookUp(position.getZobristKey(), depth - 1);
+                if (ttEntry != ChessConstants.NO_TRANSPOSITION) {
+                    nodeCount = ttEntry;
+                } else {
+                    nodeCount = Perft(position, moveGen, transpositionTable, depth - 1);
+                    transpositionTable.add(position.getZobristKey(), depth - 1, nodeCount);
                 }
+                nodes += nodeCount;
+                position.unDoMove(stateBeforeMove);
             }
         }
         return nodes;
@@ -36,32 +37,31 @@ public class Perft {
      * Returns the total number of possible positions that can arise at a given depth.
      * Also prints out how many positions there are for each move which is used for debugging.
      * @param position the position to find the positions on.
-     * @param depth the depth in ply (half-moves) to go to.
      * @param moveGen the move generator object.
+     * @param transpositionTable the transposition table.
+     * @param depth the depth in ply (half-moves) to go to.
      * @return number of possible positions after depth ply.
      */
-    public static long PerftDivide(Position position, int depth, MoveGenerator moveGen) {
+    public static long PerftDivide(Position position, MoveGenerator moveGen, PerftTT transpositionTable, int depth) {
         if (depth == 0) {
             return 1;
         }
         long nodes = 0;
-        long count;
+        long nodeCount;
         IntArrayList moves = moveGen.generateLegalMoves(position);
         for (int move : moves) {
             if (move != MoveFlags.NO_MOVE) {
                 State stateBeforeMove = position.doMove(move);
-                try {
-                    count = Perft(position, depth - 1, moveGen);
-                    position.unDoMove(stateBeforeMove);
-                    System.out.println(UCIUtils.moveToUCIString(move) + ": " + count);
-                    nodes += count;
-                } catch (Exception e) {
-                    position.unDoMove(stateBeforeMove);
-                    System.out.println("Error when doing move: " + UCIUtils.moveToUCIString(move));
-                    System.out.println("On board: " + FENUtils.getFEN(position));
-                    position.doMove(move);
-                    throw e;
+                long ttEntry = transpositionTable.lookUp(position.getZobristKey(), depth - 1);
+                if (ttEntry != ChessConstants.NO_TRANSPOSITION) {
+                    nodeCount = ttEntry;
+                } else {
+                    nodeCount = Perft(position, moveGen, transpositionTable, depth - 1);
+                    transpositionTable.add(position.getZobristKey(), depth - 1, nodeCount);
                 }
+                nodes += nodeCount;
+                System.out.println(UCIUtils.moveToUCIString(move) + ": " + nodeCount);
+                position.unDoMove(stateBeforeMove);
             }
         }
         return nodes;
@@ -72,16 +72,17 @@ public class Perft {
      * Allocates each possible CPU processor moves to carry out independently for parallelism.
      * Can also print out how many positions there are for each move which is used for debugging.
      * @param position the position to find the positions on.
+     * @param transpositionTable the transposition table.
      * @param depth the depth in ply (half-moves) to go to.
      * @param doDivide boolean for if move printing debugging will be done.
      * @return number of possible positions after depth ply.
      */
-    public static long ThreadedPerft(Position position, int depth, boolean doDivide) {
+    public static long ThreadedPerft(Position position, PerftTT transpositionTable, int depth, boolean doDivide) {
         if (depth <= 2) {
             if (doDivide) {
-                return PerftDivide(position, depth, new MoveGenerator());
+                return PerftDivide(position, new MoveGenerator(), transpositionTable, depth);
             } else {
-                return Perft(position, depth, new MoveGenerator());
+                return Perft(position, new MoveGenerator(), transpositionTable, depth);
             }
         }
         int numCPUCores = Runtime.getRuntime().availableProcessors();
@@ -104,18 +105,22 @@ public class Perft {
             final int threadNum = threadIndex;
             threads[threadIndex] = new Thread(() -> {
                 long nodes = 0;
-                long count;
+                long nodeCount;
+                long ttEntry;
                 for (int move : threadMoves[threadNum]) {
                     if (move != MoveFlags.NO_MOVE) {
                         Position positionCopy = position.copy();
                         positionCopy.doMove(move);
-                        if (doDivide) {
-                            count = Perft(positionCopy, depth - 1, new MoveGenerator());
-                            System.out.println(UCIUtils.moveToUCIString(move) + ": " + count);
-                            nodes += count;
+                        ttEntry = transpositionTable.lookUp(positionCopy.getZobristKey(), depth - 1);
+                        if (ttEntry != ChessConstants.NO_TRANSPOSITION) {
+                            nodeCount = ttEntry;
                         } else {
-                            nodes += Perft(positionCopy, depth - 1, new MoveGenerator());
+                            nodeCount = Perft(positionCopy, new MoveGenerator(), transpositionTable, depth - 1);
                         }
+                        if (doDivide) {
+                            System.out.println(UCIUtils.moveToUCIString(move) + ": " + nodeCount);
+                        }
+                        nodes += nodeCount;
                     }
                 }
                 results[threadNum] = nodes;
