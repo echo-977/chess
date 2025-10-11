@@ -15,6 +15,12 @@ public class ThreatMapGenerator {
         }
     }
 
+    /**
+     * Returns the threat map for a given colour.
+     * @param board the board we are generating a threat map of.
+     * @param pieceBitboard the bitboard for the colour we want the threat map for.
+     * @return  long with a 1 for which squares can be captured by the colour.
+     */
     public static long computeThreatMap(Board board, long pieceBitboard) {
         long threatMap = 0L;
         long[] ATKTO = board.getATKTO();
