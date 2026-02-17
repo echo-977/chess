@@ -1,5 +1,23 @@
 public enum PieceType {
-    PAWN, KING, QUEEN, ROOK, BISHOP, KNIGHT;
+    PAWN(100), KING(0), QUEEN(900), ROOK(500), BISHOP(300), KNIGHT(300);
+
+    private final int value;
+
+    /**
+     * Allows a piece to hold a value.
+     * @param value the value of the piece.
+     */
+    PieceType(int value) {
+        this.value = value;
+    }
+
+    /**
+     * Simple getter for the value of a piece type in centipawns
+     * @return the integer value of the piece
+     */
+    public int getValue() {
+        return value;
+    }
 
     /**
      * Simple check for if the piece is linear.

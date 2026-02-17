@@ -6,8 +6,7 @@ public class Board {
     private King blackKing;
     private long[] ATKTO;
     private long[] ATKFR;
-    private long whiteBitboard;
-    private long blackBitboard;
+    private final long[] occupancyBitboards;
 
     /**
      * Constructs a board based on all the boards attributes.
@@ -16,17 +15,16 @@ public class Board {
      */
     public Board(Piece[] pieces) {
         this.pieces = pieces;
-        this.whiteBitboard = 0L;
-        this.blackBitboard = 0L;
+        occupancyBitboards = new long[ChessConstants.NUM_OCCUPANCIES];
         for (Piece piece : pieces) {
             if (piece != null) {
                 if (piece.getColour() == PieceColour.WHITE) {
-                    this.whiteBitboard |= 1L << piece.getSquare();
+                    occupancyBitboards[ChessConstants.WHITE_BITBOARD] ^= 1L << piece.getSquare();
                     if (piece.getType() == PieceType.KING) {
                         whiteKing = (King) piece;
                     }
                 } else {
-                    this.blackBitboard |= 1L << piece.getSquare();
+                    occupancyBitboards[ChessConstants.BLACK_BITBOARD] ^= 1L << piece.getSquare();
                     if (piece.getType() == PieceType.KING) {
                         blackKing = (King) piece;
                     }
@@ -119,11 +117,9 @@ public class Board {
             default -> new Knight(pieces[sourceSquare].getColour(), destinationSquare); //knight flag is equal to 0 so this is our base case
         };
         if (destinationSquare < Ranks.SEVEN) { //white is promoting
-            whiteBitboard &= ~(1L << sourceSquare);
-            whiteBitboard |= (1L << destinationSquare);
+            occupancyBitboards[ChessConstants.WHITE_BITBOARD] ^= (1L << sourceSquare) | (1L << destinationSquare);
         } else {
-            blackBitboard &= ~(1L << sourceSquare);
-            blackBitboard |= (1L << destinationSquare);
+            occupancyBitboards[ChessConstants.BLACK_BITBOARD] ^= (1L << sourceSquare) | (1L << destinationSquare);
         }
         pieces[sourceSquare] = null; //take the pawn off the board
     }
@@ -137,11 +133,9 @@ public class Board {
         pieces[sourceSquare] = new Pawn(pieces[destinationSquare].getColour(), sourceSquare);
         pieces[destinationSquare] = null;
         if (destinationSquare < Ranks.SEVEN) { //white is promoting
-            whiteBitboard &= ~(1L << destinationSquare);
-            whiteBitboard |= (1L << sourceSquare);
+            occupancyBitboards[ChessConstants.WHITE_BITBOARD] ^= (1L << destinationSquare) | (1L << sourceSquare);
         } else {
-            blackBitboard &= ~(1L << destinationSquare);
-            blackBitboard |= (1L << sourceSquare);
+            occupancyBitboards[ChessConstants.BLACK_BITBOARD] ^= (1L << destinationSquare) | (1L << sourceSquare);
         }
     }
 
@@ -171,8 +165,8 @@ public class Board {
             return false;
         }
         return Arrays.equals(other.pieces, this.pieces) && Arrays.equals(other.ATKFR, this.ATKFR) &&
-                Arrays.equals(other.ATKTO, this.ATKTO) && this.whiteBitboard == other.whiteBitboard &&
-                this.blackBitboard == other.blackBitboard;
+                Arrays.equals(other.ATKTO, this.ATKTO) &&
+                Arrays.equals(other.occupancyBitboards, this.occupancyBitboards);
     }
 
     /**
@@ -227,10 +221,10 @@ public class Board {
      * @return true if the colour attacks the square, otherwise false.
      */
     public boolean isAttackedBy(int square, PieceColour colour) {
-        if (colour == PieceColour.WHITE) {
-            return (ATKTO[square] & whiteBitboard) != 0; //white piece matching square that attacks the given square
+        if (colour == PieceColour.WHITE) { //white piece matching square that attacks the given square
+            return (ATKTO[square] & occupancyBitboards[ChessConstants.WHITE_BITBOARD]) != 0;
         } else {
-            return (ATKTO[square] & blackBitboard) != 0;
+            return (ATKTO[square] & occupancyBitboards[ChessConstants.BLACK_BITBOARD]) != 0;
         }
     }
 
@@ -243,9 +237,9 @@ public class Board {
         Piece piece = pieces[square];
         pieces[square] = null;
         if (piece.getColour() == PieceColour.WHITE) {
-            whiteBitboard &= ~(1L << square);
+            occupancyBitboards[ChessConstants.WHITE_BITBOARD] ^= (1L << square);
         } else {
-            blackBitboard &= ~(1L << square);
+            occupancyBitboards[ChessConstants.BLACK_BITBOARD] ^= (1L << square);
         }
         return piece;
     }
@@ -258,9 +252,9 @@ public class Board {
     public void addPiece(int square, Piece piece) {
         pieces[square] = piece;
         if (piece.getColour() == PieceColour.WHITE) {
-            whiteBitboard |= (1L << square);
+            occupancyBitboards[ChessConstants.WHITE_BITBOARD] ^= (1L << square);
         } else {
-            blackBitboard |= (1L << square);
+            occupancyBitboards[ChessConstants.BLACK_BITBOARD] ^= (1L << square);
         }
     }
 
@@ -274,27 +268,26 @@ public class Board {
         pieces[destinationSquare] = pieces[sourceSquare];
         pieces[sourceSquare] = null;
         if (pieces[destinationSquare].getColour() == PieceColour.WHITE) {
-            whiteBitboard &= ~(1L << sourceSquare);
-            whiteBitboard |= (1L << destinationSquare);
+            occupancyBitboards[ChessConstants.WHITE_BITBOARD] ^= (1L << sourceSquare) | (1L << destinationSquare);
         } else {
-            blackBitboard &= ~(1L << sourceSquare);
-            blackBitboard |= (1L << destinationSquare);
+            occupancyBitboards[ChessConstants.BLACK_BITBOARD] ^= (1L << sourceSquare) | (1L << destinationSquare);
         }
     }
 
     /**
-     * Simple getter for the white bit board.
+     * Simple getter for an occupancy bitboard.
+     * @param bitboardIndex the index of the desired occupancy bitboard.
      * @return long where each bit equal to 1 is a white piece.
      */
-    public long getWhiteBitboard() {
-        return whiteBitboard;
+    public long getOccupancyBitboard(int bitboardIndex) {
+        return occupancyBitboards[bitboardIndex];
     }
 
     /**
-     * Simple getter for the black bit board.
-     * @return long where each bit equal to 1 is a black piece.
+     * Sets the bitboard for the union of both pieces.
      */
-    public long getBlackBitboard() {
-        return blackBitboard;
+    public void updateCombinedOccupancyBitboard() {
+        occupancyBitboards[ChessConstants.BOTH_BITBOARD] =
+                occupancyBitboards[ChessConstants.WHITE_BITBOARD] | occupancyBitboards[ChessConstants.BLACK_BITBOARD];
     }
 }
