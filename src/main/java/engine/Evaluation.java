@@ -1,5 +1,6 @@
 public class Evaluation {
     public static int MOBILITY_COEFFICIENT = 1;
+    public static int PIECE_TABLE_COEFFICIENT = 1;
     /**
      * Evaluates the position.
      * @param position the position to be evaluated.
@@ -10,7 +11,8 @@ public class Evaluation {
         PieceColour colour = position.getGameState().getTurn();
         PieceColour enemyColour = colour.opponentColour();
         int evaluation = getValueSum(board, colour) - getValueSum(board, enemyColour);
-        evaluation += MOBILITY_COEFFICIENT * (getMobility(board, colour) - getMobility(board, colour));
+        evaluation += MOBILITY_COEFFICIENT * (getMobility(board, colour) - getMobility(board, enemyColour));
+        evaluation += PIECE_TABLE_COEFFICIENT * (getPieceSquareEvaluation(board, colour) - getPieceSquareEvaluation(board, enemyColour));
         return evaluation;
     }
 
@@ -53,5 +55,36 @@ public class Evaluation {
             pieces &= pieces - 1;
         }
         return mobility;
+    }
+
+    /**
+     * Calculates the evaluation offsets based on how good of a square each piece is on.
+     * @param board the board to evaluate.
+     * @param colour the player whose perspective is evaluated.
+     * @return integer representing the evaluation offset based on the pieces positions.
+     */
+    public static int getPieceSquareEvaluation(Board board, PieceColour colour) {
+        long pieces = board.getOccupancyBitboard(colour.ordinal());
+        int score = 0;
+        int currentPhase = Phase.computePhase(board);
+        while (pieces != 0){
+            int square = Long.numberOfTrailingZeros(pieces);
+            PieceType pieceAtSquareType = board.pieceSearch(square).getType();
+            if (colour == PieceColour.BLACK) {
+                square = EvaluationTables.BLACK_MAPPINGS[square]; //get the equivalent square from whites perspective
+            }
+            switch (pieceAtSquareType) {
+                case KNIGHT -> score += EvaluationTables.KNIGHT[square];
+                case QUEEN -> score += EvaluationTables.QUEEN[square];
+                case ROOK -> score += EvaluationTables.ROOK[square];
+                case BISHOP -> score += EvaluationTables.BISHOP[square];
+                case PAWN -> score += ((EvaluationTables.PAWN_MIDDLEGAME[square] * (256 - currentPhase)) +
+                        (EvaluationTables.PAWN_ENDGAME[square] * currentPhase)) / 256;
+                case KING -> score += ((EvaluationTables.KING_MIDDLEGAME[square] * (256 - currentPhase)) +
+                        (EvaluationTables.KING_ENDGAME[square] * currentPhase)) / 256;
+            }
+            pieces &= pieces - 1;
+        }
+        return score;
     }
 }

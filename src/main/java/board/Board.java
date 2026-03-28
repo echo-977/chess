@@ -31,6 +31,7 @@ public class Board {
                 }
             }
         }
+        updateCombinedOccupancyBitboard();
         ATKTO = new long[ChessConstants.NUM_SQUARES];
         ATKFR = new long[ChessConstants.NUM_SQUARES];
         AttackTables.setUpAttackTables(this);

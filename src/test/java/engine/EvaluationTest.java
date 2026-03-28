@@ -25,4 +25,15 @@ public class EvaluationTest {
         assertEquals(16, Evaluation.getMobility(position.getBoard(), PieceColour.WHITE));
         assertEquals(20, Evaluation.getMobility(position.getBoard(), PieceColour.BLACK));
     }
+
+    @Test
+    @DisplayName("Test getPieceSquareEvaluation")
+    void testGetPieceSquareEvaluation() {
+        Position position = FENUtils.positionFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        assertEquals(-95, Evaluation.getPieceSquareEvaluation(position.getBoard(), PieceColour.WHITE));
+        assertEquals(-95, Evaluation.getPieceSquareEvaluation(position.getBoard(), PieceColour.BLACK));
+        position = FENUtils.positionFromFEN("8/3b4/8/2k3r1/3pp3/2P2P2/2K1QN2/8 w - - 0 1");
+        assertEquals(6, Evaluation.getPieceSquareEvaluation(position.getBoard(), PieceColour.WHITE));
+        assertEquals(66, Evaluation.getPieceSquareEvaluation(position.getBoard(), PieceColour.BLACK));
+    }
 }

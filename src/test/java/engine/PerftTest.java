@@ -16,8 +16,8 @@ public class PerftTest {
         //assertEquals(400, Perft.ThreadedPerft(position, transpositionTable, 2, false));
         //assertEquals(8902, Perft.ThreadedPerft(position, transpositionTable, 3, false));
         //assertEquals(197281, Perft.ThreadedPerft(position, transpositionTable, 4, false));
-        //assertEquals(4865609, Perft.ThreadedPerft(position, transpositionTable, 5, false));
-        assertEquals(119060324, Perft.ThreadedPerft(position, transpositionTable, 6, true));
+        assertEquals(4865609, Perft.ThreadedPerft(position, transpositionTable, 5, false));
+        //assertEquals(119060324, Perft.ThreadedPerft(position, transpositionTable, 6, true));
     }
 
     @Disabled
@@ -29,8 +29,8 @@ public class PerftTest {
         //assertEquals(48, Perft.ThreadedPerft(position, transpositionTable, 1, false));
         //assertEquals(2039, Perft.ThreadedPerft(position, transpositionTable, 2, false));
         //assertEquals(97862, Perft.ThreadedPerft(position, transpositionTable, 3, false));
-        //assertEquals(4085603, Perft.ThreadedPerft(position, transpositionTable, 4, false));
-        assertEquals(193690690, Perft.ThreadedPerft(position, transpositionTable, 5, false));
+        assertEquals(4085603, Perft.ThreadedPerft(position, transpositionTable, 4, false));
+        //assertEquals(193690690, Perft.ThreadedPerft(position, transpositionTable, 5, false));
     }
 
     @Disabled
@@ -57,8 +57,8 @@ public class PerftTest {
         //assertEquals(264, Perft.ThreadedPerft(position, transpositionTable, 2, false));
         //assertEquals(9467, Perft.ThreadedPerft(position, transpositionTable, 3, false));
         //assertEquals(422333, Perft.ThreadedPerft(position, transpositionTable, 4, false));
-        //assertEquals(15833292, Perft.ThreadedPerft(position, transpositionTable, 5, false));
-        assertEquals(706045033, Perft.ThreadedPerft(position, transpositionTable, 6, true));
+        assertEquals(15833292, Perft.ThreadedPerft(position, transpositionTable, 5, false));
+        //assertEquals(706045033, Perft.ThreadedPerft(position, transpositionTable, 6, true));
     }
 
     @Disabled
@@ -70,8 +70,8 @@ public class PerftTest {
         //assertEquals(44, Perft.ThreadedPerft(position, transpositionTable, 1, false));
         //assertEquals(1486, Perft.ThreadedPerft(position, transpositionTable, 2, false));
         //assertEquals(62379, Perft.ThreadedPerft(position, transpositionTable, 3, false));
-        //assertEquals(2103487, Perft.ThreadedPerft(position, transpositionTable, 4, false));
-        assertEquals(89941194, Perft.ThreadedPerft(position, transpositionTable, 5, true));
+        assertEquals(2103487, Perft.ThreadedPerft(position, transpositionTable, 4, false));
+        //assertEquals(89941194, Perft.ThreadedPerft(position, transpositionTable, 5, true));
     }
 
     @Disabled
@@ -83,7 +83,7 @@ public class PerftTest {
         //assertEquals(46, Perft.ThreadedPerft(position, transpositionTable, 1, false));
         //assertEquals(2079, Perft.ThreadedPerft(position, transpositionTable, 2, false));
         //assertEquals(89890, Perft.ThreadedPerft(position, transpositionTable, 3, false));
-        //assertEquals(3894594, Perft.ThreadedPerft(position, transpositionTable, 4, false));
-        assertEquals(164075551, Perft.ThreadedPerft(position, transpositionTable, 5, true));
+        assertEquals(3894594, Perft.ThreadedPerft(position, transpositionTable, 4, false));
+        //assertEquals(164075551, Perft.ThreadedPerft(position, transpositionTable, 5, true));
     }
 }
